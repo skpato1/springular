@@ -15,7 +15,7 @@ public class CommandExecutorService {
 	
 	String db_springular="db_springular";
 	String root="root";
-	String sifast2014="password=sifast2014";
+	String sifast2014="sifast2014";
 	
 	public void executeCommand(String cmd) throws IOException, InterruptedException {
 		List<String> commands = new ArrayList<String>();
@@ -57,8 +57,15 @@ public class CommandExecutorService {
 		String fileContext = FileUtils.readFileToString(file);
 		fileContext = fileContext.replaceAll(db_springular, nameDB);
 		fileContext = fileContext.replaceAll(root, usernameDB);
-		fileContext = fileContext.replaceAll("password=sifast2014", "password=" + pwdDB);
+		fileContext = fileContext.replaceAll(sifast2014,pwdDB);
 		FileUtils.write(file, fileContext);
+		db_springular=nameDB;
+		System.out.println(db_springular);
+		root=usernameDB;
+		System.out.println(root);
+		sifast2014=pwdDB;
+		System.out.println(sifast2014);
+
 
 	}
 

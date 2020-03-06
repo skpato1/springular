@@ -40,5 +40,10 @@ public class EntityGeneratorController {
 				fieldType);
 		System.out.println("file Dynamic generated with array");
 	}
+	@GetMapping("model/{className}/{fieldName}/{fieldType}")
+	public void generateFileDynamicWithArrayAngular(@PathVariable String className, @PathVariable String fieldName[], @PathVariable String fieldType[]) {
+		entityGeneratorService.generateEntityDynamicWithArrayAngular(className, fieldName,fieldType);
+		System.out.println("file Dynamic generated with array Angular");
+	}
 
 }

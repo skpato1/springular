@@ -1,12 +1,13 @@
 package com.sifast.convertToJava.tn.web.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.sifast.convertToJava.tn.entities.Attribute;
 import com.sifast.convertToJava.tn.web.config.ConfiguredModelMapper;
 import com.sifast.convertToJava.tn.web.dto.attribute.CreateAttributeDto;
 import com.sifast.convertToJava.tn.web.dto.attribute.ViewAttributeDto;
-
+@Component
 public class AttributeMapper {
 	
 	

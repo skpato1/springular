@@ -1,12 +1,13 @@
 package com.sifast.convertToJava.tn.web.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.sifast.convertToJava.tn.entities.BuisnessLogicEntity;
 import com.sifast.convertToJava.tn.web.config.ConfiguredModelMapper;
 import com.sifast.convertToJava.tn.web.dto.buisnessLogicEntity.CreateBuisnessLogicEntityDto;
 import com.sifast.convertToJava.tn.web.dto.buisnessLogicEntity.ViewBuisnessLogicEntityDto;
-
+@Component
 public class BuisnessLogicEntityMapper {
 	
 	

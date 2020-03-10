@@ -27,6 +27,28 @@ public class Project extends TimestampEntity implements Serializable {
 	@Column(name = "name_project")
 	private String nameProject;
 	
+	@Column(name = "port_project")
+	private String portProject;
+	
+	@Column(name = "type_project")
+	private String typeProject;
+	
+	public String getPortProject() {
+		return portProject;
+	}
+
+	public void setPortProject(String portProject) {
+		this.portProject = portProject;
+	}
+
+	public String getTypeProject() {
+		return typeProject;
+	}
+
+	public void setTypeProject(String typeProject) {
+		this.typeProject = typeProject;
+	}
+
 	@OneToOne
 	private Database database;
 	

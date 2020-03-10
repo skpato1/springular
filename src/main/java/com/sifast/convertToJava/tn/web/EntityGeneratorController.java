@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sifast.convertToJava.tn.service.EntityGeneratorService;
+import com.sifast.convertToJava.tn.service.IEntityGeneratorService;
 
 @CrossOrigin("*")
 @RestController
@@ -15,7 +15,7 @@ import com.sifast.convertToJava.tn.service.EntityGeneratorService;
 public class EntityGeneratorController {
 
 	@Autowired
-	EntityGeneratorService entityGeneratorService;
+	IEntityGeneratorService entityGeneratorService;
 	
 	@GetMapping("model/{className}/{fieldName}/{fieldType}")
 	public void generateFileDynamicWithArrayAngular(@PathVariable String className, @PathVariable String fieldName[], @PathVariable String fieldType[]) {

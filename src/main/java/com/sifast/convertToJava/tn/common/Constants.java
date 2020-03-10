@@ -1,7 +1,20 @@
 package com.sifast.convertToJava.tn.common;
 
 public class Constants {
-	 public static final String PATTERN_TABULATION="	";
+	
+	  public static final String PATTERN_DATE = "dd/MM/yyyy";
+
+	    public static final String PDF_EXTENSION = ".pdf";
+
+	    public static final String DEFAULT_AUTHORITY = "AUTH_VIEW_LANDING_PAGE";
+
+	    public static final String DATE_WITH_DASH = "yyyy-MM-dd";
+
+	    public static final String DEFAULT_TIME_ZONE = "Africa/Tunis";
+
+	    public static final int MAX_STRING_SIZE = 200;
+	
+	public static final String PATTERN_TABULATION="	";
     public static final String PATTERN_CMD_SH = "/bin/sh";
     public static final String PATTERN_CMD_SH_OPTION_C = "-c";
     public static final String PATTERN_CMD_MYSQL_DB = "/Applications/xampp/xamppfiles/bin/mysql -uroot --execute \"create DATABASE ";

@@ -1,4 +1,4 @@
-package com.sifast.convertToJava.tn.service;
+package com.sifast.convertToJava.tn.service.impl;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -6,12 +6,13 @@ import java.io.IOException;
 import org.springframework.stereotype.Service;
 
 import com.sifast.convertToJava.tn.common.Constants;
+import com.sifast.convertToJava.tn.service.IEntityGeneratorService;
 
 @Service
-public class EntityGeneratorService {
+public class EntityGeneratorService implements IEntityGeneratorService {
 	
-	
-	public String equalsParameter(String classname)
+	@Override
+	public String functionEquals(String classname)
 	{
 		String eq=
 				"    @Override" +Constants.PATTERN_RETOUR_LIGNE+ 
@@ -26,7 +27,8 @@ public class EntityGeneratorService {
 				"    "+Constants.ACCOLADE_FERMANTE;
 		return eq;
 	}
-	public String hash()
+	@Override
+	public String functionHash()
 	{
 		String hsh=
 				"	 @Override"+Constants.PATTERN_RETOUR_LIGNE + 
@@ -35,7 +37,8 @@ public class EntityGeneratorService {
 				"    "+Constants.ACCOLADE_FERMANTE;
 		return hsh;
 	}
-	public String toStr(String classname,String[] fieldName)
+	@Override
+	public String functionToString(String classname,String[] fieldName)
 	{
 		String str="";
 		
@@ -59,6 +62,7 @@ public class EntityGeneratorService {
 		}
 		return str1+str+str2;
 	}
+		@Override
 		public void generateEntityDynamicWithArrayAngular(String className, String[] fieldName, String[] fieldType) {
 		if (!"undefined".equals(className)) {
 			try {
@@ -104,11 +108,11 @@ public class EntityGeneratorService {
 					myWriter.write(Constants.PATTERN_TABULATION+Constants.ACCOLADE_FERMANTE+Constants.PATTERN_RETOUR_LIGNE);
 				}
 				myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-				myWriter.write(equalsParameter(className));
+				myWriter.write(functionEquals(className));
 				myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-				myWriter.write(hash());
+				myWriter.write(functionHash());
 				myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-				myWriter.write(toStr(className, fieldName));
+				myWriter.write(functionToString(className, fieldName));
 				myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
 				myWriter.write(Constants.ACCOLADE_FERMANTE);
 				myWriter.close();

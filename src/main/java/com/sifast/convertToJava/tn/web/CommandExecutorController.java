@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sifast.convertToJava.tn.service.CommandExecutorService;
+import com.sifast.convertToJava.tn.service.ICommandExecutorService;
 
 @CrossOrigin("*")
 @RestController
@@ -17,7 +17,7 @@ import com.sifast.convertToJava.tn.service.CommandExecutorService;
 public class CommandExecutorController {
 
 	@Autowired
-	CommandExecutorService commandExecutorService;
+	ICommandExecutorService commandExecutorService;
 
 	@GetMapping("github/{projectName}/{userName}")
 	public void generateGithubProject(@PathVariable String projectName, @PathVariable String userName)

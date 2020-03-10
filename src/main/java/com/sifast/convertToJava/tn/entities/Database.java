@@ -22,9 +22,17 @@ public class Database extends TimestampEntity implements Serializable {
 	@Column(name = "name_database")
 	private String nameDatabase;
 	
+	@Column(name = "type_database")
+	private String typeDatabase;
 	
+	
+	public String getTypeDatabase() {
+		return typeDatabase;
+	}
 
-	
+	public void setTypeDatabase(String typeDatabase) {
+		this.typeDatabase = typeDatabase;
+	}
 
 	public int getId() {
 		return id;

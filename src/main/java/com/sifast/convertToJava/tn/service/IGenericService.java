@@ -2,6 +2,7 @@ package com.sifast.convertToJava.tn.service;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,9 @@ public interface IGenericService<T, P extends Serializable> {
 	T update(T entity);
 
 	void delete(T entity);
+	
+    Optional<T> findById(P id);
+
 
 	List<T> findAll();
 

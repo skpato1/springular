@@ -3,6 +3,7 @@ package com.sifast.convertToJava.tn.service.impl;
 import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -73,6 +74,15 @@ public class GenericService<T, P extends Serializable> implements IGenericServic
 	    public T getOne(P id) {
 	        return genericDao.getOne(id);
 	    }
+
+	@Override
+	public Optional<T> findById(P id) {
+		
+        Optional<T> returnedObject;
+        returnedObject = genericDao.findById(id);
+        return returnedObject;
+
+	}
 
 
 

@@ -61,6 +61,8 @@ public class ApiMessage {
 	public static final String ATTRIBUTE_NOT_FOUND = "ATTRIBUTE_NOT_FOUND";
 
 	public static final String DATABASE_NOT_FOUND = "DATABASE_NOT_FOUND";
+
+	public static final String BUISNESS_LOGIC_ENTITY_NOT_FOUND = "BUISNESS_LOGIC_ENTITY_NOT_FOUND";
 			
 			
     private ApiMessage() {

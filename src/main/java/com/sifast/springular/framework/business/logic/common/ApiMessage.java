@@ -1,18 +1,4 @@
-package com.sifast.springular.framework.business.logic.common;import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Test;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-
-import com.sifast.springular.framework.business.logic.entities.Project;
-import com.sifast.springular.framework.business.logic.web.dto.project.CreateProjectDto;
-import com.sifast.springular.framework.business.logic.web.dto.project.ProjectDto;
-import com.sifast.springular.framework.business.logic.web.dto.project.ViewProjectDto;
+package com.sifast.springular.framework.business.logic.common;
 
 public class ApiMessage {
 
@@ -73,6 +59,8 @@ public class ApiMessage {
     public static final String PROJECT_NOT_FOUND = "PROJECT_NOT_FOUND";
 
 	public static final String ATTRIBUTE_NOT_FOUND = "ATTRIBUTE_NOT_FOUND";
+
+	public static final String DATABASE_NOT_FOUND = "DATABASE_NOT_FOUND";
 			
 			
     private ApiMessage() {

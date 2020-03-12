@@ -81,7 +81,9 @@ public class AttributeApi implements IAttributeApi {
 			LOGGER.info("Web service deleteattribute invoked with id {}", id);
 			 Optional<Attribute> preDeleteattribute = attributeService.findById(id);
 		        if (!preDeleteattribute.isPresent()) {
-		            httpStatus = HttpStatus.NOT_FOUND;
+		        	httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.ATTRIBUTE_NOT_FOUND);
+	                httpStatus = HttpStatus.NOT_FOUND;
+		        	httpResponseBody = httpErrorResponse;	  
 		        } else {
 		            
 		                attributeService.delete(preDeleteattribute.get());
@@ -105,7 +107,9 @@ public class AttributeApi implements IAttributeApi {
 		                LOGGER.info("INFO level message: attribute updated {}", updatedAttribute);
 
 		            } else {
+		            	httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.ATTRIBUTE_NOT_FOUND);
 		                httpStatus = HttpStatus.NOT_FOUND;
+			        	httpResponseBody = httpErrorResponse;
 		            }
 		        } else {
 		            httpStatus = HttpStatus.BAD_REQUEST;

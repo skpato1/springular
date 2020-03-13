@@ -8,8 +8,7 @@ import javax.validation.constraints.Size;
 
 import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.Constants;
-import com.sifast.springular.framework.business.logic.entities.Attribute;
-import com.sifast.springular.framework.business.logic.entities.Project;
+import com.sifast.springular.framework.business.logic.web.dto.attribute.AttributeDto;
 
 public class BuisnessLogicEntityDto {
 	
@@ -18,8 +17,11 @@ public class BuisnessLogicEntityDto {
 	@Size(max = Constants.MAX_STRING_SIZE, message = ApiMessage.STRING_SIZE_VALIDATION_FAILED)
 	private String nameEntity;
 	
-	private List<Attribute> attributes;
-	private Project project;
+	private List<AttributeDto> attributes;
+	
+	@NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
+	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
+	private int project_id;
 	
 	public String getNameEntity() {
 		return nameEntity;
@@ -27,17 +29,18 @@ public class BuisnessLogicEntityDto {
 	public void setNameEntity(String nameEntity) {
 		this.nameEntity = nameEntity;
 	}
-	public List<Attribute> getAttributes() {
+	public List<AttributeDto> getAttributes() {
 		return attributes;
 	}
-	public void setAttributes(List<Attribute> attributes) {
+	public void setAttributes(List<AttributeDto> attributes) {
 		this.attributes = attributes;
 	}
-	public Project getProject() {
-		return project;
+	
+	public int getProject_id() {
+		return project_id;
 	}
-	public void setProject(Project project) {
-		this.project = project;
+	public void setProject_id(int project_id) {
+		this.project_id = project_id;
 	}
 	@Override
 	public String toString() {

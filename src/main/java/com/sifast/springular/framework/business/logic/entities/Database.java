@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Table(name = "T_database")
@@ -25,7 +26,17 @@ public class Database extends TimestampEntity implements Serializable {
 	@Column(name = "type_database")
 	private String typeDatabase;
 	
+	@OneToOne(mappedBy = "database")
+	 private Project project;
 	
+	public Project getProject() {
+		return project;
+	}
+
+	public void setProject(Project project) {
+		this.project = project;
+	}
+
 	public String getTypeDatabase() {
 		return typeDatabase;
 	}

@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.AttributesTypeEnum;
 import com.sifast.springular.framework.business.logic.common.Constants;
-import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
+import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.BuisnessLogicEntityDto;
 
 public class AttributeDto {
 
@@ -20,7 +20,7 @@ public class AttributeDto {
 	@Size(max = Constants.MAX_STRING_SIZE, message = ApiMessage.STRING_SIZE_VALIDATION_FAILED)
 	private AttributesTypeEnum typeAttribute;
 
-	private BuisnessLogicEntity buisnessLogicEntity;
+	private BuisnessLogicEntityDto buisnessLogicEntity;
 
 	public String getNameAttribute() {
 		return nameAttribute;
@@ -38,11 +38,11 @@ public class AttributeDto {
 		this.typeAttribute = typeAttribute;
 	}
 
-	public BuisnessLogicEntity getBuisnessLogicEntity() {
+	public BuisnessLogicEntityDto getBuisnessLogicEntity() {
 		return buisnessLogicEntity;
 	}
 
-	public void setBuisnessLogicEntity(BuisnessLogicEntity buisnessLogicEntity) {
+	public void setBuisnessLogicEntity(BuisnessLogicEntityDto buisnessLogicEntity) {
 		this.buisnessLogicEntity = buisnessLogicEntity;
 	}
 

@@ -21,7 +21,9 @@ import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
 import com.sifast.springular.framework.business.logic.entities.Database;
+import com.sifast.springular.framework.business.logic.entities.Project;
 import com.sifast.springular.framework.business.logic.service.IDatabaseService;
+import com.sifast.springular.framework.business.logic.service.IProjectService;
 import com.sifast.springular.framework.business.logic.web.config.ConfiguredModelMapper;
 import com.sifast.springular.framework.business.logic.web.dto.database.CreateDatabaseDto;
 import com.sifast.springular.framework.business.logic.web.dto.database.DatabaseDto;
@@ -29,111 +31,135 @@ import com.sifast.springular.framework.business.logic.web.dto.database.ViewDatab
 import com.sifast.springular.framework.business.logic.web.mapper.DatabaseMapper;
 import com.sifast.springular.framework.business.logic.web.service.api.IDatabaseApi;
 
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping(value = "/api/")
-public class DatabaseApi implements IDatabaseApi{
-	
-	
-	 private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseApi.class);
+public class DatabaseApi implements IDatabaseApi {
 
-	    private HttpErrorResponse httpErrorResponse = new HttpErrorResponse();
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseApi.class);
 
-	    private Object httpResponseBody;
+	private HttpErrorResponse httpErrorResponse = new HttpErrorResponse();
 
-	    private HttpStatus httpStatus;
-	    
-		 	@Autowired
-		    private ConfiguredModelMapper modelMapper;
+	private Object httpResponseBody;
 
-		    @Autowired
-		    private DatabaseMapper databaseMapper;
-		    
-		    @Autowired
-		    private IDatabaseService databaseService;
+	private HttpStatus httpStatus;
 
-		
-		
-		@Override
-		public ResponseEntity<Object> saveDatabase(@RequestBody CreateDatabaseDto databaseDto, BindingResult bindingResult) {
-	        LOGGER.info("Web service saveDatabase invoked with databaseDto {}", databaseDto);
-	        try {
-	        Database saveddatabase = databaseService.save(databaseMapper.mapCreateDatabase(databaseDto));
-	        httpStatus = HttpStatus.OK;
-	        httpResponseBody = modelMapper.map(saveddatabase, ViewDatabaseDto.class);
-	        }
-	        catch (Exception e) {
-	        	httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.SERVER_ERROR.getValue(), ApiMessage.ERR_SAVE);
-	            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-	        	httpResponseBody = httpErrorResponse;
+	@Autowired
+	private ConfiguredModelMapper modelMapper;
 
-	        }
-	        
+	@Autowired
+	private DatabaseMapper databaseMapper;
 
-	        return new ResponseEntity<>(httpResponseBody, httpStatus);
+	@Autowired
+	private IDatabaseService databaseService;
+
+	@Autowired
+	private IProjectService projectService;
+
+	@Override
+	public ResponseEntity<Object> saveDatabase(
+			@ApiParam(required = true, value = "databaseDto", name = "databaseDto") @RequestBody CreateDatabaseDto databaseDto,
+			BindingResult bindingResult) {
+		LOGGER.info("Web service saveDatabase invoked with databaseDto {}", databaseDto);
+		try {
+			Optional<Project> project = projectService.findById(databaseDto.getProject_id());
+			if (project.isPresent()) {
+				Database databaseToBeSaved = databaseMapper.mapCreateDatabase(databaseDto);
+				databaseToBeSaved.setProject(project.get());
+				Database saveddatabase = databaseService.save(databaseToBeSaved);
+				httpStatus = HttpStatus.OK;
+				httpResponseBody = modelMapper.map(saveddatabase, ViewDatabaseDto.class);
+			} else {
+				httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(),
+						ApiMessage.PROJECT_NOT_FOUND);
+				httpStatus = HttpStatus.NOT_FOUND;
+				httpResponseBody = httpErrorResponse;
+			}
+
+		} catch (Exception e) {
+			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.SERVER_ERROR.getValue(), ApiMessage.ERR_SAVE);
+			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			httpResponseBody = httpErrorResponse;
+
 		}
 
-		@Override
-		public ResponseEntity<Object> getDatabase(@PathVariable("id") int id) {
-			LOGGER.info("Web service getDatabase invoked with id {}", id);
+		return new ResponseEntity<>(httpResponseBody, httpStatus);
+	}
 
-	        Optional<Database> database = databaseService.findById(id);
-	        if (database.isPresent()) {
-	            httpStatus = HttpStatus.OK;
-	            httpResponseBody = databaseMapper.mapDatabaseToViewDatabaseDto(database.get());
-	        } else {
-	        	httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
-	        	httpStatus = HttpStatus.NOT_FOUND;
-	        	httpResponseBody = httpErrorResponse;	        }
-	        return new ResponseEntity<>(httpResponseBody, httpStatus);
+	@Override
+	public ResponseEntity<Object> getDatabase(
+			@ApiParam(value = "ID of Database that needs to be fetched", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
+		LOGGER.info("Web service getDatabase invoked with id {}", id);
+
+		Optional<Database> database = databaseService.findById(id);
+		if (database.isPresent()) {
+			httpStatus = HttpStatus.OK;
+			httpResponseBody = databaseMapper.mapDatabaseToViewDatabaseDto(database.get());
+		} else {
+			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
+			httpStatus = HttpStatus.NOT_FOUND;
+			httpResponseBody = httpErrorResponse;
 		}
+		return new ResponseEntity<>(httpResponseBody, httpStatus);
+	}
 
-		@Override
-		public ResponseEntity<Object> getAllDatabases() {
-				List<Database> databases = databaseService.findAll();
-		        httpStatus = HttpStatus.OK;
-		        httpResponseBody = !databases.isEmpty() ? databases.stream().map(database -> modelMapper.map(database, ViewDatabaseDto.class)).collect(Collectors.toList()) : Collections.emptyList();
-		        return new ResponseEntity<>(httpResponseBody, httpStatus);
+	@Override
+	public ResponseEntity<Object> getAllDatabases() {
+		List<Database> databases = databaseService.findAll();
+		httpStatus = HttpStatus.OK;
+		httpResponseBody = !databases.isEmpty() ? databases.stream()
+				.map(database -> modelMapper.map(database, ViewDatabaseDto.class)).collect(Collectors.toList())
+				: Collections.emptyList();
+		return new ResponseEntity<>(httpResponseBody, httpStatus);
+	}
+
+	@Override
+	public ResponseEntity<Object> deleteDatabase(
+			@ApiParam(value = "ID of Database that needs to be deleted", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
+		LOGGER.info("Web service deleteDatabase invoked with id {}", id);
+		Optional<Database> preDeletedatabase = databaseService.findById(id);
+		if (preDeletedatabase.isPresent()) {
+			databaseService.delete(preDeletedatabase.get());
+			httpStatus = HttpStatus.OK;
+			LOGGER.info("INFO level message: database with id = {} deleted ", id);
+		} else {
+
+			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
+			httpStatus = HttpStatus.NOT_FOUND;
+			httpResponseBody = httpErrorResponse;
 		}
+		return new ResponseEntity<>(httpResponseBody, httpStatus);
+	}
 
-		@Override
-		public ResponseEntity<Object> deleteDatabase(@PathVariable("id") int id) {
-			LOGGER.info("Web service deleteDatabase invoked with id {}", id);
-			 Optional<Database> preDeletedatabase = databaseService.findById(id);
-		        if (!preDeletedatabase.isPresent()) {
-		            httpStatus = HttpStatus.NOT_FOUND;
-		        } else {
-		            
-		                databaseService.delete(preDeletedatabase.get());
-		                httpStatus = HttpStatus.OK;
-		                LOGGER.info("INFO level message: database with id = {} deleted ", id);
-		            
-		        }
-		        return new ResponseEntity<>(httpResponseBody, httpStatus);
-		}
-
-		@Override
-		public ResponseEntity<Object> updateDatabase(@PathVariable("id") int id,@RequestBody DatabaseDto databaseDto, BindingResult bindingResult) {
+	@Override
+	public ResponseEntity<Object> updateDatabase(
+			@ApiParam(value = "ID of Database that needs to be updated", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id,
+			@ApiParam(required = true, value = "databaseDto", name = "databaseDto") @RequestBody DatabaseDto databaseDto,
+			BindingResult bindingResult) {
 			LOGGER.info("Web service updateDatabase invoked with id {}", id);
-			if (!bindingResult.hasFieldErrors()) {
-		            Optional<Database> database = databaseService.findById(id);
-		            if (database.isPresent()) {
-		                Database preUpdatedatabase = database.get();
-		                Database updateddatabase = databaseService.save(preUpdatedatabase);
-		                httpStatus = HttpStatus.OK;
-		                httpResponseBody = modelMapper.map(database, Database.class);
-		                LOGGER.info("INFO level message: database updated {}", updateddatabase);
+		if (!bindingResult.hasFieldErrors()) {
+			Optional<Database> database = databaseService.findById(id);
+			if (database.isPresent()) {
+				Database mapDtoToDatabase= modelMapper.map(databaseDto, Database.class);
+				mapDtoToDatabase.setId(id);
+				//Database preUpdatedatabase = database.get();
+				Database updateddatabase = databaseService.save(mapDtoToDatabase);
+				httpStatus = HttpStatus.OK;
+				httpResponseBody = modelMapper.map(database, Database.class);
+				LOGGER.info("INFO level message: database updated {}", updateddatabase);
 
-		            } else {
-			        	httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
-		                httpStatus = HttpStatus.NOT_FOUND;
-			        	httpResponseBody = httpErrorResponse;	        
-		            }
-		        } else {
-		            httpStatus = HttpStatus.BAD_REQUEST;
-		        }
-		        return new ResponseEntity<>(httpResponseBody, httpStatus);
+			} else {
+				httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(),
+						ApiMessage.DATABASE_NOT_FOUND);
+				httpStatus = HttpStatus.NOT_FOUND;
+				httpResponseBody = httpErrorResponse;
+			}
+		} else {
+			httpStatus = HttpStatus.BAD_REQUEST;
 		}
-
+		return new ResponseEntity<>(httpResponseBody, httpStatus);
+	}
 
 }

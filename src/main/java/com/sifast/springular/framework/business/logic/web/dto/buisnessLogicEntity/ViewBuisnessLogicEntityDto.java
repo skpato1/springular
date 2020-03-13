@@ -1,6 +1,6 @@
 package com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity;
 
-public class ViewBuisnessLogicEntityDto {
+public class ViewBuisnessLogicEntityDto extends BuisnessLogicEntityDto {
 	
 	private int id;
 

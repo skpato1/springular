@@ -70,7 +70,7 @@ public class Project extends TimestampEntity implements Serializable {
 		this.database = database;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL,mappedBy="project",fetch = FetchType.LAZY)
 	private List<BuisnessLogicEntity> entities;
 
 	public List<BuisnessLogicEntity> getEntities() {
@@ -96,5 +96,7 @@ public class Project extends TimestampEntity implements Serializable {
 	public void setNameProject(String nameProject) {
 		this.nameProject = nameProject;
 	}
+
+	
 
 }

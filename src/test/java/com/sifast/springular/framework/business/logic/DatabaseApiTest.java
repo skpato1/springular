@@ -71,7 +71,7 @@ public class DatabaseApiTest extends SpringularFrameworkBusinessLogicApplication
 	
 	private CreateDatabaseDto getDatabaseDto() {
 		CreateDatabaseDto createDatabaseDto = new CreateDatabaseDto();
-		createDatabaseDto.setNameDatabase("spring-db-test");
+		createDatabaseDto.setNameDatabase("spring-db-test-kmar");
 		createDatabaseDto.setTypeDatabase("Mysql");
 		return createDatabaseDto;
 	}

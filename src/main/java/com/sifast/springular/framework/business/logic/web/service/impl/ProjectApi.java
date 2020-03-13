@@ -29,6 +29,8 @@ import com.sifast.springular.framework.business.logic.web.dto.project.ViewProjec
 import com.sifast.springular.framework.business.logic.web.mapper.ProjectMapper;
 import com.sifast.springular.framework.business.logic.web.service.api.IProjectApi;
 
+import io.swagger.annotations.ApiParam;
+
 
 @RestController
 @CrossOrigin("*")
@@ -53,11 +55,11 @@ public class ProjectApi implements IProjectApi{
 	    
 	    @Autowired
 	    private IProjectService projectService;
-
+	    
 	
 	
 	@Override
-	public ResponseEntity<Object> saveProject(@RequestBody CreateProjectDto projectDto, BindingResult bindingResult) {
+	public ResponseEntity<Object> saveProject(@ApiParam(required = true, value = "projectDto", name = "projectDto") @RequestBody CreateProjectDto projectDto, BindingResult bindingResult) {
         LOGGER.info("Web service saveProject invoked with projectDto {}", projectDto);
         try {
         Project savedProject = projectService.save(projectMapper.mapCreateProject(projectDto));
@@ -75,10 +77,11 @@ public class ProjectApi implements IProjectApi{
 	}
 
 	@Override
-	public ResponseEntity<Object> getProject(@PathVariable("id") int id) {
+	public ResponseEntity<Object> getProject(@ApiParam(value = "ID of Project that needs to be fetched ", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
 		LOGGER.info("Web service getProject invoked with id {}", id);
 
         Optional<Project> project = projectService.findById(id);
+
         if (project.isPresent()) {
             httpStatus = HttpStatus.OK;
             httpResponseBody = projectMapper.mapProjectToViewProjectDto(project.get());
@@ -99,7 +102,7 @@ public class ProjectApi implements IProjectApi{
 	}
 
 	@Override
-	public ResponseEntity<Object> deleteProject(@PathVariable("id") int id) {
+	public ResponseEntity<Object> deleteProject(@ApiParam(value = "ID of Project that needs to be deleted", required = true, allowableValues = "range[1,infinity]")@PathVariable("id") int id) {
 		LOGGER.info("Web service deleteProject invoked with id {}", id);
 		 Optional<Project> preDeleteProject = projectService.findById(id);
 	        if (!preDeleteProject.isPresent()) {
@@ -115,7 +118,7 @@ public class ProjectApi implements IProjectApi{
 	}
 
 	@Override
-	public ResponseEntity<Object> updateProject(@PathVariable("id") int id,@RequestBody ProjectDto projectDto, BindingResult bindingResult) {
+	public ResponseEntity<Object> updateProject(@ApiParam(value = "ID of Project that needs to be updated", required = true, allowableValues = "range[1,infinity]")@PathVariable("id") int id,@ApiParam(required = true, value = "projectDto", name = "projectDto") @RequestBody ProjectDto projectDto, BindingResult bindingResult) {
 		LOGGER.info("Web service updateProject invoked with id {}", id);
 		if (!bindingResult.hasFieldErrors()) {
 	            Optional<Project> Project = projectService.findById(id);

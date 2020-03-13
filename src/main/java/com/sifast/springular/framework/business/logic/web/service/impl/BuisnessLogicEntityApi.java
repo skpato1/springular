@@ -21,13 +21,17 @@ import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
 import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
+import com.sifast.springular.framework.business.logic.entities.Project;
 import com.sifast.springular.framework.business.logic.service.IBuisnessLogicEntityService;
+import com.sifast.springular.framework.business.logic.service.IProjectService;
 import com.sifast.springular.framework.business.logic.web.config.ConfiguredModelMapper;
 import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.BuisnessLogicEntityDto;
 import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.CreateBuisnessLogicEntityDto;
 import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.ViewBuisnessLogicEntityDto;
 import com.sifast.springular.framework.business.logic.web.mapper.BuisnessLogicEntityMapper;
 import com.sifast.springular.framework.business.logic.web.service.api.IBuisnessLogicEntityApi;
+
+import io.swagger.annotations.ApiParam;
 
 @RestController
 @CrossOrigin("*")
@@ -52,16 +56,31 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi{
 		    
 		    @Autowired
 		    private IBuisnessLogicEntityService buisnessLogicEntityService;
+		    
+		    @Autowired
+		    private IProjectService projectService;
 
 		
 		
 		@Override
-		public ResponseEntity<Object> saveBuisnessLogicEntity(@RequestBody CreateBuisnessLogicEntityDto buisnessLogicEntityDto, BindingResult bindingResult) {
+		public ResponseEntity<Object> saveBuisnessLogicEntity(@ApiParam(required = true, value = "buisnessLogicEntityDto", name = "buisnessLogicEntityDto") @RequestBody CreateBuisnessLogicEntityDto buisnessLogicEntityDto, BindingResult bindingResult) {
 	        LOGGER.info("Web service saveBuisnessLogicEntity invoked with buisnessLogicEntityDto {}", buisnessLogicEntityDto);
 	        try {
-	        BuisnessLogicEntity savedBuisnessLogicEntity = buisnessLogicEntityService.save(buisnessLogicEntityMapper.mapCreateBuisnessLogicEntity(buisnessLogicEntityDto));
-	        httpStatus = HttpStatus.OK;
-	        httpResponseBody = modelMapper.map(savedBuisnessLogicEntity, ViewBuisnessLogicEntityDto.class);
+	        Optional<Project> project = projectService.findById(buisnessLogicEntityDto.getProject_id());
+		        if(project.isPresent())
+		        {
+		        	BuisnessLogicEntity entityToBeSaved=buisnessLogicEntityMapper.mapCreateBuisnessLogicEntity(buisnessLogicEntityDto);
+		        	entityToBeSaved.setProject(project.get());
+			        BuisnessLogicEntity savedBuisnessLogicEntity = buisnessLogicEntityService.save(entityToBeSaved);
+			        httpStatus = HttpStatus.OK;
+			        httpResponseBody = modelMapper.map(savedBuisnessLogicEntity, ViewBuisnessLogicEntityDto.class);
+		        }
+		        else
+		        {
+		        	httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.PROJECT_NOT_FOUND);
+		        	httpStatus = HttpStatus.NOT_FOUND;
+		        	httpResponseBody = httpErrorResponse;
+		        }
 	        }
 	        catch (Exception e) {
 	        	httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.SERVER_ERROR.getValue(), ApiMessage.ERR_SAVE);
@@ -73,7 +92,7 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi{
 		}
 
 		@Override
-		public ResponseEntity<Object> getBuisnessLogicEntity(@PathVariable("id")int id) {
+		public ResponseEntity<Object> getBuisnessLogicEntity(@ApiParam(value = "ID of Entity that needs to be fetched", required = true, allowableValues = "range[1,infinity]") @PathVariable("id")int id) {
 			LOGGER.info("Web service getBuisnessLogicEntity invoked with id {}", id);
 
 	        Optional<BuisnessLogicEntity> buisnessLogicEntity = buisnessLogicEntityService.findById(id);
@@ -96,7 +115,7 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi{
 		}
 
 		@Override
-		public ResponseEntity<Object> deleteBuisnessLogicEntity(@PathVariable("id") int id) {
+		public ResponseEntity<Object> deleteBuisnessLogicEntity(@ApiParam(value = "ID of Entity that needs to be deleted", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
 			LOGGER.info("Web service deleteBuisnessLogicEntity invoked with id {}", id);
 			 Optional<BuisnessLogicEntity> preDeleteBuisnessLogicEntity = buisnessLogicEntityService.findById(id);
 		        if (!preDeleteBuisnessLogicEntity.isPresent()) {
@@ -112,7 +131,7 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi{
 		}
 
 		@Override
-		public ResponseEntity<Object> updateBuisnessLogicEntity(@PathVariable("id") int id,@RequestBody BuisnessLogicEntityDto buisnessLogicEntityDto, BindingResult bindingResult) {
+		public ResponseEntity<Object> updateBuisnessLogicEntity(@ApiParam(value = "ID of Entity that needs to be updated", required = true, allowableValues = "range[1,infinity]")@PathVariable("id") int id,@ApiParam(required = true, value = "BuisnessLogicEntityDto", name = "BuisnessLogicEntityDto") @RequestBody BuisnessLogicEntityDto buisnessLogicEntityDto, BindingResult bindingResult) {
 			LOGGER.info("Web service updateBuisnessLogicEntity invoked with id {}", id);
 			if (!bindingResult.hasFieldErrors()) {
 		            Optional<BuisnessLogicEntity> buisnessLogicEntity = buisnessLogicEntityService.findById(id);

@@ -18,7 +18,16 @@ public class DatabaseDto {
 	@Size(max = Constants.MAX_STRING_SIZE, message = ApiMessage.STRING_SIZE_VALIDATION_FAILED)
 	private String typeDatabase;
 	
+	@NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
+	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
+	private int project_id;
 	
+	public int getProject_id() {
+		return project_id;
+	}
+	public void setProject_id(int project_id) {
+		this.project_id = project_id;
+	}
 	public String getNameDatabase() {
 		return nameDatabase;
 	}

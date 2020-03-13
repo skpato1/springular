@@ -8,6 +8,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 @SpringBootApplication
 @Configuration
 @ComponentScan(basePackages = {"com.sifast.springular.framework.business.logic.entities", "com.sifast.springular.framework.business.logic.web.service.impl", "com.sifast.springular.framework.business.logic.service",
@@ -16,6 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories({"com.sifast.springular.framework.business.logic.dao", "com.sifast.springular.framework.business.logic.entities"})
 @EnableConfigurationProperties
 @EntityScan("com.sifast.springular.framework.business.logic.entities")
+@EnableSwagger2
 
 public class SpringularFrameworkBusinessLogicApplication {
 

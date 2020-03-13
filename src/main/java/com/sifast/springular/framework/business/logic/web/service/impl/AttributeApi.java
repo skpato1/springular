@@ -29,6 +29,8 @@ import com.sifast.springular.framework.business.logic.web.dto.attribute.ViewAttr
 import com.sifast.springular.framework.business.logic.web.mapper.AttributeMapper;
 import com.sifast.springular.framework.business.logic.web.service.api.IAttributeApi;
 
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping(value = "/api/")
@@ -54,7 +56,7 @@ public class AttributeApi implements IAttributeApi {
 
 
 		@Override
-		public ResponseEntity<Object> getAttribute(@PathVariable("id") int id) {
+		public ResponseEntity<Object> getAttribute(@ApiParam(value = "ID of Attribute that needs to be fetched", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
 			LOGGER.info("Web service getattribute invoked with id {}", id);
 
 	        Optional<Attribute> attribute = attributeService.findById(id);
@@ -77,7 +79,7 @@ public class AttributeApi implements IAttributeApi {
 		}
 
 		@Override
-		public ResponseEntity<Object> deleteAttribute(@PathVariable("id") int id) {
+		public ResponseEntity<Object> deleteAttribute(@ApiParam(value = "ID of Attribute that needs to be deleted", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
 			LOGGER.info("Web service deleteattribute invoked with id {}", id);
 			 Optional<Attribute> preDeleteattribute = attributeService.findById(id);
 		        if (!preDeleteattribute.isPresent()) {
@@ -95,7 +97,7 @@ public class AttributeApi implements IAttributeApi {
 		}
 
 		@Override
-		public ResponseEntity<Object> updateAttribute(@PathVariable("id") int id,@RequestBody AttributeDto attributeDto, BindingResult bindingResult) {
+		public ResponseEntity<Object> updateAttribute(@ApiParam(value = "ID of Attribute that needs to be updated", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id,@ApiParam(required = true, value = "attributeDto", name = "attributeDto") @RequestBody AttributeDto attributeDto, BindingResult bindingResult) {
 			LOGGER.info("Web service updateattribute invoked with id {}", id);
 			if (!bindingResult.hasFieldErrors()) {
 		            Optional<Attribute> attribute = attributeService.findById(id);
@@ -118,7 +120,7 @@ public class AttributeApi implements IAttributeApi {
 		}
 
 		@Override
-		public ResponseEntity<Object> saveAttribute(@RequestBody CreateAttributeDto attributeDto, BindingResult bindingResult) {
+		public ResponseEntity<Object> saveAttribute(@ApiParam(required = true, value = "attributeDto", name = "attributeDto") @RequestBody CreateAttributeDto attributeDto, BindingResult bindingResult) {
 			 LOGGER.info("Web service saveattribute invoked with AttributeDto {}", attributeDto);
 		        try {
 		        Attribute savedattribute = attributeService.save(attributeMapper.mapCreateAttribute(attributeDto));

@@ -127,7 +127,10 @@ public class ProjectApi implements IProjectApi{
 	                LOGGER.info("INFO level message: Project updated {}", updatedProject);
 
 	            } else {
+	            	
+	            	httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.PROJECT_NOT_FOUND);
 	                httpStatus = HttpStatus.NOT_FOUND;
+		        	httpResponseBody = httpErrorResponse;
 	            }
 	        } else {
 	            httpStatus = HttpStatus.BAD_REQUEST;

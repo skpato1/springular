@@ -26,6 +26,28 @@ public class Database extends TimestampEntity implements Serializable {
 	@Column(name = "type_database")
 	private String typeDatabase;
 	
+	@Column(name = "username_database")
+	private String usernameDatabase;
+	
+	@Column(name = "password_database")
+	private String passwordDatabase;
+	
+	public String getUsernameDatabase() {
+		return usernameDatabase;
+	}
+
+	public void setUsernameDatabase(String usernameDatabase) {
+		this.usernameDatabase = usernameDatabase;
+	}
+
+	public String getPasswordDatabase() {
+		return passwordDatabase;
+	}
+
+	public void setPasswordDatabase(String passwordDatabase) {
+		this.passwordDatabase = passwordDatabase;
+	}
+
 	@OneToOne(mappedBy = "database")
 	 private Project project;
 	

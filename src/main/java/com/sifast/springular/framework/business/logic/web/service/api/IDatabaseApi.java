@@ -23,7 +23,7 @@ public interface IDatabaseApi {
 	@ApiResponses(value = {
 			@ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.DATABASE_CREATED_SUCCESSFULLY, response = ViewDatabaseDto.class),
 			@ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class) })
-			@ApiOperation(value = "Update an existing client with ID", response = ViewProjectDto.class)
+			@ApiOperation(value = "create database", response = ViewProjectDto.class)
 	@RequestMapping(value = "/database", method = RequestMethod.POST)
 	ResponseEntity<Object> saveDatabase(CreateDatabaseDto databaseDto, BindingResult bindingResult);
 

@@ -21,7 +21,9 @@ import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
 import com.sifast.springular.framework.business.logic.entities.Attribute;
+import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
 import com.sifast.springular.framework.business.logic.service.IAttributeService;
+import com.sifast.springular.framework.business.logic.service.IBuisnessLogicEntityService;
 import com.sifast.springular.framework.business.logic.web.config.ConfiguredModelMapper;
 import com.sifast.springular.framework.business.logic.web.dto.attribute.AttributeDto;
 import com.sifast.springular.framework.business.logic.web.dto.attribute.CreateAttributeDto;
@@ -53,6 +55,9 @@ public class AttributeApi implements IAttributeApi {
 		    
 		    @Autowired
 		    private IAttributeService attributeService;
+		    
+		    @Autowired
+		    private IBuisnessLogicEntityService buisnessLogicEntityService;
 
 
 		@Override
@@ -123,9 +128,22 @@ public class AttributeApi implements IAttributeApi {
 		public ResponseEntity<Object> saveAttribute(@ApiParam(required = true, value = "attributeDto", name = "attributeDto") @RequestBody CreateAttributeDto attributeDto, BindingResult bindingResult) {
 			 LOGGER.info("Web service saveattribute invoked with AttributeDto {}", attributeDto);
 		        try {
-		        Attribute savedattribute = attributeService.save(attributeMapper.mapCreateAttribute(attributeDto));
-		        httpStatus = HttpStatus.OK;
-		        httpResponseBody = modelMapper.map(savedattribute, ViewAttributeDto.class);
+					Optional<BuisnessLogicEntity> entity = buisnessLogicEntityService.findById(attributeDto.getEntity_id());
+
+				if(entity.isPresent())
+			        {
+					Attribute attributeToBeSaved=attributeMapper.mapCreateAttribute(attributeDto);
+					attributeToBeSaved.setBuisness(entity.get());
+					Attribute saveattribute=attributeService.save(attributeToBeSaved);
+			        httpStatus = HttpStatus.OK;
+			        httpResponseBody = modelMapper.map(saveattribute, ViewAttributeDto.class);
+			        }
+				else {
+					httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(),
+							ApiMessage.ATTRIBUTE_NOT_FOUND);
+					httpStatus = HttpStatus.NOT_FOUND;
+					httpResponseBody = httpErrorResponse;
+				}
 		        }
 		        catch (Exception e) {
 		            httpStatus = HttpStatus.BAD_REQUEST;

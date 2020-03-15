@@ -24,7 +24,7 @@ public interface IBuisnessLogicEntityApi {
 	@ApiResponses(value = {
 			@ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.BUISNESS_LOGIC_ENTITY__CREATED_SUCCESSFULLY, response = ViewBuisnessLogicEntityDto.class),
 			@ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class) })
-			@ApiOperation(value = "Update an existing client with ID", response = ViewProjectDto.class)
+			@ApiOperation(value = "create an entity ", response = ViewProjectDto.class)
 	@RequestMapping(value = "/buisnessLogicEntity", method = RequestMethod.POST)
 	ResponseEntity<Object> saveBuisnessLogicEntity(CreateBuisnessLogicEntityDto buisnessLogicEntityDto, BindingResult bindingResult);
 

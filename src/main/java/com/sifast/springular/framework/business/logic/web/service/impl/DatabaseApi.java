@@ -79,7 +79,7 @@ public class DatabaseApi implements IDatabaseApi {
 				httpResponseBody = modelMapper.map(saveddatabase, ViewDatabaseDto.class);
 			} else {
 				httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(),
-						ApiMessage.PROJECT_NOT_FOUND);
+				ApiMessage.PROJECT_NOT_FOUND);
 				httpStatus = HttpStatus.NOT_FOUND;
 				httpResponseBody = httpErrorResponse;
 			}

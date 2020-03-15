@@ -2,6 +2,7 @@ package com.sifast.springular.framework.business.logic.service.impl;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,7 @@ public class EntityGeneratorService implements IEntityGeneratorService {
 		return hsh;
 	}
 	@Override
-	public String functionToString(String classname,String[] fieldName)
+	public String functionToString(String classname,List<String> fieldName)
 	{
 		String str="";
 		
@@ -51,19 +52,19 @@ public class EntityGeneratorService implements IEntityGeneratorService {
 		String str2=
 				"        builder.append(\"]\")"+Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE + 
 				"		return builder.toString()"+Constants.PATTERN_POINT_VIRGULE;
-		for (int j = 0; j < fieldName.length; j++) {
+		for (int j = 0; j < fieldName.size(); j++) {
 		
 				str=str+
 				
-				"        builder.append(\", "+fieldName[j]+"=\")"+Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE + 
-				"        builder.append("+fieldName[j]+")"+Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE + 
+				"        builder.append(\", "+fieldName.get(j)+"=\")"+Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE + 
+				"        builder.append("+fieldName.get(j)+")"+Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE + 
 				  
 				"";
 		}
 		return str1+str+str2;
 	}
 		@Override
-		public void generateEntityDynamicWithArrayAngular(String className, String[] fieldName, String[] fieldType) {
+		public void generateEntityDynamicWithArrayAngular(String className, List<String> fieldName, List<String> fieldType) {
 		if (!"undefined".equals(className)) {
 			try {
 				String packageName="com.sifast";
@@ -80,9 +81,9 @@ public class EntityGeneratorService implements IEntityGeneratorService {
 						"    @GeneratedValue(strategy = GenerationType.IDENTITY)"+Constants.PATTERN_RETOUR_LIGNE + 
 						"    private int id"+Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE);
 
-				for (int j = 0; j < fieldName.length; j++) {
-					myWriter.write("	@Column(name = \""+fieldName[j]+"\")"+Constants.PATTERN_RETOUR_LIGNE);
-					myWriter.write("	private " + fieldType[j] + " " + fieldName[j] + Constants.PATTERN_POINT_VIRGULE+Constants.PATTERN_RETOUR_LIGNE);
+				for (int j = 0; j < fieldName.size(); j++) {
+					myWriter.write("	@Column(name = \""+fieldName.get(j)+"\")"+Constants.PATTERN_RETOUR_LIGNE);
+					myWriter.write("	private " + fieldType.get(j) + " " + fieldName.get(j) + Constants.PATTERN_POINT_VIRGULE+Constants.PATTERN_RETOUR_LIGNE);
 				}
 				myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
 				myWriter.write(
@@ -94,17 +95,17 @@ public class EntityGeneratorService implements IEntityGeneratorService {
 						"        this.id = id"+Constants.PATTERN_POINT_VIRGULE+Constants.PATTERN_RETOUR_LIGNE+ 
 						Constants.PATTERN_TABULATION+Constants.ACCOLADE_FERMANTE);
 				myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-				for (int j = 0; j < fieldName.length; j++) {
-					String fakeFieldName = fieldName[j].substring(0, 1).toUpperCase() + fieldName[j].substring(1);
-					myWriter.write(Constants.PATTERN_TABULATION+"public " + fieldType[j] + " get" + fakeFieldName + "()"+Constants.PATTERN_RETOUR_LIGNE);
+				for (int j = 0; j < fieldName.size(); j++) {
+					String fakeFieldName = fieldName.get(j).substring(0, 1).toUpperCase() + fieldName.get(j).substring(1);
+					myWriter.write(Constants.PATTERN_TABULATION+"public " + fieldType.get(j) + " get" + fakeFieldName + "()"+Constants.PATTERN_RETOUR_LIGNE);
 					myWriter.write(Constants.PATTERN_TABULATION+Constants.ACCOLADE_OUVRANT+Constants.PATTERN_RETOUR_LIGNE);
-					myWriter.write(Constants.PATTERN_TABULATION+Constants.PATTERN_TABULATION+"return " + fieldName[j] + Constants.PATTERN_POINT_VIRGULE+Constants.PATTERN_RETOUR_LIGNE);
+					myWriter.write(Constants.PATTERN_TABULATION+Constants.PATTERN_TABULATION+"return " + fieldName.get(j) + Constants.PATTERN_POINT_VIRGULE+Constants.PATTERN_RETOUR_LIGNE);
 					myWriter.write(Constants.PATTERN_TABULATION+Constants.ACCOLADE_FERMANTE+Constants.PATTERN_RETOUR_LIGNE);
 
-					myWriter.write(Constants.PATTERN_TABULATION+"public void set" + fakeFieldName + "(" + fieldType[j] + " " + fieldName[j] + ")"
+					myWriter.write(Constants.PATTERN_TABULATION+"public void set" + fakeFieldName + "(" + fieldType.get(j) + " " + fieldName.get(j) + ")"
 							+ Constants.PATTERN_RETOUR_LIGNE);
 					myWriter.write(Constants.PATTERN_TABULATION+Constants.ACCOLADE_OUVRANT+Constants.PATTERN_RETOUR_LIGNE);
-					myWriter.write(Constants.PATTERN_TABULATION+Constants.PATTERN_TABULATION+"this." + fieldName[j] + "=" + fieldName[j] + Constants.PATTERN_POINT_VIRGULE+Constants.PATTERN_RETOUR_LIGNE);
+					myWriter.write(Constants.PATTERN_TABULATION+Constants.PATTERN_TABULATION+"this." + fieldName.get(j) + "=" + fieldName.get(j) + Constants.PATTERN_POINT_VIRGULE+Constants.PATTERN_RETOUR_LIGNE);
 					myWriter.write(Constants.PATTERN_TABULATION+Constants.ACCOLADE_FERMANTE+Constants.PATTERN_RETOUR_LIGNE);
 				}
 				myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
@@ -126,5 +127,10 @@ public class EntityGeneratorService implements IEntityGeneratorService {
 		}
 
 	}
+		
+		
+		
+		
+	
 
 }

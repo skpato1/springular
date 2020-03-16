@@ -22,6 +22,7 @@ import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
 import com.sifast.springular.framework.business.logic.entities.Database;
 import com.sifast.springular.framework.business.logic.entities.Project;
+import com.sifast.springular.framework.business.logic.service.ICommandExecutorService;
 import com.sifast.springular.framework.business.logic.service.IDatabaseService;
 import com.sifast.springular.framework.business.logic.service.IProjectService;
 import com.sifast.springular.framework.business.logic.web.config.ConfiguredModelMapper;
@@ -57,6 +58,9 @@ public class DatabaseApi implements IDatabaseApi {
 
 	@Autowired
 	private IProjectService projectService;
+	
+	@Autowired
+	ICommandExecutorService commandExecutorService;
 
 	@Override
 	public ResponseEntity<Object> saveDatabase(
@@ -69,6 +73,8 @@ public class DatabaseApi implements IDatabaseApi {
 				Database databaseToBeSaved = databaseMapper.mapCreateDatabase(databaseDto);
 				databaseToBeSaved.setProject(project.get());
 				Database saveddatabase = databaseService.save(databaseToBeSaved);
+				commandExecutorService.createDataBase(databaseDto.getNameDatabase());
+				commandExecutorService.generateApplicationPropertiesFromAngular(databaseDto.getTypeDatabase(), databaseDto.getNameDatabase(), databaseDto.getUsernameDatabase(), databaseDto.getPasswordDatabase());
 				httpStatus = HttpStatus.OK;
 				httpResponseBody = modelMapper.map(saveddatabase, ViewDatabaseDto.class);
 			} else {

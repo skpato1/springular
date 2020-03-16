@@ -13,18 +13,26 @@ public class ProjectDto {
 	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	@Size(max = Constants.MAX_STRING_SIZE, message = ApiMessage.STRING_SIZE_VALIDATION_FAILED)
 	private String nameProject;
+	
+	
 	@NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	@Size(max = Constants.MAX_STRING_SIZE, message = ApiMessage.STRING_SIZE_VALIDATION_FAILED)
 	private String portProject;
+	
+	
 	@NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	@Size(max = Constants.MAX_STRING_SIZE, message = ApiMessage.STRING_SIZE_VALIDATION_FAILED)
 	private String typeProject;
+	
+	
 	@NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	@Size(max = Constants.MAX_STRING_SIZE, message = ApiMessage.STRING_SIZE_VALIDATION_FAILED)
 	private String pathProject;
+	
+	
 	@NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	@Size(max = Constants.MAX_STRING_SIZE, message = ApiMessage.STRING_SIZE_VALIDATION_FAILED)

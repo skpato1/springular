@@ -32,7 +32,6 @@ public class BuisnessLogicEntity extends TimestampEntity implements Serializable
 	private List<Attribute> attributes;
 	
 	
-	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Project project;
 	

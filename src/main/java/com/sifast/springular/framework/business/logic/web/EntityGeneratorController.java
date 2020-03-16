@@ -1,5 +1,7 @@
 package com.sifast.springular.framework.business.logic.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,15 +13,23 @@ import com.sifast.springular.framework.business.logic.service.IEntityGeneratorSe
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("api/entity/")
+@RequestMapping("entity/")
 public class EntityGeneratorController {
 
 	@Autowired
 	IEntityGeneratorService entityGeneratorService;
-	
+
 	@GetMapping("model/{className}/{fieldName}/{fieldType}")
-	public void generateFileDynamicWithArrayAngular(@PathVariable String className, @PathVariable String fieldName[], @PathVariable String fieldType[]) {
-		entityGeneratorService.generateEntityDynamicWithArrayAngular(className, fieldName,fieldType);
+	public void generateFileDynamicWithArrayAngular(@PathVariable String className, @PathVariable List<String> fieldName,
+			@PathVariable List<String> fieldType) {
+		entityGeneratorService.generateEntityDynamicWithArrayAngular(className, fieldName, fieldType);
+	}
+	
+	@GetMapping("get")
+	public void getApi() {
+		
+		System.out.println("sss");
+
 	}
 
 }

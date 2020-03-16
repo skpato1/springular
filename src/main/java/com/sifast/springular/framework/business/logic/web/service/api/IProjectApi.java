@@ -20,7 +20,7 @@ public interface IProjectApi {
 	@ApiResponses(value = {
 	@ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.PROJECT_CREATED_SUCCESSFULLY, response = ViewProjectDto.class),
 	@ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class) })
-	@ApiOperation(value = "Update an existing client with ID", response = ViewProjectDto.class)
+	@ApiOperation(value = "save project with ID", response = ViewProjectDto.class)
 	@RequestMapping(value = "/project", method = RequestMethod.POST)
 	ResponseEntity<Object> saveProject(CreateProjectDto projectDto, BindingResult bindingResult);
 

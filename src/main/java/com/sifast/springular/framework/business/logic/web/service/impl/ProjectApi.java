@@ -21,6 +21,7 @@ import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
 import com.sifast.springular.framework.business.logic.entities.Project;
+import com.sifast.springular.framework.business.logic.service.ICommandExecutorService;
 import com.sifast.springular.framework.business.logic.service.IProjectService;
 import com.sifast.springular.framework.business.logic.web.config.ConfiguredModelMapper;
 import com.sifast.springular.framework.business.logic.web.dto.project.CreateProjectDto;
@@ -56,6 +57,9 @@ public class ProjectApi implements IProjectApi{
 	    @Autowired
 	    private IProjectService projectService;
 	    
+	    @Autowired
+		private ICommandExecutorService commandExecutorService;
+	    
 	
 	
 	@Override
@@ -63,6 +67,7 @@ public class ProjectApi implements IProjectApi{
         LOGGER.info("Web service saveProject invoked with projectDto {}", projectDto);
         try {
         Project savedProject = projectService.save(projectMapper.mapCreateProject(projectDto));
+		commandExecutorService.generateGithubProjectFromAngular(projectDto.getUsernameProject(),projectDto.getNameProject());
         httpStatus = HttpStatus.OK;
         httpResponseBody = modelMapper.map(savedProject, ViewProjectDto.class);
         }

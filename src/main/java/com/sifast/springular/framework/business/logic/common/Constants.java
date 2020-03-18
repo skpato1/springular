@@ -16,6 +16,7 @@ public class Constants {
 	
 	public static final String PATTERN_TABULATION="	";
     public static final String PATTERN_CMD_SH = "/bin/sh";
+    public static final String PATTERN_CMD_ZSH = "/bin/zsh";
     public static final String PATTERN_CMD_SH_OPTION_C = "-c";
     public static final String PATTERN_CMD_MYSQL_DB = "/Applications/xampp/xamppfiles/bin/mysql -uroot --execute \"create DATABASE ";
     public static final String PATTERN_GIT_CLONE= "git clone http://git.sifast.com/";
@@ -32,6 +33,7 @@ public class Constants {
 	public static final String ACCOLADE_OUVRANT="{";
 	public static final String ACCOLADE_FERMANTE="}";
 	public static final String PATTERN_PATH_TO_PACKAGE_MODEL="/Users/qc/Desktop/springular-framework/springular-framework-persistence/src/main/java/com/sifast/model";
+    public static final String PATTERN_ENV_VAR="/usr/local/bin/node:/usr/local/bin/jhipster:/Users/qc/Downloads/spring-2.1.0.BUILD-SNAPSHOT/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/qc/Desktop/IIT/glid3/ServicesAJ/outils/Outil/axis2-1.6.2/bin:/Users/qc/Desktop/IIT/glid3/ServicesAJ/outils/Outil/apache-ant-1.10.1/bin:/usr/local/share/dotnet:/usr/local/mysql/bin:~/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commands";
 
 
 

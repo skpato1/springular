@@ -28,14 +28,18 @@ public class CommandExecutorService implements ICommandExecutorService {
 	    private String fileJdlToGenerate;
 	 	
 	@Override
-	public void executeCommand(String cmd) throws IOException, InterruptedException {
+	public String executeCommand(String cmd) throws IOException, InterruptedException {
 		List<String> commands = new ArrayList<String>();
 		commands.add(Constants.PATTERN_CMD_SH);
 		commands.add(Constants.PATTERN_CMD_SH_OPTION_C);
 		commands.add(cmd);
 		SystemCommandExecutor commandExecutor = new SystemCommandExecutor(commands);
-		@SuppressWarnings("unused")
-		int result = commandExecutor.executeCommand();
+		commandExecutor.executeCommand();
+		StringBuilder stdout = commandExecutor.getStandardOutputFromCommand();
+		StringBuilder stderr = commandExecutor.getStandardErrorFromCommand();
+
+		return stdout.toString();
+		
 
 	}
 	@Override
@@ -66,14 +70,24 @@ public class CommandExecutorService implements ICommandExecutorService {
 	}
 	
 	@Override
-	public void executeJdlFromTerminal() throws IOException, InterruptedException {
-		
+	public void executeJdlFromTerminal(boolean isWindows) throws IOException, InterruptedException {
+			String path=Constants.PATTERN_ENV_VAR;
+			ProcessBuilder processBuilder=null;
 		try {
-		   
-	        ProcessBuilder processBuilder = new ProcessBuilder("sh", "-c","jhipster import-jdl "+fileJdlToGenerate);
+			if(isWindows)
+			{
+		         processBuilder = new ProcessBuilder("bash", "-c","jhipster import-jdl "+fileJdlToGenerate);
+
+			}
+			else
+			{
+		         processBuilder = new ProcessBuilder("sh", "-c","jhipster import-jdl "+fileJdlToGenerate);
+
+
+			}
 			Map<String, String> env = processBuilder.environment();
 	        processBuilder.directory(new File(appDirectory));
-	        env.put("PATH",Constants.PATTERN_ENV_VAR);
+	        env.put("PATH",path);
 	        Process process = processBuilder.start();
 			StreamGobbler streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
 			Executors.newSingleThreadExecutor().submit(streamGobbler);

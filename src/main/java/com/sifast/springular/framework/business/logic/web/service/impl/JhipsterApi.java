@@ -45,10 +45,11 @@ public class JhipsterApi implements IJhipsterApi {
 	@Override
 	public ResponseEntity<Object> generateProjectWithJdl(@ApiParam(value = "baseName of project that needs to be created", required = true, allowableValues = "range[1,infinity]") @PathVariable String baseName,@PathVariable String packageName,@PathVariable String applicationType,@PathVariable String serverPort) throws IOException, InterruptedException {
 		LOGGER.info("Web service generateProjectWithJdl invoked with baseName {}", baseName);
+		boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 		if (baseName != null) {
 			httpStatus = HttpStatus.OK;
 			jhipsterService.generateProjectWithJdl(baseName,packageName,applicationType,serverPort);
-			commandExecutorService.executeJdlFromTerminal();
+			commandExecutorService.executeJdlFromTerminal(isWindows);
 		} else {
 			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
 			httpStatus = HttpStatus.NOT_FOUND;

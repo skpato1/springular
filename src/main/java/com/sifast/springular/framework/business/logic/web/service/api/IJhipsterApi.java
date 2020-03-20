@@ -9,11 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface IJhipsterApi {
 	
 	
-	@RequestMapping(value = "/jhipster/{baseName}/{packageName}/{applicationType}/{serverPort}", method = RequestMethod.GET)
-	ResponseEntity<Object> generateProjectWithJdl(String baseName,String packageName,String applicationType,String serverPort) throws IOException, InterruptedException;
-	
-	
-	
-
+	@RequestMapping(value = "/jhipster/{id}", method = RequestMethod.GET)
+	ResponseEntity<Object> generateProjectWithJdl(int id) throws IOException, InterruptedException;
 
 }

@@ -14,8 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-@Table(name = "T_project")
 @Entity
+@Table(name = "T_project")
 public class Project extends TimestampEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -36,20 +36,25 @@ public class Project extends TimestampEntity implements Serializable {
 	@Column(name = "path_project")
 	private String pathProject;
 	
-	@Column(name = "username_project")
-	private String usernameProject;
+	
+	@Column(name = "package_project")
+	private String packageProject;
+	
 
 	public Project() {
 
 	}
 
-	public Project(String nameProject, String portProject, String typeProject,String pathProject,String usernameProject) {
+	public Project(String nameProject, String portProject, String typeProject, String pathProject,
+			String packageProject) {
 		this.nameProject = nameProject;
 		this.portProject = portProject;
 		this.typeProject = typeProject;
 		this.pathProject = pathProject;
-		this.usernameProject=usernameProject;
+		this.packageProject = packageProject;
 	}
+
+
 
 	public String getPathProject() {
 		return pathProject;
@@ -109,16 +114,18 @@ public class Project extends TimestampEntity implements Serializable {
 		return nameProject;
 	}
 
+	public String getPackageProject() {
+		return packageProject;
+	}
+
+	public void setPackageProject(String packageProject) {
+		this.packageProject = packageProject;
+	}
+
 	public void setNameProject(String nameProject) {
 		this.nameProject = nameProject;
 	}
 
-	public String getUsernameProject() {
-		return usernameProject;
-	}
-
-	public void setUsernameProject(String usernameProject) {
-		this.usernameProject = usernameProject;
-	}
+	
 
 }

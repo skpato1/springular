@@ -35,6 +35,12 @@ public class BuisnessLogicEntity extends TimestampEntity implements Serializable
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Project project;
 	
+	@OneToMany(cascade=CascadeType.ALL , mappedBy="masterEntity" ,fetch=FetchType.LAZY)
+	private List<Relationship> relationshipsMaster;
+	
+	@OneToMany(cascade=CascadeType.ALL , mappedBy="slaveEntity" ,fetch=FetchType.LAZY)
+	private List<Relationship> relationshipsSlave;
+	
 	
 	public List<Attribute> getAttributes() {
 		return attributes;
@@ -58,6 +64,22 @@ public class BuisnessLogicEntity extends TimestampEntity implements Serializable
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public List<Relationship> getRelationshipsMaster() {
+		return relationshipsMaster;
+	}
+
+	public void setRelationshipsMaster(List<Relationship> relationshipsMaster) {
+		this.relationshipsMaster = relationshipsMaster;
+	}
+
+	public List<Relationship> getRelationshipsSlave() {
+		return relationshipsSlave;
+	}
+
+	public void setRelationshipsSlave(List<Relationship> relationshipsSlave) {
+		this.relationshipsSlave = relationshipsSlave;
 	}
 
 	public String getNameEntity() {

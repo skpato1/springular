@@ -14,6 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.sifast.springular.framework.business.logic.common.ProjectStatus;
+
 @Entity
 @Table(name = "T_project")
 public class Project extends TimestampEntity implements Serializable {
@@ -40,9 +42,20 @@ public class Project extends TimestampEntity implements Serializable {
 	@Column(name = "package_project")
 	private String packageProject;
 	
+	@Column(name = "status_project")
+	private ProjectStatus statusProject;
+	
 
 	public Project() {
 
+	}
+
+	public ProjectStatus getStatusProject() {
+		return statusProject;
+	}
+
+	public void setStatusProject(ProjectStatus statusProject) {
+		this.statusProject = statusProject;
 	}
 
 	public Project(String nameProject, String portProject, String typeProject, String pathProject,

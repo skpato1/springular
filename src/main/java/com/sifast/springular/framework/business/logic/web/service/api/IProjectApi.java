@@ -29,6 +29,13 @@ public interface IProjectApi {
 
 	@RequestMapping(value = "/projects", method = RequestMethod.GET)
 	ResponseEntity<Object> getAllProjects();
+	
+	@RequestMapping(value = "/projects/validated", method = RequestMethod.GET)
+	ResponseEntity<Object> getAllValidatedProjects();
+	
+	@RequestMapping(value = "/project/validate/{id}", method = RequestMethod.GET)
+	ResponseEntity<Object> validateProject(int id);
+	
 
 	@RequestMapping(value = "/project/{id}", method = RequestMethod.DELETE)
 	ResponseEntity<Object> deleteProject(int id);

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
+import com.sifast.springular.framework.business.logic.common.ProjectStatus;
 import com.sifast.springular.framework.business.logic.entities.Project;
 import com.sifast.springular.framework.business.logic.service.ICommandExecutorService;
 import com.sifast.springular.framework.business.logic.service.IProjectService;
@@ -144,6 +145,32 @@ public class ProjectApi implements IProjectApi{
 	            httpStatus = HttpStatus.BAD_REQUEST;
 	        }
 	        return new ResponseEntity<>(httpResponseBody, httpStatus);
+	}
+
+	@Override
+	public ResponseEntity<Object> getAllValidatedProjects() {
+		List<Project> Projects = projectService.findByStatusProject(ProjectStatus.VALIDATED);
+        httpStatus = HttpStatus.OK;
+        httpResponseBody = !Projects.isEmpty() ? Projects.stream().map(Project -> modelMapper.map(Project, ViewProjectDto.class)).collect(Collectors.toList()) : Collections.emptyList();
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+	}
+
+	@Override
+	public ResponseEntity<Object> validateProject(@PathVariable int id) {
+		Optional<Project> project = projectService.findById(id);
+
+        if (project.isPresent()) {
+        	project.get().setStatusProject(ProjectStatus.VALIDATED);
+        	Project projectToBeReturned=projectService.save(project.get());
+            httpStatus = HttpStatus.OK;
+            httpResponseBody = projectMapper.mapProjectToViewProjectDto(projectToBeReturned);
+        } else {
+        	httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.PROJECT_NOT_FOUND);
+        	httpStatus = HttpStatus.NOT_FOUND;
+        	httpResponseBody = httpErrorResponse;
+        }
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+		
 	}
 
 	

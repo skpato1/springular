@@ -67,7 +67,7 @@ public class ProjectApi implements IProjectApi{
         LOGGER.info("Web service saveProject invoked with projectDto {}", projectDto);
         try {
         Project savedProject = projectService.save(projectMapper.mapCreateProject(projectDto));
-		commandExecutorService.generateGithubProjectFromAngular(projectDto.getUsernameProject(),projectDto.getNameProject());
+		commandExecutorService.generateGithubProjectFromAngular(projectDto.getPackageProject(),projectDto.getNameProject());
         httpStatus = HttpStatus.OK;
         httpResponseBody = modelMapper.map(savedProject, ViewProjectDto.class);
         }

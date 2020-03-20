@@ -17,16 +17,16 @@ import com.sifast.springular.framework.business.logic.service.ICommandExecutorSe
 
 @Service
 public class CommandExecutorService implements ICommandExecutorService {
-	
-	 	@Value("${app.path}")
-	    private String appDirectory;
-	
-	 	@Value("${file.path}")
-	    private String fileJDL;
-	 	
-	 	@Value("${file.generate.path}")
-	    private String fileJdlToGenerate;
-	 	
+
+	@Value("${app.path}")
+	private String appDirectory;
+
+	@Value("${file.path}")
+	private String fileJDL;
+
+	@Value("${file.generate.path}")
+	private String fileJdlToGenerate;
+
 	@Override
 	public String executeCommand(String cmd) throws IOException, InterruptedException {
 		List<String> commands = new ArrayList<String>();
@@ -39,15 +39,16 @@ public class CommandExecutorService implements ICommandExecutorService {
 		StringBuilder stderr = commandExecutor.getStandardErrorFromCommand();
 
 		return stdout.toString();
-		
 
 	}
+
 	@Override
 	public void createDataBase(String nameDB) throws IOException, InterruptedException {
 		executeCommand(Constants.PATTERN_CMD_MYSQL_DB + nameDB + Constants.PATTERN_POINT_VIRGULE
 				+ Constants.PATTERN_ANTI_SLASH);
 
 	}
+
 	@Override
 	public void generateGithubProjectFromAngular(String projectName, String userName)
 			throws IOException, InterruptedException {
@@ -56,6 +57,7 @@ public class CommandExecutorService implements ICommandExecutorService {
 				+ Constants.PATTERN_POINT_GIT);
 
 	}
+
 	@Override
 	public void generateApplicationPropertiesFromAngular(String typeDB, String nameDB, String usernameDB, String pwdDB)
 			throws IOException, InterruptedException {
@@ -68,49 +70,30 @@ public class CommandExecutorService implements ICommandExecutorService {
 		FileUtils.write(file, fileContext);
 
 	}
-	
+
 	@Override
 	public void executeJdlFromTerminal(boolean isWindows) throws IOException, InterruptedException {
-			String path=Constants.PATTERN_ENV_VAR;
-			ProcessBuilder processBuilder=null;
+		String path = Constants.PATTERN_ENV_VAR;
+		ProcessBuilder processBuilder = null;
 		try {
-			if(isWindows)
-			{
-		         processBuilder = new ProcessBuilder("bash", "-c","jhipster import-jdl "+fileJdlToGenerate);
-
-			}
-			else
-			{
-		         processBuilder = new ProcessBuilder("sh", "-c","jhipster import-jdl "+fileJdlToGenerate);
-
-
+			if (isWindows) {
+				processBuilder = new ProcessBuilder("bash", "-c", "jhipster import-jdl " + fileJdlToGenerate);
+			} else {
+				processBuilder = new ProcessBuilder("sh", "-c", "jhipster import-jdl " + fileJdlToGenerate);
 			}
 			Map<String, String> env = processBuilder.environment();
-	        processBuilder.directory(new File(appDirectory));
-	        env.put("PATH",path);
-	        Process process = processBuilder.start();
+			processBuilder.directory(new File(appDirectory));
+			env.put("PATH", path);
+			Process process = processBuilder.start();
 			StreamGobbler streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
 			Executors.newSingleThreadExecutor().submit(streamGobbler);
 			process.waitFor();
-	        File file = new File(fileJdlToGenerate); 
-	        file.delete();
-	     } catch (Exception e) {
-	        e.printStackTrace();
-	   }
+			File file = new File(fileJdlToGenerate);
+			file.delete();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		 
-		
-		
 	}
 
 }

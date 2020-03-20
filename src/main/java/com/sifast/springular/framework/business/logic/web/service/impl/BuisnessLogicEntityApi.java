@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
+import com.sifast.springular.framework.business.logic.entities.Attribute;
 import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
 import com.sifast.springular.framework.business.logic.entities.Project;
 import com.sifast.springular.framework.business.logic.service.IBuisnessLogicEntityService;
@@ -74,6 +75,14 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
 			if (project.isPresent()) {
 				BuisnessLogicEntity entityToBeSaved = buisnessLogicEntityMapper.mapCreateBuisnessLogicEntity(buisnessLogicEntityDto);
 				entityToBeSaved.setProject(project.get());
+				if(entityToBeSaved.getAttributes()!=null)
+				{
+					List<Attribute> attributesSetId =entityToBeSaved.getAttributes();
+					for (int i = 0; i < attributesSetId.size(); i++) {
+						attributesSetId.get(i).setBuisness(entityToBeSaved);
+					}
+					entityToBeSaved.setAttributes(attributesSetId);
+				}
 				BuisnessLogicEntity savedBuisnessLogicEntity = buisnessLogicEntityService.save(entityToBeSaved);
 				
 				httpStatus = HttpStatus.OK;

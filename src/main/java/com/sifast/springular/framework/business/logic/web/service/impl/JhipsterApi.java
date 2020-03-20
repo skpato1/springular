@@ -1,6 +1,7 @@
 package com.sifast.springular.framework.business.logic.web.service.impl;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
+import com.sifast.springular.framework.business.logic.entities.Project;
 import com.sifast.springular.framework.business.logic.service.ICommandExecutorService;
 import com.sifast.springular.framework.business.logic.service.IJhipsterService;
+import com.sifast.springular.framework.business.logic.service.IProjectService;
 import com.sifast.springular.framework.business.logic.web.service.api.IJhipsterApi;
-
-import io.swagger.annotations.ApiParam;
 
 
 @RestController
@@ -39,16 +40,20 @@ public class JhipsterApi implements IJhipsterApi {
 	
 	@Autowired
 	private ICommandExecutorService commandExecutorService;
+	
+	@Autowired
+	private IProjectService projectService;
 
 	
 
 	@Override
-	public ResponseEntity<Object> generateProjectWithJdl(@ApiParam(value = "baseName of project that needs to be created", required = true, allowableValues = "range[1,infinity]") @PathVariable String baseName,@PathVariable String packageName,@PathVariable String applicationType,@PathVariable String serverPort) throws IOException, InterruptedException {
-		LOGGER.info("Web service generateProjectWithJdl invoked with baseName {}", baseName);
+	public ResponseEntity<Object> generateProjectWithJdl(@PathVariable int id) throws IOException, InterruptedException {
+		LOGGER.info("Web service generateProjectWithJdl invoked with projectDto {}", id);
 		boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-		if (baseName != null) {
+		Optional<Project> project = projectService.findById(id);
+		if (project.isPresent()) {
 			httpStatus = HttpStatus.OK;
-			jhipsterService.generateProjectWithJdl(baseName,packageName,applicationType,serverPort);
+			jhipsterService.generateProjectWithJdl(project.get());
 			commandExecutorService.executeJdlFromTerminal(isWindows);
 		} else {
 			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);

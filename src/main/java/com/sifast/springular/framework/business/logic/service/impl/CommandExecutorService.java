@@ -37,8 +37,16 @@ public class CommandExecutorService implements ICommandExecutorService {
 		commandExecutor.executeCommand();
 		StringBuilder stdout = commandExecutor.getStandardOutputFromCommand();
 		StringBuilder stderr = commandExecutor.getStandardErrorFromCommand();
+		
+		if(stdout!=null)
+		{
+			return stdout.toString();
 
-		return stdout.toString();
+		}
+		else
+			return stderr.toString();
+			
+
 
 	}
 

@@ -18,15 +18,15 @@ import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
 import com.sifast.springular.framework.business.logic.entities.Project;
 import com.sifast.springular.framework.business.logic.service.ICommandExecutorService;
-import com.sifast.springular.framework.business.logic.service.IJhipsterService;
+import com.sifast.springular.framework.business.logic.service.IJDLFileGeneratorService;
 import com.sifast.springular.framework.business.logic.service.IProjectService;
-import com.sifast.springular.framework.business.logic.web.service.api.IJhipsterApi;
+import com.sifast.springular.framework.business.logic.web.service.api.IProjectGeneratorApi;
 
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping(value = "/api/")
-public class JhipsterApi implements IJhipsterApi {
+public class ProjectGeneratorApi implements IProjectGeneratorApi {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseApi.class);
 
 	private HttpErrorResponse httpErrorResponse = new HttpErrorResponse();
@@ -36,7 +36,7 @@ public class JhipsterApi implements IJhipsterApi {
 	private HttpStatus httpStatus;
 	
 	@Autowired
-	private IJhipsterService jhipsterService;
+	private IJDLFileGeneratorService jDLFileGeneratorService;
 	
 	@Autowired
 	private ICommandExecutorService commandExecutorService;
@@ -53,7 +53,7 @@ public class JhipsterApi implements IJhipsterApi {
 		Optional<Project> project = projectService.findById(id);
 		if (project.isPresent()) {
 			httpStatus = HttpStatus.OK;
-			jhipsterService.generateProjectWithJdl(project.get());
+			jDLFileGeneratorService.generateProjectWithJdl(project.get());
 			commandExecutorService.executeJdlFromTerminal(isWindows);
 		} else {
 			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);

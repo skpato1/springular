@@ -4,6 +4,7 @@ public class ViewBuisnessLogicEntityDto extends BuisnessLogicEntityDto {
 	
 	private int id;
 
+
 	public int getId() {
 		return id;
 	}

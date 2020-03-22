@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +24,6 @@ import com.sifast.springular.framework.business.logic.entities.Attribute;
 import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
 import com.sifast.springular.framework.business.logic.entities.Project;
 import com.sifast.springular.framework.business.logic.service.IBuisnessLogicEntityService;
-import com.sifast.springular.framework.business.logic.service.IEntityGeneratorService;
 import com.sifast.springular.framework.business.logic.service.IProjectService;
 import com.sifast.springular.framework.business.logic.web.config.ConfiguredModelMapper;
 import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.BuisnessLogicEntityDto;
@@ -61,8 +59,7 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
 	@Autowired
 	private IProjectService projectService;
 
-	@Autowired
-	IEntityGeneratorService entityGeneratorService;
+	
 
 	@Override
 	public ResponseEntity<Object> saveBuisnessLogicEntity(
@@ -181,11 +178,6 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
 	}
 	
 	
-	@GetMapping("model/{className}/{fieldName}/{fieldType}")
-	public void generateFileDynamicWithArrayAngular(@PathVariable String className, @PathVariable List<String> fieldName,
-			@PathVariable List<String> fieldType) {
-		entityGeneratorService.generateEntityDynamicWithArrayAngular(className, fieldName, fieldType);
-	}
 	
 	
 

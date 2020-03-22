@@ -6,6 +6,7 @@ import javax.validation.constraints.Size;
 
 import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.Constants;
+import com.sifast.springular.framework.business.logic.common.ProjectStatus;
 
 public class ProjectDto {
 
@@ -37,6 +38,20 @@ public class ProjectDto {
 	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	@Size(max = Constants.MAX_STRING_SIZE, message = ApiMessage.STRING_SIZE_VALIDATION_FAILED)
 	private String packageProject;
+	
+	
+	private ProjectStatus statusProject;
+
+
+	
+
+	public ProjectStatus getStatusProject() {
+		return statusProject;
+	}
+
+	public void setStatusProject(ProjectStatus statusProject) {
+		this.statusProject = statusProject;
+	}
 
 	public String getPathProject() {
 		return pathProject;
@@ -80,10 +95,24 @@ public class ProjectDto {
 
 	@Override
 	public String toString() {
-		return "ProjectDto [nameProject=" + nameProject + ", portProject=" + portProject + ", typeProject="
-				+ typeProject + ", pathProject=" + pathProject + ", packageProject=" + packageProject + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("ProjectDto [nameProject=");
+		builder.append(nameProject);
+		builder.append(", portProject=");
+		builder.append(portProject);
+		builder.append(", typeProject=");
+		builder.append(typeProject);
+		builder.append(", pathProject=");
+		builder.append(pathProject);
+		builder.append(", packageProject=");
+		builder.append(packageProject);
+		builder.append(", statusProject=");
+		builder.append(statusProject);
+		builder.append("]");
+		return builder.toString();
 	}
 
+	
 	
 
 }

@@ -53,13 +53,12 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 		Optional<Project> project = projectService.findById(id);
 		if (project.isPresent()) {
 			httpStatus = HttpStatus.OK;
-			//jDLFileGeneratorService.generateProjectWithJdl(project.get());
-			//commandExecutorService.executeJdlFromTerminal(isWindows);
-			//commandExecutorService.cloneSpringularFrameworkSocleFromGitlab(project.get(),isWindows);
- 			//commandExecutorService.copyEntitiesToGeneratedProject(project.get(),isWindows);
- 			//jDLFileGeneratorService.extendTimeStampInGeneratedEntities(project.get());
+			jDLFileGeneratorService.generateProjectWithJdl(project.get());
+			commandExecutorService.executeJdlFromTerminal(isWindows);
+			commandExecutorService.cloneSpringularFrameworkSocleFromGitlab(project.get(),isWindows);
+ 			commandExecutorService.copyEntitiesToGeneratedProject(project.get(),isWindows);
+ 			jDLFileGeneratorService.extendTimeStampInGeneratedEntities(project.get());
  			jDLFileGeneratorService.deleteUnusedCommentsInGeneratedEntities(project.get());
- 			jDLFileGeneratorService.deleteUnusedMethodsInGeneratedEntities(project.get());
 		} else {
 			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
 			httpStatus = HttpStatus.NOT_FOUND;

@@ -45,7 +45,6 @@ public class JdlFileWriter {
 				myWriter.write(Constants.ACCOLADE_FERMANTE .concat( Constants.PATTERN_RETOUR_LIGNE));
 				myWriter.write(Constants.ENABLE_DTO_GENERATION.concat( Constants.PATTERN_RETOUR_LIGNE));
 
-
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -77,6 +76,7 @@ public class JdlFileWriter {
 	}
 
 	public void writeEntityNameInJdlFile(FileWriter myWriter, BuisnessLogicEntity entity) throws IOException {
+		myWriter.write(Constants.ANNOTATION_NO_FLUENT_METHOD.concat(Constants.PATTERN_RETOUR_LIGNE));
 		myWriter.write(
 				"entity " .concat( entity.getNameEntity() ).concat( Constants.ACCOLADE_OUVRANT ).concat( Constants.PATTERN_RETOUR_LIGNE));
 	}

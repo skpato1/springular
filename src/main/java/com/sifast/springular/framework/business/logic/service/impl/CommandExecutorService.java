@@ -100,9 +100,9 @@ public class CommandExecutorService implements ICommandExecutorService {
 		ProcessBuilder processBuilder = null;
 		try {
 			if (isWindows) {
-				processBuilder = new ProcessBuilder("bash", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate));
+				processBuilder = new ProcessBuilder("bash", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate).concat(" ").concat(Constants.SKIP_INSTALL_NODE_MODULES));
 			} else {
-				processBuilder = new ProcessBuilder("sh", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate));
+				processBuilder = new ProcessBuilder("sh", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate).concat(" ").concat(Constants.SKIP_INSTALL_NODE_MODULES));
 			}
 			Map<String, String> env = processBuilder.environment();
 			processBuilder.directory(new File(appDirectory));

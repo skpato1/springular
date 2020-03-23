@@ -30,7 +30,7 @@ public class Constants {
 	public static final String PATTERN_PACKAGE_NAME = "com.sifast.springular.framework";
 	public static final String COPY_COMMAND_WINDOWS = "copy -a ";
 	public static final String COPY_COMMAND_LINUX = "cp -a ";
-	public static final String COPY_COMMAND_LINUX_FILES = "cp ";
+	public static final String COPY_COMMAND_LINUX_FILES = "mv ";
 	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE = "/Users/qc/Desktop/springular-framework-socle/springular-framework-persistence/src/main/java/com/sifast/model/ ";
 	public static final String PATH_TO_GENERATED_JHIPSTER_PROJECT = "/Users/qc/Desktop/testjdl/src/main/java/com/sifast/springular/framework/domain/ ";
 	public static final String PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES = "/Users/qc/Desktop/testjdl/src/main/java/com/sifast/springular/framework/domain/";

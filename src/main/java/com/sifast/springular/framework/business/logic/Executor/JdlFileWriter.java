@@ -42,7 +42,10 @@ public class JdlFileWriter {
 					}
 
 				});
-				myWriter.write(Constants.ACCOLADE_FERMANTE + Constants.PATTERN_RETOUR_LIGNE);
+				myWriter.write(Constants.ACCOLADE_FERMANTE .concat( Constants.PATTERN_RETOUR_LIGNE));
+				myWriter.write(Constants.ENABLE_DTO_GENERATION.concat( Constants.PATTERN_RETOUR_LIGNE));
+
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -51,31 +54,31 @@ public class JdlFileWriter {
 	}
 
 	public void writeProjectDetailsInJdlFile(Project project, FileWriter myWriter) throws IOException {
-		myWriter.write("application " + Constants.ACCOLADE_OUVRANT + Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write("application " .concat( Constants.ACCOLADE_OUVRANT ).concat( Constants.PATTERN_RETOUR_LIGNE));
 		myWriter.write(
-				Constants.PATTERN_TABULATION + "config " + Constants.ACCOLADE_OUVRANT + Constants.PATTERN_RETOUR_LIGNE);
+				Constants.PATTERN_TABULATION .concat( "config ") .concat( Constants.ACCOLADE_OUVRANT ).concat( Constants.PATTERN_RETOUR_LIGNE));
 		myWriter.write(
-				Constants.PATTERN_TABULATION + "baseName " + project.getNameProject() + Constants.PATTERN_RETOUR_LIGNE);
-		myWriter.write(Constants.PATTERN_TABULATION + "packageName " + project.getPackageProject()
-				+ Constants.PATTERN_RETOUR_LIGNE);
-		myWriter.write(Constants.PATTERN_TABULATION + "applicationType " + project.getTypeProject()
-				+ Constants.PATTERN_RETOUR_LIGNE);
-		myWriter.write(Constants.PATTERN_TABULATION + "serverPort " + project.getPortProject()
-				+ Constants.PATTERN_RETOUR_LIGNE);
-		myWriter.write(Constants.PATTERN_TABULATION + "enableHibernateCache false" + Constants.PATTERN_RETOUR_LIGNE);
-		myWriter.write(Constants.ACCOLADE_FERMANTE + Constants.PATTERN_RETOUR_LIGNE);
-		myWriter.write("entities *" + Constants.PATTERN_RETOUR_LIGNE);
-		myWriter.write(Constants.ACCOLADE_FERMANTE + Constants.PATTERN_RETOUR_LIGNE);
+				Constants.PATTERN_TABULATION .concat( "baseName ") .concat( Constants.NAME_PROJECT ).concat( Constants.PATTERN_RETOUR_LIGNE));
+		myWriter.write(Constants.PATTERN_TABULATION .concat( "packageName ") .concat( Constants.PATTERN_PACKAGE_NAME)
+				.concat( Constants.PATTERN_RETOUR_LIGNE));
+		myWriter.write(Constants.PATTERN_TABULATION .concat( "applicationType ") .concat( project.getTypeProject())
+				.concat( Constants.PATTERN_RETOUR_LIGNE));
+		myWriter.write(Constants.PATTERN_TABULATION .concat( "serverPort " ).concat( project.getPortProject())
+				.concat( Constants.PATTERN_RETOUR_LIGNE));
+		myWriter.write(Constants.PATTERN_TABULATION .concat( "enableHibernateCache false") .concat( Constants.PATTERN_RETOUR_LIGNE));
+		myWriter.write(Constants.ACCOLADE_FERMANTE .concat( Constants.PATTERN_RETOUR_LIGNE));
+		myWriter.write("entities *" .concat( Constants.PATTERN_RETOUR_LIGNE));
+		myWriter.write(Constants.ACCOLADE_FERMANTE .concat( Constants.PATTERN_RETOUR_LIGNE));
 	}
 
 	public void writeAttributeNameInJdlFile(FileWriter myWriter, Attribute attribute) throws IOException {
-		myWriter.write(Constants.PATTERN_TABULATION + attribute.getNameAttribute() + " " + attribute.getTypeAttribute()
-				+ Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION .concat( attribute.getNameAttribute()) .concat( " " ).concat( attribute.getTypeAttribute().name())
+				.concat( Constants.PATTERN_RETOUR_LIGNE));
 	}
 
 	public void writeEntityNameInJdlFile(FileWriter myWriter, BuisnessLogicEntity entity) throws IOException {
 		myWriter.write(
-				"entity " + entity.getNameEntity() + Constants.ACCOLADE_OUVRANT + Constants.PATTERN_RETOUR_LIGNE);
+				"entity " .concat( entity.getNameEntity() ).concat( Constants.ACCOLADE_OUVRANT ).concat( Constants.PATTERN_RETOUR_LIGNE));
 	}
 
 	public void addRelationshipToJdlFile(List<Integer> usedRelationshipsIds, Relationship relationship,
@@ -89,20 +92,20 @@ public class JdlFileWriter {
 	public void writeRelationshipInFile(FileWriter myWriter, Relationship relationship) {
 		try {
 			if (!relationship.getTypeRelationship().equals(RelationshipTypeEnum.ManyToMany)) {
-				myWriter.write("relationship " + relationship.getTypeRelationship() + Constants.ACCOLADE_OUVRANT
-						+ Constants.PATTERN_RETOUR_LIGNE);
-				myWriter.write(Constants.PATTERN_TABULATION + relationship.getMasterEntity().getNameEntity()
-						+ Constants.ACCOLADE_OUVRANT + relationship.getSlaveEntity().getNameEntity().toLowerCase()
-						+ Constants.ACCOLADE_FERMANTE + " " + "to " + relationship.getSlaveEntity().getNameEntity()
-						+ Constants.PATTERN_RETOUR_LIGNE + Constants.ACCOLADE_FERMANTE);
+				myWriter.write("relationship " .concat( relationship.getTypeRelationship().name()) .concat( Constants.ACCOLADE_OUVRANT)
+						.concat( Constants.PATTERN_RETOUR_LIGNE));
+				myWriter.write(Constants.PATTERN_TABULATION .concat( relationship.getMasterEntity().getNameEntity())
+						.concat( Constants.ACCOLADE_OUVRANT) .concat( relationship.getSlaveEntity().getNameEntity().toLowerCase())
+						.concat( Constants.ACCOLADE_FERMANTE ).concat( " " ).concat( "to ") .concat( relationship.getSlaveEntity().getNameEntity())
+						.concat( Constants.PATTERN_RETOUR_LIGNE) .concat( Constants.ACCOLADE_FERMANTE));
 			} else {
-				myWriter.write("relationship " + relationship.getTypeRelationship() + Constants.ACCOLADE_OUVRANT
-						+ Constants.PATTERN_RETOUR_LIGNE);
-				myWriter.write(Constants.PATTERN_TABULATION + relationship.getMasterEntity().getNameEntity()+
-						Constants.ACCOLADE_OUVRANT+relationship.getSlaveEntity().getNameEntity().toLowerCase()
-						+Constants.ACCOLADE_FERMANTE+"to "+relationship.getSlaveEntity().getNameEntity()+
-						Constants.ACCOLADE_OUVRANT+relationship.getMasterEntity().getNameEntity().toLowerCase()+
-						Constants.ACCOLADE_FERMANTE+Constants.PATTERN_RETOUR_LIGNE+Constants.ACCOLADE_FERMANTE);
+				myWriter.write("relationship ".concat(relationship.getTypeRelationship().name()) .concat( Constants.ACCOLADE_OUVRANT)
+						.concat( Constants.PATTERN_RETOUR_LIGNE));
+				myWriter.write(Constants.PATTERN_TABULATION .concat( relationship.getMasterEntity().getNameEntity()).concat(
+						Constants.ACCOLADE_OUVRANT).concat(relationship.getSlaveEntity().getNameEntity().toLowerCase())
+						.concat(Constants.ACCOLADE_FERMANTE).concat("to ").concat(relationship.getSlaveEntity().getNameEntity()).concat(
+						Constants.ACCOLADE_OUVRANT).concat(relationship.getMasterEntity().getNameEntity().toLowerCase()).concat(
+						Constants.ACCOLADE_FERMANTE).concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.ACCOLADE_FERMANTE));
 			}
 
 		} catch (IOException e) {

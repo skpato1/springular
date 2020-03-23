@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import com.sifast.springular.framework.business.logic.Executor.SystemCommandExecutor;
 import com.sifast.springular.framework.business.logic.common.Constants;
+import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
+import com.sifast.springular.framework.business.logic.entities.Project;
 import com.sifast.springular.framework.business.logic.service.ICommandExecutorService;
 
 @Service
@@ -27,6 +29,9 @@ public class CommandExecutorService implements ICommandExecutorService {
 	@Value("${file.generate.path}")
 	private String fileJdlToGenerate;
 
+	@Value("${variable.environment}")
+	private String pathVaribleEnvironment;
+
 	@Override
 	public String executeCommand(String cmd) throws IOException, InterruptedException {
 		List<String> commands = new ArrayList<String>();
@@ -37,32 +42,42 @@ public class CommandExecutorService implements ICommandExecutorService {
 		commandExecutor.executeCommand();
 		StringBuilder stdout = commandExecutor.getStandardOutputFromCommand();
 		StringBuilder stderr = commandExecutor.getStandardErrorFromCommand();
-		
-		if(stdout!=null)
-		{
+
+		if (stdout != null) {
 			return stdout.toString();
 
-		}
-		else
+		} else
 			return stderr.toString();
-			
-
 
 	}
 
 	@Override
 	public void createDataBase(String nameDB) throws IOException, InterruptedException {
-		executeCommand(Constants.PATTERN_CMD_MYSQL_DB + nameDB + Constants.PATTERN_POINT_VIRGULE
-				+ Constants.PATTERN_ANTI_SLASH);
+		executeCommand(Constants.PATTERN_CMD_MYSQL_DB.concat(nameDB).concat(Constants.PATTERN_POINT_VIRGULE)
+				.concat(Constants.PATTERN_ANTI_SLASH));
 
 	}
 
 	@Override
-	public void generateGithubProjectFromAngular(String projectName, String userName)
+	public void cloneSpringularFrameworkSocleFromGitlab(Project project, boolean isWindows)
+			throws IOException, InterruptedException {
+		executeCommand(Constants.PATTERN_GIT_CLONE.concat(project.getUsernameProject()).concat(Constants.PATTERN_SLASH)
+				.concat(project.getNameProject()).concat(Constants.PATTERN_POINT_GIT));
+		String source = Constants.PATH_TO_CLONED_PROJECT_SOURCE;
+		String destination = Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE;
+		copyProject(source, destination, isWindows);
+		executeCommand(Constants.COMMAND_DELETE_FOLDER.concat(source));
+
+	}
+
+	private void copyProject(String source, String destination, boolean isWindows)
 			throws IOException, InterruptedException {
 
-		executeCommand(Constants.PATTERN_GIT_CLONE + projectName + Constants.PATTERN_SLASH + userName
-				+ Constants.PATTERN_POINT_GIT);
+		if (isWindows) {
+			executeCommand(Constants.COPY_COMMAND_WINDOWS.concat(source).concat(destination));
+		} else {
+			executeCommand(Constants.COPY_COMMAND_LINUX.concat(source).concat(destination));
+		}
 
 	}
 
@@ -81,13 +96,13 @@ public class CommandExecutorService implements ICommandExecutorService {
 
 	@Override
 	public void executeJdlFromTerminal(boolean isWindows) throws IOException, InterruptedException {
-		String path = Constants.PATTERN_ENV_VAR;
+		String path = pathVaribleEnvironment;
 		ProcessBuilder processBuilder = null;
 		try {
 			if (isWindows) {
-				processBuilder = new ProcessBuilder("bash", "-c", "jhipster import-jdl " + fileJdlToGenerate);
+				processBuilder = new ProcessBuilder("bash", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate));
 			} else {
-				processBuilder = new ProcessBuilder("sh", "-c", "jhipster import-jdl " + fileJdlToGenerate);
+				processBuilder = new ProcessBuilder("sh", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate));
 			}
 			Map<String, String> env = processBuilder.environment();
 			processBuilder.directory(new File(appDirectory));
@@ -102,6 +117,41 @@ public class CommandExecutorService implements ICommandExecutorService {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public void copyEntitiesToGeneratedProject(Project project, boolean isWindows)
+			throws IOException, InterruptedException {
+		String entitiesFiles = extraireFilesToCopy(project);
+		executeCopyCommandForDifferentOs(isWindows, entitiesFiles);
+	}
+
+	public void executeCopyCommandForDifferentOs(boolean isWindows, String entitiesFiles)
+			throws IOException, InterruptedException {
+		if (isWindows) {
+			executeCommand(Constants.COPY_COMMAND_WINDOWS.concat(Constants.PATH_TO_GENERATED_JHIPSTER_PROJECT)
+					.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE));
+		} else {
+
+			executeCommand(Constants.COPY_COMMAND_LINUX_FILES
+					.concat(Constants.PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES).concat(entitiesFiles).concat("} ")
+					.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE));
+
+		}
+	}
+
+	public String extraireFilesToCopy(Project project) {
+		List<BuisnessLogicEntity> entitiesToCopy = project.getEntities();
+		String entitiesFiles = "{";
+		for (int i = 0; i < entitiesToCopy.size(); i++) {
+			entitiesFiles += entitiesToCopy.get(i).getNameEntity().concat(".java").concat(",");
+		}
+		entitiesFiles = charRemoveAt(entitiesFiles, entitiesFiles.length() - 1);
+		return entitiesFiles;
+	}
+
+	public static String charRemoveAt(String str, int p) {
+		return str.substring(0, p) + str.substring(p + 1);
 	}
 
 }

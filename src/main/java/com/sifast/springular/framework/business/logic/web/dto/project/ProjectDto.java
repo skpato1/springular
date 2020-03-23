@@ -37,9 +37,17 @@ public class ProjectDto {
 	@NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	@Size(max = Constants.MAX_STRING_SIZE, message = ApiMessage.STRING_SIZE_VALIDATION_FAILED)
-	private String packageProject;
+	private String usernameProject;
 	
 	
+	public String getUsernameProject() {
+		return usernameProject;
+	}
+
+	public void setUsernameProject(String usernameProject) {
+		this.usernameProject = usernameProject;
+	}
+
 	private ProjectStatus statusProject;
 
 
@@ -61,13 +69,7 @@ public class ProjectDto {
 		this.pathProject = pathProject;
 	}
 
-	public String getPackageProject() {
-		return packageProject;
-	}
-
-	public void setPackageProject(String packageProject) {
-		this.packageProject = packageProject;
-	}
+	
 
 	public String getNameProject() {
 		return nameProject;
@@ -104,13 +106,15 @@ public class ProjectDto {
 		builder.append(typeProject);
 		builder.append(", pathProject=");
 		builder.append(pathProject);
-		builder.append(", packageProject=");
-		builder.append(packageProject);
+		builder.append(", usernameProject=");
+		builder.append(usernameProject);
 		builder.append(", statusProject=");
 		builder.append(statusProject);
 		builder.append("]");
 		return builder.toString();
 	}
+
+	
 
 	
 	

@@ -38,9 +38,17 @@ public class Project extends TimestampEntity implements Serializable {
 	@Column(name = "path_project")
 	private String pathProject;
 	
+	public String getUsernameProject() {
+		return usernameProject;
+	}
+
+	public void setUsernameProject(String usernameProject) {
+		this.usernameProject = usernameProject;
+	}
+
+	@Column(name = "username_project")
+	private String usernameProject;
 	
-	@Column(name = "package_project")
-	private String packageProject;
 	
 	@Column(name = "status_project")
 	private ProjectStatus statusProject;
@@ -58,13 +66,12 @@ public class Project extends TimestampEntity implements Serializable {
 		this.statusProject = statusProject;
 	}
 
-	public Project(String nameProject, String portProject, String typeProject, String pathProject,
-			String packageProject) {
+	public Project(String nameProject, String portProject, String typeProject, String pathProject
+			) {
 		this.nameProject = nameProject;
 		this.portProject = portProject;
 		this.typeProject = typeProject;
 		this.pathProject = pathProject;
-		this.packageProject = packageProject;
 	}
 
 
@@ -127,13 +134,7 @@ public class Project extends TimestampEntity implements Serializable {
 		return nameProject;
 	}
 
-	public String getPackageProject() {
-		return packageProject;
-	}
-
-	public void setPackageProject(String packageProject) {
-		this.packageProject = packageProject;
-	}
+	
 
 	public void setNameProject(String nameProject) {
 		this.nameProject = nameProject;

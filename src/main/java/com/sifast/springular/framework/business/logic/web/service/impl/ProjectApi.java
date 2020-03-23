@@ -58,17 +58,14 @@ public class ProjectApi implements IProjectApi{
 	    @Autowired
 	    private IProjectService projectService;
 	    
-	    @Autowired
-		private ICommandExecutorService commandExecutorService;
-	    
-	
+	   
+	  
 	
 	@Override
 	public ResponseEntity<Object> saveProject(@ApiParam(required = true, value = "projectDto", name = "projectDto") @RequestBody CreateProjectDto projectDto, BindingResult bindingResult) {
         LOGGER.info("Web service saveProject invoked with projectDto {}", projectDto);
         try {
         Project savedProject = projectService.save(projectMapper.mapCreateProject(projectDto));
-		commandExecutorService.generateGithubProjectFromAngular(projectDto.getPackageProject(),projectDto.getNameProject());
         httpStatus = HttpStatus.OK;
         httpResponseBody = modelMapper.map(savedProject, ViewProjectDto.class);
         }

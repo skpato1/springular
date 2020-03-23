@@ -16,5 +16,4 @@ public interface ICommandExecutorService {
 	public void generateApplicationPropertiesFromAngular(String typeDB, String nameDB, String usernameDB, String pwdDB) throws IOException, InterruptedException;
 	public void executeJdlFromTerminal(boolean isWindows) throws IOException, InterruptedException;
 	public void copyEntitiesToGeneratedProject(Project project,boolean isWindows) throws IOException, InterruptedException;
-
 }

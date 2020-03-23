@@ -32,6 +32,7 @@ public class Constants {
 	public static final String COPY_COMMAND_LINUX = "cp -a ";
 	public static final String COPY_COMMAND_LINUX_FILES = "cp ";
 	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE = "/Users/qc/Desktop/springular-framework-socle/springular-framework-persistence/src/main/java/com/sifast/model/ ";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/springular-framework-persistence/src/main/java/com/sifast/model/";
 	public static final String PATH_TO_GENERATED_JHIPSTER_PROJECT = "/Users/qc/Desktop/testjdl/src/main/java/com/sifast/springular/framework/domain/ ";
 	public static final String PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES = "/Users/qc/Desktop/testjdl/src/main/java/com/sifast/springular/framework/domain/";
 	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE = "/Users/qc/Desktop";
@@ -39,4 +40,6 @@ public class Constants {
 	public static final String ENABLE_DTO_GENERATION = "dto all with mapstruct";
 	public static final String PATH_TO_CLONED_PROJECT_SOURCE = "/Users/qc/Documents/springular-framework/springular-framework-business-logic/springular-framework-socle ";
 	public static final String COMMAND_DELETE_FOLDER = "rm -r";
+	public static final String EXTEND_TIMESTAMP_ENTITY = "extends TimestampEntity implements";
+	public static final String IMPLEMENTS = "implements";
 }

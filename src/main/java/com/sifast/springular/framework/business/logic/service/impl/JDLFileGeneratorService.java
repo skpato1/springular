@@ -1,6 +1,8 @@
 package com.sifast.springular.framework.business.logic.service.impl;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -48,4 +50,42 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 		
 	}
 
+	@Override
+	public void deleteUnusedCommentsInGeneratedEntities(Project project) throws IOException {
+		project.getEntities().stream().forEach(entity->{
+			try {
+			File file = new File(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES+entity.getNameEntity().concat(".java"));
+			String fileContext = FileUtils.readFileToString(file);
+			fileContext = fileContext.replaceAll(Constants.UNUSED_COMMENTS_FOR_ATTRIBUE,"");
+			fileContext = fileContext.replaceAll(Constants.UNUSED_COMMENTS_FOR_METHOD,"");
+			FileUtils.write(file, fileContext);}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		
+	}
+	
+	
+	
+	@Override
+	public void deleteUnusedMethodsInGeneratedEntities(Project project) throws IOException {
+		
+		
+		project.getEntities().stream().forEach(entity->{
+			try {
+			File file = new File(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES+entity.getNameEntity().concat(".java"));
+			String fileContext = FileUtils.readFileToString(file);
+			fileContext = fileContext.replaceAll("public ".concat(entity.getNameEntity()),"");
+			fileContext = fileContext.replaceAll("remove".concat(entity.getNameEntity()),"");
+			fileContext = fileContext.replaceAll("add".concat(entity.getNameEntity()),"");
+			FileUtils.write(file, fileContext);}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		
+	}
+	
+	
 }

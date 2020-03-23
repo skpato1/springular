@@ -42,4 +42,6 @@ public class Constants {
 	public static final String COMMAND_DELETE_FOLDER = "rm -r";
 	public static final String EXTEND_TIMESTAMP_ENTITY = "extends TimestampEntity implements";
 	public static final String IMPLEMENTS = "implements";
+	public static final String UNUSED_COMMENTS_FOR_ATTRIBUE = "// jhipster-needle-entity-add-field - JHipster will add fields here, do not remove";
+	public static final String UNUSED_COMMENTS_FOR_METHOD = "// jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove";
 }

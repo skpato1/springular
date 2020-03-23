@@ -10,4 +10,6 @@ import com.sifast.springular.framework.business.logic.entities.Project;
 public interface IJDLFileGeneratorService {
 
 	public void generateProjectWithJdl(Project project) throws IOException;
+	public void extendTimeStampInGeneratedEntities(Project project) throws IOException;
+
 }

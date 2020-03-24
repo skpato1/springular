@@ -65,4 +65,19 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 
 	}
 
+	@Override
+	public void importTimeStampEntityInGeneratedEntities(Project project) throws IOException {
+		project.getEntities().stream().forEach(entity -> {
+			try {
+				File file = new File(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES
+						+ entity.getNameEntity().concat(".java"));
+				String fileContext = FileUtils.readFileToString(file);
+				fileContext = fileContext.replaceAll(Constants.PACKAGE_JHIPSTER,Constants.PACKAGE_SPRINGULAR);
+				FileUtils.write(file, fileContext);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
 }

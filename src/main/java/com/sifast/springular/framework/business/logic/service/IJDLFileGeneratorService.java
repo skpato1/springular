@@ -12,6 +12,7 @@ public interface IJDLFileGeneratorService {
 	public void generateProjectWithJdl(Project project) throws IOException;
 	public void extendTimeStampInGeneratedEntities(Project project) throws IOException;
 	public void deleteUnusedCommentsInGeneratedEntities(Project project)throws IOException;
+	public void importTimeStampEntityInGeneratedEntities(Project project)throws IOException;
 
 
 }

@@ -20,6 +20,7 @@ import com.sifast.springular.framework.business.logic.common.ProjectStatus;
 @Table(name = "T_project")
 public class Project extends TimestampEntity implements Serializable {
 
+	
 	private static final long serialVersionUID = 1L;
 
 	@Id

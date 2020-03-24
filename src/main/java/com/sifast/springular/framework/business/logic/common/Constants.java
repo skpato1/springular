@@ -46,6 +46,4 @@ public class Constants {
 	public static final String UNUSED_COMMENTS_FOR_METHOD = "// jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove";
 	public static final String ANNOTATION_NO_FLUENT_METHOD = "@noFluentMethod";
 	public static final String SKIP_INSTALL_NODE_MODULES = "--skip-install";
-	public static final String PACKAGE_JHIPSTER = "package com.sifast.springular.framework.domain;";
-	public static final String PACKAGE_SPRINGULAR = "package com.sifast.model;\nimport com.sifast.model.TimestampEntity;";
 }

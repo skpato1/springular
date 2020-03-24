@@ -59,6 +59,7 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
  			commandExecutorService.copyEntitiesToGeneratedProject(project.get(),isWindows);
  			jDLFileGeneratorService.extendTimeStampInGeneratedEntities(project.get());
  			jDLFileGeneratorService.deleteUnusedCommentsInGeneratedEntities(project.get());
+			jDLFileGeneratorService.importTimeStampEntityInGeneratedEntities(project.get());
 		} else {
 			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
 			httpStatus = HttpStatus.NOT_FOUND;

@@ -46,4 +46,21 @@ public class Constants {
 	public static final String UNUSED_COMMENTS_FOR_METHOD = "// jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove";
 	public static final String ANNOTATION_NO_FLUENT_METHOD = "@noFluentMethod";
 	public static final String SKIP_INSTALL_NODE_MODULES = "--skip-install";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_SERVICE_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/springular-framework-service/src/main/java/com/sifast/service/";
+	public static final String PACKAGE_SPRINGULAR_SERVICE = "package com.sifast.service;";
+	public static final String IMPORT_TRANSACTIONAL = "import org.springframework.transaction.annotation.Transactional;";
+	public static final String IMPORT_ENTITY_MODEL = "import com.sifast.model.";
+	public static final String ANNOTATION_TRANSACTIONAL = "@Transactional";
+	public static final String INTERFACE_PUBLIC="public interface ";
+	public static final String EXTENDS = " extends ";
+	public static final String IGENERIC_SERVICE = "IGenericService<";
+	public static final String LONG = "Long>";
+	public static final String VIRGULE = ",";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_SERVICE_IMPL_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/springular-framework-service/src/main/java/com/sifast/service/impl/";
+	public static final String PACKAGE_SPRINGULAR_SERVICE_IMPL = "package com.sifast.service.impl;";
+	public static final String IMPORT_ANNOTATION_SERVICE="import org.springframework.stereotype.Service;";
+	public static final String ANNOTATION_SERVICE="@Service";
+	public static final String IMPORT_INTERFACE_SERVICE = "import com.sifast.service.";
+	public static final String PUBLIC_CLASS = "public class ";
+	public static final String GENERIC_SERVICE = " GenericService<";
 }

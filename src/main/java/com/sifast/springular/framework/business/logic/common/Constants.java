@@ -46,4 +46,7 @@ public class Constants {
 	public static final String UNUSED_COMMENTS_FOR_METHOD = "// jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove";
 	public static final String ANNOTATION_NO_FLUENT_METHOD = "@noFluentMethod";
 	public static final String SKIP_INSTALL_NODE_MODULES = "--skip-install";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/springular-framework-web/src/main/java/com/sifast/dto/";
+	public static final String MKDIR_COMMAND = "mkdir ";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MAPPER="/Users/qc/Desktop/springular-framework-socle/springular-framework-web/src/main/java/com/sifast/common/mapper/";
 }

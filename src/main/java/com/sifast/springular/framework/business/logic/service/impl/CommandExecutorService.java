@@ -100,9 +100,11 @@ public class CommandExecutorService implements ICommandExecutorService {
 		ProcessBuilder processBuilder = null;
 		try {
 			if (isWindows) {
-				processBuilder = new ProcessBuilder("bash", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate).concat(" ").concat(Constants.SKIP_INSTALL_NODE_MODULES));
+				processBuilder = new ProcessBuilder("bash", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate)
+						.concat(" ").concat(Constants.SKIP_INSTALL_NODE_MODULES));
 			} else {
-				processBuilder = new ProcessBuilder("sh", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate).concat(" ").concat(Constants.SKIP_INSTALL_NODE_MODULES));
+				processBuilder = new ProcessBuilder("sh", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate)
+						.concat(" ").concat(Constants.SKIP_INSTALL_NODE_MODULES));
 			}
 			Map<String, String> env = processBuilder.environment();
 			processBuilder.directory(new File(appDirectory));
@@ -154,6 +156,18 @@ public class CommandExecutorService implements ICommandExecutorService {
 		return str.substring(0, p) + str.substring(p + 1);
 	}
 
-	
+	@Override
+	public void createFolderForEachDto(Project project) throws IOException, InterruptedException {
+		project.getEntities().stream().forEach(entity -> {
+			try {
+				executeCommand(Constants.MKDIR_COMMAND
+						.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
+						.concat(entity.getNameEntity().toLowerCase()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+
+	}
 
 }

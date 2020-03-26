@@ -46,4 +46,27 @@ public class Constants {
 	public static final String UNUSED_COMMENTS_FOR_METHOD = "// jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove";
 	public static final String ANNOTATION_NO_FLUENT_METHOD = "@noFluentMethod";
 	public static final String SKIP_INSTALL_NODE_MODULES = "--skip-install";
+	public static final String PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT = "/Users/qc/Desktop/testjdl/src/main/java/com/sifast/springular/framework/repository/ ";
+	public static final String PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT_FILES = "/Users/qc/Desktop/testjdl/src/main/java/com/sifast/springular/framework/repository/";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE = "/Users/qc/Desktop/springular-framework-socle/springular-framework-persistence/src/main/java/com/sifast/dao/ ";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/springular-framework-persistence/src/main/java/com/sifast/dao/";
+	public static final String RENAME_COMMAND_WINDOWS = "mv ";
+	public static final String RENAME_COMMAND_LINUX_FILES = "mv ";
+	public static final String SUPRESS_WARNINGS = "@SuppressWarnings";
+	public static final String SUPRESS_WARNINGS_UNUSED = "(\"unused\")";
+	public static final String SUPRESS_WARNINGS_UNUSED_PARENTHESE_OUVRANTE = "\\(" ;
+	public static final String SUPRESS_WARNINGS_UNUSED_PARENTHESE_FERMANTE = "\\)";
+	public static final String PACKAGE_JHIPSTER_DAO = "package com.sifast.springular.framework.repository;";
+	public static final String PACKAGE_SPRINGULAR_DAO = "package com.sifast.dao;";
+	public static final String IMPORT_JHIPSTER_DOMAIN_TO_REPLACE = "import com.sifast.springular.framework.domain.";
+	public static final String IMPORT_SPRINGULAR_DOMAIN_TO_REPLACE = "import com.sifast.model.";
+	public static final String IMPORT_SPRINGULAR_REPOSITORY_ALL = "import org.springframework.data.jpa.repository.*;";
+	public static final String IMPORT_SPRINGULAR_REPOSITORY = "import org.springframework.stereotype.Repository;";
+	public static final String ANNOTATION_REPOSITORY = "@Repository";
+	public static final String PUBLIC_INTERFACE="public interface ";
+	public static final String EXTENDS=" extends ";
+	public static final String IGENERICDAO="IGenericDao<";
+	public static final String VIRGULE = ",";
+	public static final String LONG = "Long>";
+
 }

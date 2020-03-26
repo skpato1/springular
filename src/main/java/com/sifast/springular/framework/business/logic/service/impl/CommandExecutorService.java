@@ -100,9 +100,11 @@ public class CommandExecutorService implements ICommandExecutorService {
 		ProcessBuilder processBuilder = null;
 		try {
 			if (isWindows) {
-				processBuilder = new ProcessBuilder("bash", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate).concat(" ").concat(Constants.SKIP_INSTALL_NODE_MODULES));
+				processBuilder = new ProcessBuilder("bash", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate)
+						.concat(" ").concat(Constants.SKIP_INSTALL_NODE_MODULES));
 			} else {
-				processBuilder = new ProcessBuilder("sh", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate).concat(" ").concat(Constants.SKIP_INSTALL_NODE_MODULES));
+				processBuilder = new ProcessBuilder("sh", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate)
+						.concat(" ").concat(Constants.SKIP_INSTALL_NODE_MODULES));
 			}
 			Map<String, String> env = processBuilder.environment();
 			processBuilder.directory(new File(appDirectory));
@@ -122,11 +124,11 @@ public class CommandExecutorService implements ICommandExecutorService {
 	@Override
 	public void copyEntitiesToGeneratedProject(Project project, boolean isWindows)
 			throws IOException, InterruptedException {
-		String entitiesFiles = extraireFilesToCopy(project);
-		executeCopyCommandForDifferentOs(isWindows, entitiesFiles);
+		String entitiesFiles = extraireEntitiesFilesToCopy(project);
+		executeCopyEntitiesCommandForDifferentOs(isWindows, entitiesFiles);
 	}
 
-	public void executeCopyCommandForDifferentOs(boolean isWindows, String entitiesFiles)
+	public void executeCopyEntitiesCommandForDifferentOs(boolean isWindows, String entitiesFiles)
 			throws IOException, InterruptedException {
 		if (isWindows) {
 			executeCommand(Constants.COPY_COMMAND_WINDOWS.concat(Constants.PATH_TO_GENERATED_JHIPSTER_PROJECT)
@@ -140,7 +142,7 @@ public class CommandExecutorService implements ICommandExecutorService {
 		}
 	}
 
-	public String extraireFilesToCopy(Project project) {
+	public String extraireEntitiesFilesToCopy(Project project) {
 		List<BuisnessLogicEntity> entitiesToCopy = project.getEntities();
 		String entitiesFiles = "{";
 		for (int i = 0; i < entitiesToCopy.size(); i++) {
@@ -154,6 +156,53 @@ public class CommandExecutorService implements ICommandExecutorService {
 		return str.substring(0, p) + str.substring(p + 1);
 	}
 
-	
+	@Override
+	public void copyDaoToGeneratedProject(Project project, boolean isWindows) throws IOException, InterruptedException {
+		String daoFiles = extraireDaoFilesToCopy(project);
+		executeCopyDaoCommandForDifferentOs(isWindows, daoFiles);
+	}
+
+	private void executeCopyDaoCommandForDifferentOs(boolean isWindows, String daoFiles)
+			throws IOException, InterruptedException {
+
+		if (isWindows) {
+			executeCommand(Constants.COPY_COMMAND_WINDOWS.concat(Constants.PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT)
+					.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE));
+		} else {
+
+			executeCommand(Constants.COPY_COMMAND_LINUX_FILES
+					.concat(Constants.PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT_FILES).concat(daoFiles).concat("} ")
+					.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE));
+
+		}
+
+	}
+
+	private String extraireDaoFilesToCopy(Project project) {
+		List<BuisnessLogicEntity> daoToCopy = project.getEntities();
+		String daoFiles = "{";
+		for (int i = 0; i < daoToCopy.size(); i++) {
+			daoFiles += daoToCopy.get(i).getNameEntity().concat("Repository.java").concat(",");
+		}
+		daoFiles = charRemoveAt(daoFiles, daoFiles.length() - 1);
+		return daoFiles;
+	}
+
+	@Override
+	public void renameDaoToGeneratedProject(Project project, boolean isWindows)
+			throws IOException, InterruptedException {
+		project.getEntities().stream().forEach(entity -> {
+			try {
+				executeCommand(Constants.RENAME_COMMAND_LINUX_FILES
+						.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES)
+						.concat(entity.getNameEntity().concat("Repository.java "))
+						.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES).concat("I")
+						.concat(entity.getNameEntity()).concat("Dao.java"));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+
+	}
 
 }

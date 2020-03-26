@@ -13,6 +13,6 @@ public interface IJDLFileGeneratorService {
 	public void extendTimeStampInGeneratedEntities(Project project) throws IOException;
 	public void deleteUnusedCommentsInGeneratedEntities(Project project)throws IOException;
 	public void createFilesInEachFolderDTO(Project project)throws IOException;
-
+	public void writeFilesDao(Project project)throws IOException;
 
 }

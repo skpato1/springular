@@ -61,6 +61,9 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
  			jDLFileGeneratorService.deleteUnusedCommentsInGeneratedEntities(project.get());
 			commandExecutorService.createFolderForEachDto(project.get());
 			jDLFileGeneratorService.createFilesInEachFolderDTO(project.get());
+			commandExecutorService.copyDaoToGeneratedProject(project.get(), isWindows);
+			commandExecutorService.renameDaoToGeneratedProject(project.get(), isWindows);
+			jDLFileGeneratorService.writeFilesDao(project.get());
 		} else {
 			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
 			httpStatus = HttpStatus.NOT_FOUND;

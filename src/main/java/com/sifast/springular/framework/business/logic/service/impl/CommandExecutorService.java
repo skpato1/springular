@@ -124,11 +124,11 @@ public class CommandExecutorService implements ICommandExecutorService {
 	@Override
 	public void copyEntitiesToGeneratedProject(Project project, boolean isWindows)
 			throws IOException, InterruptedException {
-		String entitiesFiles = extraireFilesToCopy(project);
-		executeCopyCommandForDifferentOs(isWindows, entitiesFiles);
+		String entitiesFiles = extraireEntitiesFilesToCopy(project);
+		executeCopyEntitiesCommandForDifferentOs(isWindows, entitiesFiles);
 	}
 
-	public void executeCopyCommandForDifferentOs(boolean isWindows, String entitiesFiles)
+	public void executeCopyEntitiesCommandForDifferentOs(boolean isWindows, String entitiesFiles)
 			throws IOException, InterruptedException {
 		if (isWindows) {
 			executeCommand(Constants.COPY_COMMAND_WINDOWS.concat(Constants.PATH_TO_GENERATED_JHIPSTER_PROJECT)
@@ -142,7 +142,7 @@ public class CommandExecutorService implements ICommandExecutorService {
 		}
 	}
 
-	public String extraireFilesToCopy(Project project) {
+	public String extraireEntitiesFilesToCopy(Project project) {
 		List<BuisnessLogicEntity> entitiesToCopy = project.getEntities();
 		String entitiesFiles = "{";
 		for (int i = 0; i < entitiesToCopy.size(); i++) {
@@ -156,13 +156,61 @@ public class CommandExecutorService implements ICommandExecutorService {
 		return str.substring(0, p) + str.substring(p + 1);
 	}
 
-	@Override
+@Override
 	public void createFolderForEachDto(Project project) throws IOException, InterruptedException {
 		project.getEntities().stream().forEach(entity -> {
 			try {
 				executeCommand(Constants.MKDIR_COMMAND
 						.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
 						.concat(entity.getNameEntity().toLowerCase()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+
+	}
+
+	public void copyDaoToGeneratedProject(Project project, boolean isWindows) throws IOException, InterruptedException {
+		String daoFiles = extraireDaoFilesToCopy(project);
+		executeCopyDaoCommandForDifferentOs(isWindows, daoFiles);
+	}
+
+	private void executeCopyDaoCommandForDifferentOs(boolean isWindows, String daoFiles)
+			throws IOException, InterruptedException {
+
+		if (isWindows) {
+			executeCommand(Constants.COPY_COMMAND_WINDOWS.concat(Constants.PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT)
+					.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE));
+		} else {
+
+			executeCommand(Constants.COPY_COMMAND_LINUX_FILES
+					.concat(Constants.PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT_FILES).concat(daoFiles).concat("} ")
+					.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE));
+
+		}
+
+	}
+
+	private String extraireDaoFilesToCopy(Project project) {
+		List<BuisnessLogicEntity> daoToCopy = project.getEntities();
+		String daoFiles = "{";
+		for (int i = 0; i < daoToCopy.size(); i++) {
+			daoFiles += daoToCopy.get(i).getNameEntity().concat("Repository.java").concat(",");
+		}
+		daoFiles = charRemoveAt(daoFiles, daoFiles.length() - 1);
+		return daoFiles;
+	}
+
+	@Override
+	public void renameDaoToGeneratedProject(Project project, boolean isWindows)
+			throws IOException, InterruptedException {
+		project.getEntities().stream().forEach(entity -> {
+			try {
+				executeCommand(Constants.RENAME_COMMAND_LINUX_FILES
+						.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES)
+						.concat(entity.getNameEntity().concat("Repository.java "))
+						.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES).concat("I")
+						.concat(entity.getNameEntity()).concat("Dao.java"));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

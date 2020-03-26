@@ -49,6 +49,21 @@ public class Constants {
 	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/springular-framework-web/src/main/java/com/sifast/dto/";
 	public static final String MKDIR_COMMAND = "mkdir ";
 	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MAPPER="/Users/qc/Desktop/springular-framework-socle/springular-framework-web/src/main/java/com/sifast/common/mapper/";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_SERVICE_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/springular-framework-service/src/main/java/com/sifast/service/";
+	public static final String PACKAGE_SPRINGULAR_SERVICE = "package com.sifast.service;";
+	public static final String IMPORT_TRANSACTIONAL = "import org.springframework.transaction.annotation.Transactional;";
+	public static final String IMPORT_ENTITY_MODEL = "import com.sifast.model.";
+	public static final String ANNOTATION_TRANSACTIONAL = "@Transactional";
+	public static final String INTERFACE_PUBLIC="public interface ";
+	public static final String EXTENDS = " extends ";
+	public static final String IGENERIC_SERVICE = "IGenericService<";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_SERVICE_IMPL_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/springular-framework-service/src/main/java/com/sifast/service/impl/";
+	public static final String PACKAGE_SPRINGULAR_SERVICE_IMPL = "package com.sifast.service.impl;";
+	public static final String IMPORT_ANNOTATION_SERVICE="import org.springframework.stereotype.Service;";
+	public static final String ANNOTATION_SERVICE="@Service";
+	public static final String IMPORT_INTERFACE_SERVICE = "import com.sifast.service.";
+	public static final String PUBLIC_CLASS = "public class ";
+	public static final String GENERIC_SERVICE = " GenericService<";
 	public static final String PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT = "/Users/qc/Desktop/testjdl/src/main/java/com/sifast/springular/framework/repository/ ";
 	public static final String PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT_FILES = "/Users/qc/Desktop/testjdl/src/main/java/com/sifast/springular/framework/repository/";
 	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE = "/Users/qc/Desktop/springular-framework-socle/springular-framework-persistence/src/main/java/com/sifast/dao/ ";
@@ -71,5 +86,4 @@ public class Constants {
 	public static final String IGENERICDAO="IGenericDao<";
 	public static final String VIRGULE = ",";
 	public static final String LONG = "Long>";
-
 }

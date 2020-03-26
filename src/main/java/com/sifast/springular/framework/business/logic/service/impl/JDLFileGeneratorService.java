@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.sifast.springular.framework.business.logic.Executor.IServiceFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.DaoFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.JdlFileWriter;
 import com.sifast.springular.framework.business.logic.common.Constants;
@@ -24,6 +25,9 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 	@Autowired
 	JdlFileWriter jdlFileWriter;
 	
+	@Autowired
+	IServiceFileWriter serviceFileWriter;
+
 	
 	@Autowired
 	DaoFileWriter daoFileWriter;
@@ -71,6 +75,16 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 	}
 
 	@Override
+	public void writeFilesIService(Project project) throws IOException {
+		serviceFileWriter.writeIServiceFiles(project);
+	}
+
+	@Override
+	public void writeFilesService(Project project) throws IOException {
+		serviceFileWriter.writeImplementServiceFiles(project);		
+	}
+
+}
 	public void writeFilesDao(Project project) throws IOException {
 		
 		daoFileWriter.writeDaoFiles(project);

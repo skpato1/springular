@@ -59,6 +59,8 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
  			commandExecutorService.copyEntitiesToGeneratedProject(project.get(),isWindows);
  			jDLFileGeneratorService.extendTimeStampInGeneratedEntities(project.get());
  			jDLFileGeneratorService.deleteUnusedCommentsInGeneratedEntities(project.get());
+			jDLFileGeneratorService.writeFilesIService(project.get());
+			jDLFileGeneratorService.writeFilesService(project.get());
 			commandExecutorService.copyDaoToGeneratedProject(project.get(), isWindows);
 			commandExecutorService.renameDaoToGeneratedProject(project.get(), isWindows);
 			jDLFileGeneratorService.writeFilesDao(project.get());

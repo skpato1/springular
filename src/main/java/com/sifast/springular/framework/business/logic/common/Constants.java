@@ -55,7 +55,6 @@ public class Constants {
 	public static final String IMPORT_ENTITY_MODEL = "import com.sifast.model.";
 	public static final String ANNOTATION_TRANSACTIONAL = "@Transactional";
 	public static final String INTERFACE_PUBLIC="public interface ";
-	public static final String EXTENDS = " extends ";
 	public static final String IGENERIC_SERVICE = "IGenericService<";
 	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_SERVICE_IMPL_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/springular-framework-service/src/main/java/com/sifast/service/impl/";
 	public static final String PACKAGE_SPRINGULAR_SERVICE_IMPL = "package com.sifast.service.impl;";

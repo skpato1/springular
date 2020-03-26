@@ -84,7 +84,7 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 		dtoFileWriter.createMapperFiles(project);
 	}
 
-}
+
 
 
 	public void writeFilesIService(Project project) throws IOException {
@@ -96,7 +96,7 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 		serviceFileWriter.writeImplementServiceFiles(project);		
 	}
 
-}
+
 	public void writeFilesDao(Project project) throws IOException {
 		
 		daoFileWriter.writeDaoFiles(project);

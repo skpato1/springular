@@ -156,7 +156,20 @@ public class CommandExecutorService implements ICommandExecutorService {
 		return str.substring(0, p) + str.substring(p + 1);
 	}
 
-	@Override
+@Override
+	public void createFolderForEachDto(Project project) throws IOException, InterruptedException {
+		project.getEntities().stream().forEach(entity -> {
+			try {
+				executeCommand(Constants.MKDIR_COMMAND
+						.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
+						.concat(entity.getNameEntity().toLowerCase()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+
+	}
+
 	public void copyDaoToGeneratedProject(Project project, boolean isWindows) throws IOException, InterruptedException {
 		String daoFiles = extraireDaoFilesToCopy(project);
 		executeCopyDaoCommandForDifferentOs(isWindows, daoFiles);

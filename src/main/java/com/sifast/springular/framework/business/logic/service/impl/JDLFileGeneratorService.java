@@ -26,15 +26,13 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 
 	@Autowired
 	JdlFileWriter jdlFileWriter;
-	
+
 	@Autowired
 	DtoFileWriter dtoFileWriter;
-	
-	
-    @Autowired
+
+	@Autowired
 	IServiceFileWriter serviceFileWriter;
 
-	
 	@Autowired
 	DaoFileWriter daoFileWriter;
 
@@ -82,15 +80,12 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 
 	@Override
 	public void createFilesInEachFolderDTO(Project project) throws IOException {
-		project.getEntities().stream().forEach(entity->{
-			dtoFileWriter.generateViewFilesInEachFolderDTO(entity,project);
+		project.getEntities().stream().forEach(entity -> {
+			dtoFileWriter.generateViewFilesInEachFolderDTO(entity, project);
 
 		});
 		dtoFileWriter.generateCreateFilesInEachFolderDTO(project);
 	}
-
-
-
 
 	public void writeFilesIService(Project project) throws IOException {
 		serviceFileWriter.writeIServiceFiles(project);
@@ -98,18 +93,11 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 
 	@Override
 	public void writeFilesService(Project project) throws IOException {
-		serviceFileWriter.writeImplementServiceFiles(project);		
+		serviceFileWriter.writeImplementServiceFiles(project);
 	}
 
-
 	public void writeFilesDao(Project project) throws IOException {
-		
 		daoFileWriter.writeDaoFiles(project);
 	}
 
-	@Override
-	public void writeFilesDto(Project project) throws IOException {
-	
-	}
-
-	}
+}

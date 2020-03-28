@@ -31,6 +31,8 @@ public class Constants {
 	public static final String COPY_COMMAND_WINDOWS = "copy -a ";
 	public static final String COPY_COMMAND_LINUX = "cp -a ";
 	public static final String COPY_COMMAND_LINUX_FILES = "mv ";
+	public static final String COPY_COMMAND_LINUX_FILES_CP = "cp ";
+
 	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE = "/Users/qc/Desktop/springular-framework-socle/springular-framework-persistence/src/main/java/com/sifast/model/ ";
 	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/springular-framework-persistence/src/main/java/com/sifast/model/";
 	public static final String PATH_TO_GENERATED_JHIPSTER_PROJECT = "/Users/qc/Desktop/testjdl/src/main/java/com/sifast/springular/framework/domain/ ";
@@ -85,4 +87,39 @@ public class Constants {
 	public static final String IGENERICDAO="IGenericDao<";
 	public static final String VIRGULE = ",";
 	public static final String LONG = "Long>";
+	public static final String PACKAGE_DTO = "package com.sifast.dto.";
+	public static final String IMPORT_DTO_VALIDATION_NOT_EMPTY= "import javax.validation.constraints.NotEmpty;\n";
+	public static final String IMPORT_DTO_VALIDATION_NOT_NULL= "import javax.validation.constraints.NotNull;\n";
+	public static final String IMPORT_DTO_VALIDATION_SIZE= "import javax.validation.constraints.Size;\n";
+	public static final String IMPORT_DTO_API_MESSAGE= "import com.sifast.common.ApiMessage;\n";
+	public static final String IMPORT_DTO_CONSTANTS= "import com.sifast.common.Constants;\n";
+	public static final String IMPORT_DTO_IWebServicesValidators= "import com.sifast.common.utils.IWebServicesValidators;\n";
+	public static final String PRIVATE = "private ";
+	public static final String ANNOTATION_NOT_EMPTY= "@NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED, groups = IWebServicesValidators.class)\n";
+	public static final String ANNOTATION_NOT_NULL = "@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED, groups = IWebServicesValidators.class)\n";
+	public static final String ANNOTATION_SIZE = "@Size(max = Constants.MAX_STRING_SIZE, message = ApiMessage.STRING_SIZE_VALIDATION_FAILED, groups = IWebServicesValidators.class)\n";
+	public static final String PUBLIC = "public ";
+	public static final String RETURN = "return ";
+	public static final String VOID = "void ";
+	public static final String PARENTHESE_OUVRANTE = "(";
+	public static final String PARENTHESE_FERMANTE = ")";
+	public static final String THIS = "this.";
+	public static final String EGALE = " = ";
+	public static final String ANNOTATION_OVERRIDE = "@Override\n";
+	public static final String TO_STRING_METHOD = "public String toString() {\n";
+	public static final String DECLARATION_STRING_BUILDER= "StringBuilder builder = new StringBuilder();\n";
+	public static final String BUILDER_APPEND = "builder.append";
+	public static final String RETURN_BUILDER_TO_STRING = "return builder.toString();\n";
+	public static final String CROCHEE_FERMANTE = "]";
+	public static final String CROCHEE_OUVRANTE = "[";
+	public static final String DOUBLE_COTE = "\"";
+	public static final String TEST_SET = "Set<";
+	public static final String TEST_LIST = "List<";
+	public static final String IMPORT_SET = "import java.util.Set;\n";
+	public static final String IMPORT_LIST = "import java.util.List;\n";
+	public static final String INFERIEUR = "<";
+	public static final String ID = "Id";
+	public static final String ID_MINUS = "id";
+
+
 }

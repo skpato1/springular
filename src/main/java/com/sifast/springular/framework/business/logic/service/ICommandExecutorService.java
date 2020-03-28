@@ -19,5 +19,6 @@ public interface ICommandExecutorService {
 	public void createFolderForEachDto(Project project)throws IOException, InterruptedException;
 	public void copyDaoToGeneratedProject(Project project,boolean isWindows) throws IOException, InterruptedException;
 	public void renameDaoToGeneratedProject(Project project,boolean isWindows) throws IOException, InterruptedException;
-
+	public void copyEntitiesToDtoFolder(Project project,boolean isWindows) throws IOException, InterruptedException;
+	public void renameDTo(Project project, boolean isWindows) throws IOException, InterruptedException;
 }

@@ -8,9 +8,11 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.sifast.springular.framework.business.logic.Executor.DtoFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.SystemCommandExecutor;
 import com.sifast.springular.framework.business.logic.common.Constants;
 import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
@@ -31,6 +33,9 @@ public class CommandExecutorService implements ICommandExecutorService {
 
 	@Value("${variable.environment}")
 	private String pathVaribleEnvironment;
+	
+	@Autowired
+	DtoFileWriter dtoFileWriter;
 
 	@Override
 	public String executeCommand(String cmd) throws IOException, InterruptedException {
@@ -156,7 +161,7 @@ public class CommandExecutorService implements ICommandExecutorService {
 		return str.substring(0, p) + str.substring(p + 1);
 	}
 
-@Override
+	@Override
 	public void createFolderForEachDto(Project project) throws IOException, InterruptedException {
 		project.getEntities().stream().forEach(entity -> {
 			try {
@@ -214,6 +219,62 @@ public class CommandExecutorService implements ICommandExecutorService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		});
+
+	}
+
+	@Override
+	public void copyEntitiesToDtoFolder(Project project, boolean isWindows) throws IOException, InterruptedException {
+		String EntitiesToCopyFiles = extraireEntitiesFilesToCopy(project);
+		System.out.println(EntitiesToCopyFiles);
+		executeCopyEntitiesToDtoCommandForDifferentOs(isWindows, EntitiesToCopyFiles, project);
+	}
+	@Override
+	public void renameDTo(Project project, boolean isWindows)
+			throws IOException, InterruptedException {
+		project.getEntities().stream().forEach(entity -> {
+			try {
+				executeCommand(Constants.RENAME_COMMAND_LINUX_FILES
+						.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
+						.concat(entity.getNameEntity().toLowerCase())
+						.concat(Constants.PATTERN_SLASH)
+						.concat(entity.getNameEntity()).concat(".java ")
+						.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
+						.concat(entity.getNameEntity().toLowerCase())
+						.concat(Constants.PATTERN_SLASH)
+						.concat(entity.getNameEntity()).concat("Dto.java"));
+				dtoFileWriter.generateSuperFilesInEachFolderDTO(entity, project);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+
+	}
+
+	private void executeCopyEntitiesToDtoCommandForDifferentOs(boolean isWindows, String entitiesToCopyFiles,
+			Project project) throws IOException, InterruptedException {
+		project.getEntities().stream().forEach(entity -> {
+
+			try {
+				if (isWindows) {
+					executeCommand(Constants.COPY_COMMAND_WINDOWS
+							.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES)
+							.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
+							.concat(entity.getNameEntity().toLowerCase()));
+				} else {
+
+					executeCommand(Constants.COPY_COMMAND_LINUX_FILES_CP
+							.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES)
+							.concat(entity.getNameEntity()).concat(".java ")
+							.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
+							.concat(entity.getNameEntity().toLowerCase()));
+					
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 		});
 
 	}

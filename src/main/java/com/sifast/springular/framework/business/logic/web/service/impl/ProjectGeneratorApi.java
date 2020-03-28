@@ -22,7 +22,6 @@ import com.sifast.springular.framework.business.logic.service.IJDLFileGeneratorS
 import com.sifast.springular.framework.business.logic.service.IProjectService;
 import com.sifast.springular.framework.business.logic.web.service.api.IProjectGeneratorApi;
 
-
 @RestController
 @CrossOrigin("*")
 @RequestMapping(value = "/api/")
@@ -34,46 +33,61 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 	private Object httpResponseBody;
 
 	private HttpStatus httpStatus;
-	
+
 	@Autowired
 	private IJDLFileGeneratorService jDLFileGeneratorService;
-	
+
 	@Autowired
 	private ICommandExecutorService commandExecutorService;
-	
+
 	@Autowired
 	private IProjectService projectService;
 
-	
-
 	@Override
-	public ResponseEntity<Object> generateProjectWithJdl(@PathVariable int id) throws IOException, InterruptedException {
+	public ResponseEntity<Object> generateProjectWithJdl(@PathVariable int id)
+			throws IOException, InterruptedException {
 		LOGGER.info("Web service generateProjectWithJdl invoked with projectDto {}", id);
 		boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 		Optional<Project> project = projectService.findById(id);
 		if (project.isPresent()) {
 			httpStatus = HttpStatus.OK;
-			jDLFileGeneratorService.generateProjectWithJdl(project.get());
-			commandExecutorService.executeJdlFromTerminal(isWindows);
-			commandExecutorService.cloneSpringularFrameworkSocleFromGitlab(project.get(),isWindows);
- 			commandExecutorService.copyEntitiesToGeneratedProject(project.get(),isWindows);
- 			jDLFileGeneratorService.extendTimeStampInGeneratedEntities(project.get());
- 			jDLFileGeneratorService.deleteUnusedCommentsInGeneratedEntities(project.get());
+
+			commandExecutorService.cloneSpringularFrameworkSocleFromGitlab(project.get(), isWindows);
 			commandExecutorService.createFolderForEachDto(project.get());
-			jDLFileGeneratorService.createFilesInEachFolderDTO(project.get());
-			jDLFileGeneratorService.writeFilesIService(project.get());
-			jDLFileGeneratorService.writeFilesService(project.get());
+
+			jDLFileGeneratorService.generateProjectWithJdl(project.get());
+
+			commandExecutorService.executeJdlFromTerminal(isWindows);
+
+			commandExecutorService.copyEntitiesToGeneratedProject(project.get(), isWindows);
+
+			jDLFileGeneratorService.extendTimeStampInGeneratedEntities(project.get());
+
+			jDLFileGeneratorService.deleteUnusedCommentsInGeneratedEntities(project.get());
+
 			commandExecutorService.copyDaoToGeneratedProject(project.get(), isWindows);
+
 			commandExecutorService.renameDaoToGeneratedProject(project.get(), isWindows);
+
 			jDLFileGeneratorService.writeFilesDao(project.get());
+
+			jDLFileGeneratorService.writeFilesIService(project.get());
+
+			jDLFileGeneratorService.writeFilesService(project.get());
+
+			jDLFileGeneratorService.createFilesInEachFolderDTO(project.get());
+
+			commandExecutorService.copyEntitiesToDtoFolder(project.get(), isWindows);
+
+			commandExecutorService.renameDTo(project.get(), isWindows);
+			jDLFileGeneratorService.createFilesInEachFolderDTO(project.get());
+
 		} else {
 			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
 			httpStatus = HttpStatus.NOT_FOUND;
 			httpResponseBody = httpErrorResponse;
 		}
-		return new ResponseEntity<>(httpResponseBody, httpStatus);	}
-	
-	
-	
+		return new ResponseEntity<>(httpResponseBody, httpStatus);
+	}
 
 }

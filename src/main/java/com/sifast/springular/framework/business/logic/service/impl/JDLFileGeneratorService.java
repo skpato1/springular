@@ -29,6 +29,8 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 	
 	@Autowired
 	DtoFileWriter dtoFileWriter;
+	
+	
     @Autowired
 	IServiceFileWriter serviceFileWriter;
 
@@ -80,7 +82,8 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 
 	@Override
 	public void createFilesInEachFolderDTO(Project project) throws IOException {
-		dtoFileWriter.createFilesInEachFolderDTO(project);
+		dtoFileWriter.generateViewFilesInEachFolderDTO(project);
+		dtoFileWriter.generateCreateFilesInEachFolderDTO(project);
 		dtoFileWriter.createMapperFiles(project);
 	}
 
@@ -100,6 +103,11 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 	public void writeFilesDao(Project project) throws IOException {
 		
 		daoFileWriter.writeDaoFiles(project);
+	}
+
+	@Override
+	public void writeFilesDto(Project project) throws IOException {
+	
 	}
 
 	}

@@ -80,6 +80,7 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 			commandExecutorService.copyEntitiesToDtoFolder(project.get(), isWindows);
 
 			commandExecutorService.renameDTo(project.get(), isWindows);
+
 			jDLFileGeneratorService.createFilesInEachFolderDTO(project.get());
 
 		} else {

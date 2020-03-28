@@ -295,8 +295,8 @@ public class DtoFileWriter {
 		return myWriter;
 	}
 
-	public void generateViewFilesInEachFolderDTO(Project project) {
-			
+	public void generateViewFilesInEachFolderDTO(BuisnessLogicEntity entity,Project project) {
+		writeViewRelationshipsAttributesInDto(entity);	
 		project.getEntities().stream().forEach(ent -> {
 			try {
 				File fileView = new File(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES
@@ -305,13 +305,193 @@ public class DtoFileWriter {
 				String fileDto = "View".concat(ent.getNameEntity()).concat("Dto");
 				FileWriter myWriter = writeViewImportsAndStructureOfClassInDto(ent);
 				writeViewAttributesInDto(ent, myWriter);
+				writeViewRelationshipAttributeFromAttribute(ent,myWriter);
 				writeViewGettersAndSettersForDto(ent, myWriter);
+				writeViewGettersAndSettersForRelationshipAttributes(ent,myWriter);
 				writeViewToStringMethodInDto(ent, fileDto, myWriter);
 				closeAccoladeAndFile(myWriter);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
+		
+	}
+
+	private void writeViewGettersAndSettersForRelationshipAttributes(BuisnessLogicEntity ent, FileWriter myWriter) {
+			ent.getAttributes().stream().forEach(attributeForGetterAndSetter->{
+				try {
+					if(attributeForGetterAndSetter.getTypeAttribute().equals(AttributesTypeEnum.Set))
+					{	
+						String firstLetterDto = attributeForGetterAndSetter.getNameAttribute().charAt(0)+"";
+						String viewDto=attributeForGetterAndSetter.getNameAttribute().substring(1,attributeForGetterAndSetter.getNameAttribute().length()-1);
+						String typeSetDto= "View".concat(firstLetterDto.toUpperCase()).concat(viewDto).concat("Dto");
+						String firstLetter = attributeForGetterAndSetter.getNameAttribute().charAt(0) + "";
+						String getterAttribute = firstLetter.toUpperCase()
+								.concat(attributeForGetterAndSetter.getNameAttribute().substring(1));
+						myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC)
+								.concat(attributeForGetterAndSetter.getTypeAttribute().name()).concat(" ").concat("get")
+								.concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE)
+								.concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
+								.concat(Constants.PATTERN_RETOUR_LIGNE)
+								.concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION)
+										.concat(Constants.RETURN))
+								.concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.PATTERN_POINT_VIRGULE)
+								.concat(Constants.PATTERN_RETOUR_LIGNE)
+								.concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+						myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+						myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+
+						myWriter.write(Constants.PATTERN_TABULATION
+								.concat(Constants.PUBLIC)
+								.concat(Constants.VOID)
+								.concat("set")
+								.concat(getterAttribute)
+								.concat(Constants.PARENTHESE_OUVRANTE)
+								.concat(attributeForGetterAndSetter.getTypeAttribute().name())
+								.concat(Constants.INFERIEUR)
+								.concat(typeSetDto)
+								.concat(Constants.SUPERIEUR)
+								.concat(" ")
+								.concat(attributeForGetterAndSetter.getNameAttribute())
+								.concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
+								.concat(Constants.PATTERN_RETOUR_LIGNE)
+								.concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.THIS)
+										.concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.EGALE)
+										.concat(attributeForGetterAndSetter.getNameAttribute()))
+								.concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
+								.concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+						myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+						myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+					}
+					if(attributeForGetterAndSetter.getTypeAttribute().equals(AttributesTypeEnum.List))
+					{
+						String firstLetterDto = attributeForGetterAndSetter.getNameAttribute().charAt(0)+"";
+						String viewDto=attributeForGetterAndSetter.getNameAttribute().substring(1);
+						String typeSetDto= "View".concat(firstLetterDto.toUpperCase()).concat(viewDto).concat("Dto");
+						String firstLetter = attributeForGetterAndSetter.getNameAttribute().charAt(0) + "";
+						String getterAttribute = firstLetter.toUpperCase()
+								.concat(attributeForGetterAndSetter.getNameAttribute().substring(1));
+						myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC)
+								.concat(typeSetDto).concat(" ").concat("get")
+								.concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE)
+								.concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
+								.concat(Constants.PATTERN_RETOUR_LIGNE)
+								.concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION)
+										.concat(Constants.RETURN))
+								.concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.PATTERN_POINT_VIRGULE)
+								.concat(Constants.PATTERN_RETOUR_LIGNE)
+								.concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+						myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+						myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+
+						myWriter.write(Constants.PATTERN_TABULATION
+								.concat(Constants.PUBLIC)
+								.concat(Constants.VOID)
+								.concat("set")
+								.concat(getterAttribute)
+								.concat(Constants.PARENTHESE_OUVRANTE)
+								.concat(typeSetDto)
+								.concat(" ")
+								.concat(attributeForGetterAndSetter.getNameAttribute())
+								.concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
+								.concat(Constants.PATTERN_RETOUR_LIGNE)
+								.concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.THIS)
+										.concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.EGALE)
+										.concat(attributeForGetterAndSetter.getNameAttribute()))
+								.concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
+								.concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+						myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+						myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			});
+					
+				
+	}
+
+	private void writeViewRelationshipAttributeFromAttribute(BuisnessLogicEntity ent, FileWriter myWriter) {
+		ent.getAttributes().stream().forEach(attribute -> {
+			try {
+				String firstLetter = attribute.getNameAttribute().charAt(0)+"";
+				String view= firstLetter.toUpperCase()+attribute.getNameAttribute().substring(1);
+					if(attribute.getTypeAttribute().equals(AttributesTypeEnum.List))
+					{
+					myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE)
+							.concat("View")
+							.concat(view)
+							.concat("Dto")
+							.concat(" ")
+							.concat(attribute.getNameAttribute())
+							.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+					}
+					if(attribute.getTypeAttribute().equals(AttributesTypeEnum.Set))
+					{
+					myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE)
+							.concat(AttributesTypeEnum.Set.name())
+							.concat(Constants.INFERIEUR)
+							.concat("View")
+							.concat(view)
+							.concat("Dto")
+							.concat(Constants.SUPERIEUR)
+							.concat(" ")
+							.concat(attribute.getNameAttribute())
+							.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+					}
+				myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+				myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+			} catch (Exception e) {
+			}
+
+		});
+		
+	}
+
+	private void writeViewRelationshipsAttributesInDto(BuisnessLogicEntity entity) {
+		
+		List<String> relationshipsNamesOneToMany = entity.getRelationshipsSlave().stream().filter(
+				relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.OneToMany.name()))
+				.map(relationship -> relationship.getMasterEntity().getNameEntity()).collect(Collectors.toList());
+
+		List<String> relationshipsNamesOneToOne = entity.getRelationshipsMaster().stream().filter(
+				relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.OneToOne.name()))
+				.map(relationship -> relationship.getSlaveEntity().getNameEntity()).collect(Collectors.toList());
+
+		List<String> relationshipsNamesManyToMany = entity.getRelationshipsMaster().stream()
+				.filter(relationship -> relationship.getTypeRelationship().name()
+						.equals(RelationshipTypeEnum.ManyToMany.name()))
+				.map(relationship -> relationship.getSlaveEntity().getNameEntity()).collect(Collectors.toList());
+
+		List<Attribute> attributes = entity.getAttributes();
+		for (int i = 0; i < relationshipsNamesOneToMany.size(); i++) {
+
+			Attribute attOneToMany = new Attribute();
+			attOneToMany.setNameAttribute(relationshipsNamesOneToMany.get(i).toLowerCase());
+			attOneToMany.setTypeAttribute(AttributesTypeEnum.List);
+			attributes.add(attOneToMany);
+
+		}
+		
+		for (int i = 0; i < relationshipsNamesOneToOne.size(); i++) {
+
+			Attribute attOneToOne = new Attribute();
+			attOneToOne.setNameAttribute(relationshipsNamesOneToOne.get(i).toLowerCase());
+			attOneToOne.setTypeAttribute(AttributesTypeEnum.List);
+			attributes.add(attOneToOne);
+
+		}
+		
+
+		for (int z = 0; z < relationshipsNamesManyToMany.size(); z++) {
+
+			Attribute attManyToMany = new Attribute();
+			attManyToMany.setNameAttribute(relationshipsNamesManyToMany.get(z).toLowerCase().concat("s"));
+			attManyToMany.setTypeAttribute(AttributesTypeEnum.Set);
+			attributes.add(attManyToMany);
+		}
+		entity.setAttributes(attributes);
 		
 	}
 
@@ -437,9 +617,8 @@ public class DtoFileWriter {
 					myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE)
 							.concat(AttributesTypeEnum.Long.name()).concat(" ")
 							.concat("id")
-							.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
-					myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-					myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+							.concat(Constants.PATTERN_RETOUR_LIGNE));
+					
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -480,22 +659,5 @@ public class DtoFileWriter {
 		return myWriter;
 	}
 
-	public void createMapperFiles(Project project) {
-
-		project.getEntities().stream().forEach(entity -> {
-			File file = new File(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MAPPER.concat(entity.getNameEntity())
-					.concat("Mapper.java"));
-
-			try {
-				FileWriter myWriter = new FileWriter(file);
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		});
-
-	}
 
 }

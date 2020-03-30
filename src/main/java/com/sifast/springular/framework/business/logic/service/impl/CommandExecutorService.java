@@ -33,7 +33,7 @@ public class CommandExecutorService implements ICommandExecutorService {
 
 	@Value("${variable.environment}")
 	private String pathVaribleEnvironment;
-	
+
 	@Autowired
 	DtoFileWriter dtoFileWriter;
 
@@ -229,19 +229,17 @@ public class CommandExecutorService implements ICommandExecutorService {
 		System.out.println(EntitiesToCopyFiles);
 		executeCopyEntitiesToDtoCommandForDifferentOs(isWindows, EntitiesToCopyFiles, project);
 	}
+
 	@Override
-	public void renameDTo(Project project, boolean isWindows)
-			throws IOException, InterruptedException {
+	public void renameDTo(Project project, boolean isWindows) throws IOException, InterruptedException {
 		project.getEntities().stream().forEach(entity -> {
 			try {
 				executeCommand(Constants.RENAME_COMMAND_LINUX_FILES
 						.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
-						.concat(entity.getNameEntity().toLowerCase())
-						.concat(Constants.PATTERN_SLASH)
+						.concat(entity.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH)
 						.concat(entity.getNameEntity()).concat(".java ")
 						.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
-						.concat(entity.getNameEntity().toLowerCase())
-						.concat(Constants.PATTERN_SLASH)
+						.concat(entity.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH)
 						.concat(entity.getNameEntity()).concat("Dto.java"));
 				dtoFileWriter.generateSuperFilesInEachFolderDTO(entity, project);
 
@@ -258,18 +256,11 @@ public class CommandExecutorService implements ICommandExecutorService {
 
 			try {
 				if (isWindows) {
-					executeCommand(Constants.COPY_COMMAND_WINDOWS
-							.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES)
-							.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
-							.concat(entity.getNameEntity().toLowerCase()));
+					executeCopyCommandWindows(entity);
 				} else {
 
-					executeCommand(Constants.COPY_COMMAND_LINUX_FILES_CP
-							.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES)
-							.concat(entity.getNameEntity()).concat(".java ")
-							.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
-							.concat(entity.getNameEntity().toLowerCase()));
-					
+					executeCopyCommandLinux(entity);
+
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -277,6 +268,20 @@ public class CommandExecutorService implements ICommandExecutorService {
 
 		});
 
+	}
+
+	private void executeCopyCommandLinux(BuisnessLogicEntity entity) throws IOException, InterruptedException {
+		executeCommand(Constants.COPY_COMMAND_LINUX_FILES_CP
+				.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES).concat(entity.getNameEntity())
+				.concat(".java ").concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
+				.concat(entity.getNameEntity().toLowerCase()));
+	}
+
+	private void executeCopyCommandWindows(BuisnessLogicEntity entity) throws IOException, InterruptedException {
+		executeCommand(
+				Constants.COPY_COMMAND_WINDOWS.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES)
+						.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
+						.concat(entity.getNameEntity().toLowerCase()));
 	}
 
 }

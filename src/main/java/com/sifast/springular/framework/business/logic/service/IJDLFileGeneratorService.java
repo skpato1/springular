@@ -16,7 +16,6 @@ public interface IJDLFileGeneratorService {
 	public void writeFilesIService(Project project) throws IOException;
 	public void writeFilesService(Project project) throws IOException;
 	public void writeFilesDao(Project project)throws IOException;
-	public void writeFilesDto(Project project)throws IOException;
 
 
 }

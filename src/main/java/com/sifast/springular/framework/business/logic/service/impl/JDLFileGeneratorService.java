@@ -82,9 +82,11 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 
 	@Override
 	public void createFilesInEachFolderDTO(Project project) throws IOException {
-		dtoFileWriter.generateViewFilesInEachFolderDTO(project);
+		project.getEntities().stream().forEach(entity->{
+			dtoFileWriter.generateViewFilesInEachFolderDTO(entity,project);
+
+		});
 		dtoFileWriter.generateCreateFilesInEachFolderDTO(project);
-		dtoFileWriter.createMapperFiles(project);
 	}
 
 

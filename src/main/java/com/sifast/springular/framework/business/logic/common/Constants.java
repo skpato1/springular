@@ -120,6 +120,7 @@ public class Constants {
 	public static final String INFERIEUR = "<";
 	public static final String ID = "Id";
 	public static final String ID_MINUS = "id";
+	public static final String SUPERIEUR = ">";
 
 
 }

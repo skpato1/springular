@@ -126,10 +126,16 @@ public class Constants {
 	public static final String SUPERIEUR = ">";
 	public static final String POM_XML = "pom.xml";
 	public static final String OLD_PROJECT_NAME = "springular-framework";
+	public static final String OLD_PROJECT_NAME_ALT = "Springular Framework";
 	public static final String OLD_PROJECT_NAME_TO_CLONE = "springular-framework-socle";
 	public static final String SIFAST_SPRING_WEB = "sifast-spring-web";
 	public static final String SIFAST_SPRING_PERSISTENCE = "sifast-spring-persistence";
 	public static final String SIFAST_SPRING_SERVICE = "sifast-spring-service";
 	public static final String SIFAST_SPRING_INFRASTRUCTURE = "sifast-spring-infrastructure";
-
+	public static final String SIFAST_SPRING_COMMON = "sifast-spring-common";
+	public static final String APPLICATION_PROPERTIES_SPRINGULAR_DESKTOP = "/Users/qc/Desktop/springular/sifast-spring-web/src/main/resources/application.properties";
+	public static final String APPLICATION_PROPERTIES_FILE = "application.properties";
+	public static final String SWAGGER_CONFIG_FILE_PATH="/Users/qc/Desktop/springular/sifast-spring-web/src/main/java/com/sifast/web/config/";
+	public static final String SWAGGER_CONFIG_FILE = "SwaggerConfig.java";
+	public static final String POINT_ZIP = ".zip";
 }

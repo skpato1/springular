@@ -1,5 +1,6 @@
 package com.sifast.springular.framework.business.logic.service;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -22,5 +23,5 @@ public interface ICommandExecutorService {
 	public void copyEntitiesToDtoFolder(Project project,boolean isWindows) throws IOException, InterruptedException;
 	public void renameDTo(Project project, boolean isWindows) throws IOException, InterruptedException;
 	public void editNameProjectAfterCloning(Project project , boolean isWindows) throws IOException, InterruptedException;
-
+	public void zipProject(Project project) throws FileNotFoundException, IOException;
 }

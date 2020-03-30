@@ -1,6 +1,7 @@
 package com.sifast.springular.framework.business.logic.service.impl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.sifast.springular.framework.business.logic.Executor.DtoFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.SystemCommandExecutor;
+import com.sifast.springular.framework.business.logic.Executor.ZipUtility;
 import com.sifast.springular.framework.business.logic.common.Constants;
 import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
 import com.sifast.springular.framework.business.logic.entities.Project;
@@ -36,6 +38,9 @@ public class CommandExecutorService implements ICommandExecutorService {
 
 	@Autowired
 	DtoFileWriter dtoFileWriter;
+	
+	@Autowired
+	ZipUtility zip;
 
 	@Override
 	public String executeCommand(String cmd) throws IOException, InterruptedException {
@@ -302,17 +307,37 @@ public class CommandExecutorService implements ICommandExecutorService {
 				.concat(Constants.SIFAST_SPRING_WEB)
 				.concat(Constants.PATTERN_SLASH)
 				.concat(Constants.POM_XML));
+		File pomCommon = new File(Constants.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW
+				.concat(project.getNameProject())
+				.concat(Constants.PATTERN_SLASH)
+				.concat(Constants.SIFAST_SPRING_COMMON)
+				.concat(Constants.PATTERN_SLASH)
+				.concat(Constants.POM_XML));
+		
+		File applicationPropertiesFile = new File(Constants.APPLICATION_PROPERTIES_SPRINGULAR_DESKTOP);
+		
+		File swaggerConfigFile = new File(
+				Constants.SWAGGER_CONFIG_FILE_PATH
+				.concat(Constants.SWAGGER_CONFIG_FILE)
+				);
 		
 		editPomFile(project, pom);
 		editPomFile(project, pomPersistence);
 		editPomFile(project, pomService);
 		editPomFile(project, pomWeb);
+		editPomFile(project, pomCommon);
+		editPomFile(project, applicationPropertiesFile);
+		editPomFile(project, swaggerConfigFile);
+
+
+
 		
 	}
 
 	private void editPomFile(Project project, File file) throws IOException {
 		String fileContext = FileUtils.readFileToString(file);
 		fileContext = fileContext.replaceAll(Constants.OLD_PROJECT_NAME,project.getNameProject());
+		fileContext = fileContext.replaceAll(Constants.OLD_PROJECT_NAME_ALT,project.getNameProject());
 		FileUtils.write(file, fileContext);
 	}
 
@@ -323,6 +348,16 @@ public class CommandExecutorService implements ICommandExecutorService {
 		.concat(Constants.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW)
 		.concat(project.getNameProject())
 		);
+	}
+
+	
+	@Override
+	public void zipProject(Project project) throws FileNotFoundException, IOException {
+		List<File> folder = new ArrayList<File>();
+		File file = new File(Constants.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW+project.getNameProject());
+		folder.add(file);
+		zip.zip(folder, Constants.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW+project.getNameProject()+Constants.POINT_ZIP);
+		
 	}
 
 	

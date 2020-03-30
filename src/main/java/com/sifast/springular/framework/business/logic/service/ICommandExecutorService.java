@@ -21,4 +21,6 @@ public interface ICommandExecutorService {
 	public void renameDaoToGeneratedProject(Project project,boolean isWindows) throws IOException, InterruptedException;
 	public void copyEntitiesToDtoFolder(Project project,boolean isWindows) throws IOException, InterruptedException;
 	public void renameDTo(Project project, boolean isWindows) throws IOException, InterruptedException;
+	public void editNameProjectAfterCloning(Project project , boolean isWindows) throws IOException, InterruptedException;
+
 }

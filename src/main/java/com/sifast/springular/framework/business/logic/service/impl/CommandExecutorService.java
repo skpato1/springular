@@ -67,25 +67,11 @@ public class CommandExecutorService implements ICommandExecutorService {
 	public void cloneSpringularFrameworkSocleFromGitlab(Project project, boolean isWindows)
 			throws IOException, InterruptedException {
 		executeCommand(Constants.PATTERN_GIT_CLONE.concat(project.getUsernameProject()).concat(Constants.PATTERN_SLASH)
-				.concat(project.getNameProject()).concat(Constants.PATTERN_POINT_GIT));
-		String source = Constants.PATH_TO_CLONED_PROJECT_SOURCE;
-		String destination = Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE;
-		copyProject(source, destination, isWindows);
-		executeCommand(Constants.COMMAND_DELETE_FOLDER.concat(source));
+				.concat(Constants.OLD_PROJECT_NAME_TO_CLONE).concat(Constants.PATTERN_POINT_GIT));
+		
 
 	}
-
-	private void copyProject(String source, String destination, boolean isWindows)
-			throws IOException, InterruptedException {
-
-		if (isWindows) {
-			executeCommand(Constants.COPY_COMMAND_WINDOWS.concat(source).concat(destination));
-		} else {
-			executeCommand(Constants.COPY_COMMAND_LINUX.concat(source).concat(destination));
-		}
-
-	}
-
+	
 	@Override
 	public void generateApplicationPropertiesFromAngular(String typeDB, String nameDB, String usernameDB, String pwdDB)
 			throws IOException, InterruptedException {
@@ -283,5 +269,63 @@ public class CommandExecutorService implements ICommandExecutorService {
 						.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
 						.concat(entity.getNameEntity().toLowerCase()));
 	}
+
+	@Override
+	public void editNameProjectAfterCloning(Project project, boolean isWindows)
+			throws IOException, InterruptedException {
+			
+						renameProjectFolder(project);
+						editPomFilesWithTheNewProjectName(project);
+			
+	}
+
+	private void editPomFilesWithTheNewProjectName(Project project) throws IOException {
+		File pom = new File(Constants.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW
+				.concat(project.getNameProject())
+				.concat(Constants.PATTERN_SLASH)
+				.concat(Constants.POM_XML));
+		File  pomPersistence= new File(Constants.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW
+				.concat(project.getNameProject())
+				.concat(Constants.PATTERN_SLASH)
+				.concat(Constants.SIFAST_SPRING_PERSISTENCE)
+				.concat(Constants.PATTERN_SLASH)
+				.concat(Constants.POM_XML));
+		File pomService = new File(Constants.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW
+				.concat(project.getNameProject())
+				.concat(Constants.PATTERN_SLASH)
+				.concat(Constants.SIFAST_SPRING_SERVICE)
+				.concat(Constants.PATTERN_SLASH)
+				.concat(Constants.POM_XML));
+		File pomWeb = new File(Constants.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW
+				.concat(project.getNameProject())
+				.concat(Constants.PATTERN_SLASH)
+				.concat(Constants.SIFAST_SPRING_WEB)
+				.concat(Constants.PATTERN_SLASH)
+				.concat(Constants.POM_XML));
+		
+		editPomFile(project, pom);
+		editPomFile(project, pomPersistence);
+		editPomFile(project, pomService);
+		editPomFile(project, pomWeb);
+		
+	}
+
+	private void editPomFile(Project project, File file) throws IOException {
+		String fileContext = FileUtils.readFileToString(file);
+		fileContext = fileContext.replaceAll(Constants.OLD_PROJECT_NAME,project.getNameProject());
+		FileUtils.write(file, fileContext);
+	}
+
+	private void renameProjectFolder(Project project) throws IOException, InterruptedException {
+		executeCommand(
+		 Constants.RENAME_COMMAND_LINUX_FILES
+		.concat(Constants.PATH_TO_CLONED_PROJECT_SOURCE).concat(" ")
+		.concat(Constants.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW)
+		.concat(project.getNameProject())
+		);
+	}
+
+	
+	
 
 }

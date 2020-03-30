@@ -53,6 +53,8 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 			httpStatus = HttpStatus.OK;
 
 			commandExecutorService.cloneSpringularFrameworkSocleFromGitlab(project.get(), isWindows);
+			commandExecutorService.editNameProjectAfterCloning(project.get(), isWindows);
+
 			commandExecutorService.createFolderForEachDto(project.get());
 
 			jDLFileGeneratorService.generateProjectWithJdl(project.get());

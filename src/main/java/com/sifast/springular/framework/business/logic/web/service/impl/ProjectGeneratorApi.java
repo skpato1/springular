@@ -1,6 +1,5 @@
 package com.sifast.springular.framework.business.logic.web.service.impl;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -36,7 +35,7 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 	private HttpStatus httpStatus;
 
 	@Autowired
-	private IJDLFileGeneratorService jDLFileGeneratorService;
+	private IJDLFileGeneratorService jdlFileGeneratorService;
 
 	@Autowired
 	private ICommandExecutorService commandExecutorService;
@@ -54,60 +53,48 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 			httpStatus = HttpStatus.OK;
 
 			commandExecutorService.cloneSpringularFrameworkSocleFromGitlab(project.get(), isWindows);
-			
+
 			commandExecutorService.editNameProjectAfterCloning(project.get(), isWindows);
 
 			commandExecutorService.createFolderForEachDto(project.get());
 
-			jDLFileGeneratorService.generateProjectWithJdl(project.get());
+			jdlFileGeneratorService.generateProjectWithJdl(project.get());
 
 			commandExecutorService.executeJdlFromTerminal(isWindows);
 
 			commandExecutorService.copyEntitiesToGeneratedProject(project.get(), isWindows);
 
-			jDLFileGeneratorService.extendTimeStampInGeneratedEntities(project.get());
+			jdlFileGeneratorService.extendTimeStampInGeneratedEntities(project.get());
 
-			jDLFileGeneratorService.deleteUnusedCommentsInGeneratedEntities(project.get());
+			jdlFileGeneratorService.deleteUnusedCommentsInGeneratedEntities(project.get());
 
 			commandExecutorService.copyDaoToGeneratedProject(project.get(), isWindows);
 
 			commandExecutorService.renameDaoToGeneratedProject(project.get(), isWindows);
 
-			jDLFileGeneratorService.writeFilesDao(project.get());
+			jdlFileGeneratorService.writeFilesDao(project.get());
 
-			jDLFileGeneratorService.writeFilesIService(project.get());
+			jdlFileGeneratorService.writeFilesIService(project.get());
 
-			jDLFileGeneratorService.writeFilesService(project.get());
+			jdlFileGeneratorService.writeFilesService(project.get());
 
-			jDLFileGeneratorService.createFilesInEachFolderDTO(project.get());
+			jdlFileGeneratorService.createFilesInEachFolderDTO(project.get());
 
 			commandExecutorService.copyEntitiesToDtoFolder(project.get(), isWindows);
 
 			commandExecutorService.renameDTo(project.get(), isWindows);
 
-			jDLFileGeneratorService.createFilesInEachFolderDTO(project.get());
+			jdlFileGeneratorService.createFilesInEachFolderDTO(project.get());
 
-		} else {
-			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
-			httpStatus = HttpStatus.NOT_FOUND;
-			httpResponseBody = httpErrorResponse;
-		}
-		return new ResponseEntity<>(httpResponseBody, httpStatus);
-	}
-
-	@Override
-	public ResponseEntity<Object> downloadZipProject(@PathVariable int id) throws FileNotFoundException, IOException {
-		Optional<Project> project = projectService.findById(id);
-		if (project.isPresent()) {
-			httpStatus = HttpStatus.OK;
 			commandExecutorService.zipProject(project.get());
+
 		} else {
 			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
 			httpStatus = HttpStatus.NOT_FOUND;
 			httpResponseBody = httpErrorResponse;
 		}
 		return new ResponseEntity<>(httpResponseBody, httpStatus);
-
 	}
+
 
 }

@@ -178,7 +178,7 @@ public class DtoFileWriter {
 
 		ent.getAttributes().stream().forEach(attribute -> {
 			try {
-				if (!attribute.getTypeAttribute().name().equals(AttributesTypeEnum.Set.name())) {
+				if (!attribute.getTypeAttribute().name().equals(AttributesTypeEnum.Set.name()) && !attribute.getTypeAttribute().name().contains(AttributesTypeEnum.List.name())) {
 					if (!attribute.getNameAttribute().contains("Id")) {
 						myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.ANNOTATION_NOT_NULL));
 					}
@@ -211,6 +211,8 @@ public class DtoFileWriter {
 			String getterAttribute = firstLetter.toUpperCase()
 					.concat(attributeForGetterAndSetter.getNameAttribute().substring(1));
 			try {
+				if (!attributeForGetterAndSetter.getTypeAttribute().name().equals(AttributesTypeEnum.Set.name()) && !attributeForGetterAndSetter.getTypeAttribute().name().contains(AttributesTypeEnum.List.name())) {
+					
 				myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC)
 						.concat(attributeForGetterAndSetter.getTypeAttribute().name()).concat(" ").concat("get")
 						.concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE)
@@ -235,6 +237,44 @@ public class DtoFileWriter {
 								.concat(attributeForGetterAndSetter.getNameAttribute()))
 						.concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
 						.concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+					}
+				else {
+					myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC)
+							.concat(attributeForGetterAndSetter.getTypeAttribute().name())
+							.concat(Constants.INFERIEUR)
+							.concat(Constants.LONG)
+							.concat(" ").concat("get")
+							.concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE)
+							.concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
+							.concat(Constants.PATTERN_RETOUR_LIGNE)
+							.concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION)
+									.concat(Constants.RETURN))
+							.concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.PATTERN_POINT_VIRGULE)
+							.concat(Constants.PATTERN_RETOUR_LIGNE)
+							.concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+					myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+					myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+
+					myWriter.write(Constants.PATTERN_TABULATION
+							.concat(Constants.PUBLIC)
+							.concat(Constants.VOID)
+							.concat("set")
+							.concat(getterAttribute)
+							.concat(Constants.PARENTHESE_OUVRANTE)
+							.concat(attributeForGetterAndSetter.getTypeAttribute().name())
+							.concat(Constants.INFERIEUR)
+							.concat(Constants.LONG)
+							.concat(" ")
+							.concat(attributeForGetterAndSetter.getNameAttribute())
+							.concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
+							.concat(Constants.PATTERN_RETOUR_LIGNE)
+							.concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.THIS)
+									.concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.EGALE)
+									.concat(attributeForGetterAndSetter.getNameAttribute()))
+							.concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
+							.concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+
+				}
 				myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
 				myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
 
@@ -416,7 +456,7 @@ public class DtoFileWriter {
 		ent.getAttributes().stream().forEach(attribute -> {
 			try {
 				String firstLetter = attribute.getNameAttribute().charAt(0)+"";
-				String view= firstLetter.toUpperCase()+attribute.getNameAttribute().substring(1);
+				String view= firstLetter.toUpperCase()+attribute.getNameAttribute().substring(1,attribute.getNameAttribute().length()-1);
 					if(attribute.getTypeAttribute().equals(AttributesTypeEnum.List))
 					{
 					myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE)
@@ -617,7 +657,7 @@ public class DtoFileWriter {
 					myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE)
 							.concat(AttributesTypeEnum.Long.name()).concat(" ")
 							.concat("id")
-							.concat(Constants.PATTERN_RETOUR_LIGNE));
+							.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
 					
 				} catch (IOException e) {
 					e.printStackTrace();

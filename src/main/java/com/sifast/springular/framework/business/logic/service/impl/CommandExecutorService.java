@@ -134,7 +134,9 @@ public class CommandExecutorService implements ICommandExecutorService {
 			executeCommand(Constants.COPY_COMMAND_LINUX_FILES
 					.concat(Constants.PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES).concat(entitiesFiles).concat("} ")
 					.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE));
-
+			System.out.println(Constants.COPY_COMMAND_LINUX_FILES
+					.concat(Constants.PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES).concat(entitiesFiles).concat("} ")
+					.concat(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE));	
 		}
 	}
 

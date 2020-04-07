@@ -18,7 +18,7 @@ public class Constants {
 	public static final String PATTERN_POINT_VIRGULE = ";";
 	public static final String PATTERN_SLASH = "/";
 	public static final String PATTERN_ANTI_SLASH = "\"";
-	public static final String PATTERN_PATH_APPLICATION_PROPERTIES = "/Users/qc/Desktop/springular-framework/sifast-spring-web/src/main/resources/application.properties";
+	public static final String PATTERN_PATH_APPLICATION_PROPERTIES = "/Users/qc/Desktop/springular/sifast-spring-web/src/main/resources/application.properties";
 	public static final String PATTERN_DATABASE_NAME = "db_springular";
 	public static final String PATTERN_DATABASE_USERNAME = "root";
 	public static final String PATTERN_DATABASE_PASSWORD = "sifast2014";
@@ -26,7 +26,7 @@ public class Constants {
 	public static final String PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE = ";\n";
 	public static final String ACCOLADE_OUVRANT = "{";
 	public static final String ACCOLADE_FERMANTE = "}";
-	public static final String PATTERN_PATH_TO_PACKAGE_MODEL = "/Users/qc/Desktop/springular-framework/sifast-spring-persistence/src/main/java/com/sifast/model";
+	public static final String PATTERN_PATH_TO_PACKAGE_MODEL = "/Users/qc/Desktop/springular/sifast-spring-persistence/src/main/java/com/sifast/model";
 	public static final String PATTERN_PACKAGE_NAME = "com.sifast.springular.framework";
 
 	public static final String COPY_COMMAND_WINDOWS = "copy -a ";
@@ -34,15 +34,15 @@ public class Constants {
 	public static final String COPY_COMMAND_LINUX_FILES = "mv ";
 	public static final String COPY_COMMAND_LINUX_FILES_CP = "cp ";
 
-	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE = "/Users/qc/Desktop/springular-framework-socle/sifast-spring-persistence/src/main/java/com/sifast/model/ ";
-	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/sifast-spring-persistence/src/main/java/com/sifast/model/";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE = "/Users/qc/Desktop/springular/sifast-spring-persistence/src/main/java/com/sifast/model/ ";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES = "/Users/qc/Desktop/springular/sifast-spring-persistence/src/main/java/com/sifast/model/";
 	public static final String PATH_TO_GENERATED_JHIPSTER_PROJECT = "/Users/qc/Desktop/testjdl/src/main/java/com/sifast/springular/framework/domain/ ";
 	public static final String PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES = "/Users/qc/Desktop/testjdl/src/main/java/com/sifast/springular/framework/domain/";
 	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE = "/Users/qc/Desktop";
 	public static final String NAME_PROJECT = "SpringularFrameworkSocle";
 	public static final String ENABLE_DTO_GENERATION = "dto all with mapstruct";
 	public static final String PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW = "/Users/qc/Desktop/";
-	public static final String PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_OLD = "/Users/qc/Desktop/springular-framework-socle ";
+	public static final String PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_OLD = "/Users/qc/Desktop/springular ";
 	public static final String PATH_TO_CLONED_PROJECT_SOURCE = "/Users/qc/Documents/springular-framework/springular-framework-business-logic/springular-framework-socle";
 	public static final String COMMAND_DELETE_FOLDER = "rm -r ";
 	public static final String EXTEND_TIMESTAMP_ENTITY = "extends TimestampEntity implements";
@@ -51,17 +51,17 @@ public class Constants {
 	public static final String UNUSED_COMMENTS_FOR_METHOD = "// jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove";
 	public static final String ANNOTATION_NO_FLUENT_METHOD = "@noFluentMethod";
 	public static final String SKIP_INSTALL_NODE_MODULES = "--skip-install";
-	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/sifast-spring-web/src/main/java/com/sifast/dto/";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES = "/Users/qc/Desktop/springular/sifast-spring-web/src/main/java/com/sifast/dto/";
 	public static final String MKDIR_COMMAND = "mkdir ";
-	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MAPPER = "/Users/qc/Desktop/springular-framework-socle/springular-framework-web/src/main/java/com/sifast/common/mapper/";
-	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_SERVICE_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/sifast-spring-service/src/main/java/com/sifast/service/";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MAPPER = "/Users/qc/Desktop/springular/springular-framework-web/src/main/java/com/sifast/common/mapper/";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_SERVICE_PACKAGE_FILES = "/Users/qc/Desktop/springular/sifast-spring-service/src/main/java/com/sifast/service/";
 	public static final String PACKAGE_SPRINGULAR_SERVICE = "package com.sifast.service;";
 	public static final String IMPORT_TRANSACTIONAL = "import org.springframework.transaction.annotation.Transactional;";
 	public static final String IMPORT_ENTITY_MODEL = "import com.sifast.model.";
 	public static final String ANNOTATION_TRANSACTIONAL = "@Transactional";
 	public static final String INTERFACE_PUBLIC = "public interface ";
 	public static final String IGENERIC_SERVICE = "IGenericService<";
-	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_SERVICE_IMPL_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/sifast-spring-service/src/main/java/com/sifast/service/impl/";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_SERVICE_IMPL_PACKAGE_FILES = "/Users/qc/Desktop/springular/sifast-spring-service/src/main/java/com/sifast/service/impl/";
 	public static final String PACKAGE_SPRINGULAR_SERVICE_IMPL = "package com.sifast.service.impl;";
 	public static final String IMPORT_ANNOTATION_SERVICE = "import org.springframework.stereotype.Service;";
 	public static final String ANNOTATION_SERVICE = "@Service";
@@ -70,8 +70,8 @@ public class Constants {
 	public static final String GENERIC_SERVICE = " GenericService<";
 	public static final String PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT = "/Users/qc/Desktop/testjdl/src/main/java/com/sifast/springular/framework/repository/ ";
 	public static final String PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT_FILES = "/Users/qc/Desktop/testjdl/src/main/java/com/sifast/springular/framework/repository/";
-	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE = "/Users/qc/Desktop/springular-framework-socle/sifast-spring-persistence/src/main/java/com/sifast/dao/ ";
-	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES = "/Users/qc/Desktop/springular-framework-socle/sifast-spring-persistence/src/main/java/com/sifast/dao/";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE = "/Users/qc/Desktop/springular/sifast-spring-persistence/src/main/java/com/sifast/dao/ ";
+	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES = "/Users/qc/Desktop/springular/sifast-spring-persistence/src/main/java/com/sifast/dao/";
 	public static final String RENAME_COMMAND_WINDOWS = "mv ";
 	public static final String RENAME_COMMAND_LINUX_FILES = "mv ";
 	public static final String SUPRESS_WARNINGS = "@SuppressWarnings";

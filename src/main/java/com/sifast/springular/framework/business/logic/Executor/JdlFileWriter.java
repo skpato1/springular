@@ -7,8 +7,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.sifast.springular.framework.business.logic.common.Constants;
 import com.sifast.springular.framework.business.logic.common.RelationshipTypeEnum;
+import com.sifast.springular.framework.business.logic.common.constants.Constants;
+import com.sifast.springular.framework.business.logic.common.constants.ConstantsAnnotations;
+import com.sifast.springular.framework.business.logic.common.constants.ConstantsImportPackage;
 import com.sifast.springular.framework.business.logic.entities.Attribute;
 import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
 import com.sifast.springular.framework.business.logic.entities.Project;
@@ -58,7 +60,7 @@ public class JdlFileWriter {
 				Constants.PATTERN_TABULATION .concat( "config ") .concat( Constants.ACCOLADE_OUVRANT ).concat( Constants.PATTERN_RETOUR_LIGNE));
 		myWriter.write(
 				Constants.PATTERN_TABULATION .concat( "baseName ") .concat( Constants.NAME_PROJECT ).concat( Constants.PATTERN_RETOUR_LIGNE));
-		myWriter.write(Constants.PATTERN_TABULATION .concat( "packageName ") .concat( Constants.PATTERN_PACKAGE_NAME)
+		myWriter.write(Constants.PATTERN_TABULATION .concat( "packageName ") .concat( ConstantsImportPackage.PATTERN_PACKAGE_NAME)
 				.concat( Constants.PATTERN_RETOUR_LIGNE));
 		myWriter.write(Constants.PATTERN_TABULATION .concat( "applicationType ") .concat( project.getTypeProject())
 				.concat( Constants.PATTERN_RETOUR_LIGNE));
@@ -76,7 +78,7 @@ public class JdlFileWriter {
 	}
 
 	public void writeEntityNameInJdlFile(FileWriter myWriter, BuisnessLogicEntity entity) throws IOException {
-		myWriter.write(Constants.ANNOTATION_NO_FLUENT_METHOD.concat(Constants.PATTERN_RETOUR_LIGNE));
+		myWriter.write(ConstantsAnnotations.ANNOTATION_NO_FLUENT_METHOD.concat(Constants.PATTERN_RETOUR_LIGNE));
 		myWriter.write(
 				"entity " .concat( entity.getNameEntity() ).concat( Constants.ACCOLADE_OUVRANT ).concat( Constants.PATTERN_RETOUR_LIGNE));
 	}

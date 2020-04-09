@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.sifast.springular.framework.business.logic.common.Constants;
+import com.sifast.springular.framework.business.logic.common.constants.Constants;
 import com.sifast.springular.framework.business.logic.dao.IGenericDao;
 import com.sifast.springular.framework.business.logic.service.IGenericService;
 

@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.sifast.springular.framework.business.logic.common.ApiMessage;
-import com.sifast.springular.framework.business.logic.common.Constants;
+import com.sifast.springular.framework.business.logic.common.constants.Constants;
 
 public class DatabaseDto {
 	

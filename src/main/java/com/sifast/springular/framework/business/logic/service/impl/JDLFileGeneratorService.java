@@ -14,7 +14,8 @@ import com.sifast.springular.framework.business.logic.Executor.DtoFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.IServiceFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.DaoFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.JdlFileWriter;
-import com.sifast.springular.framework.business.logic.common.Constants;
+import com.sifast.springular.framework.business.logic.common.constants.Constants;
+import com.sifast.springular.framework.business.logic.common.constants.ConstantsPath;
 import com.sifast.springular.framework.business.logic.entities.Project;
 import com.sifast.springular.framework.business.logic.service.IJDLFileGeneratorService;
 
@@ -49,7 +50,7 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 	public void extendTimeStampInGeneratedEntities(Project project) throws IOException {
 		project.getEntities().stream().forEach(entity -> {
 			try {
-				File file = new File(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES
+				File file = new File(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES
 						+ entity.getNameEntity().concat(".java"));
 				String fileContext = FileUtils.readFileToString(file);
 				fileContext = fileContext.replaceAll(Constants.IMPLEMENTS, Constants.EXTEND_TIMESTAMP_ENTITY);
@@ -65,7 +66,7 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 	public void deleteUnusedCommentsInGeneratedEntities(Project project) throws IOException {
 		project.getEntities().stream().forEach(entity -> {
 			try {
-				File file = new File(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES
+				File file = new File(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES
 						+ entity.getNameEntity().concat(".java"));
 				String fileContext = FileUtils.readFileToString(file);
 				fileContext = fileContext.replaceAll(Constants.UNUSED_COMMENTS_FOR_ATTRIBUE, "");

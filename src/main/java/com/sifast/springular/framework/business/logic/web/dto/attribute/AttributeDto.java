@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 
 import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.AttributesTypeEnum;
-import com.sifast.springular.framework.business.logic.common.Constants;
+import com.sifast.springular.framework.business.logic.common.constants.Constants;
 
 public class AttributeDto {
 

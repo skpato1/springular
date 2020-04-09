@@ -6,7 +6,10 @@ import java.io.IOException;
 
 import org.springframework.stereotype.Component;
 
-import com.sifast.springular.framework.business.logic.common.Constants;
+import com.sifast.springular.framework.business.logic.common.constants.Constants;
+import com.sifast.springular.framework.business.logic.common.constants.ConstantsAnnotations;
+import com.sifast.springular.framework.business.logic.common.constants.ConstantsImportPackage;
+import com.sifast.springular.framework.business.logic.common.constants.ConstantsPath;
 import com.sifast.springular.framework.business.logic.entities.Project;
 
 @Component
@@ -16,18 +19,18 @@ public class DaoFileWriter {
 	public void writeDaoFiles(Project project) throws IOException {
 		project.getEntities().stream().forEach(entity->{
 			try {
-				File file = new File(Constants.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES
+				File file = new File(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES
 				.concat("I")+ entity.getNameEntity().concat("Dao.java"));
 				String fileDao="I".concat(entity.getNameEntity()).concat("Dao");
 				FileWriter myWriter= new FileWriter(file);
 				myWriter.write("");
-				myWriter.write(Constants.PACKAGE_SPRINGULAR_DAO.concat(Constants.PATTERN_RETOUR_LIGNE));
-				myWriter.write(Constants.IMPORT_SPRINGULAR_DOMAIN_TO_REPLACE.concat(entity.getNameEntity()).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
-				myWriter.write(Constants.IMPORT_SPRINGULAR_REPOSITORY_ALL.concat(Constants.PATTERN_RETOUR_LIGNE));
-				myWriter.write(Constants.IMPORT_SPRINGULAR_REPOSITORY.concat(Constants.PATTERN_RETOUR_LIGNE));
+				myWriter.write(ConstantsImportPackage.PACKAGE_SPRINGULAR_DAO.concat(Constants.PATTERN_RETOUR_LIGNE));
+				myWriter.write(ConstantsImportPackage.IMPORT_SPRINGULAR_DOMAIN_TO_REPLACE.concat(entity.getNameEntity()).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+				myWriter.write(ConstantsImportPackage.IMPORT_SPRINGULAR_REPOSITORY_ALL.concat(Constants.PATTERN_RETOUR_LIGNE));
+				myWriter.write(ConstantsImportPackage.IMPORT_SPRINGULAR_REPOSITORY.concat(Constants.PATTERN_RETOUR_LIGNE));
 				myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
 				myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-				myWriter.write(Constants.ANNOTATION_REPOSITORY.concat(Constants.PATTERN_RETOUR_LIGNE));
+				myWriter.write(ConstantsAnnotations.ANNOTATION_REPOSITORY.concat(Constants.PATTERN_RETOUR_LIGNE));
 				myWriter.write(Constants.PUBLIC_INTERFACE
 						.concat(fileDao)
 						.concat(Constants.EXTENDS)

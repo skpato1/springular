@@ -88,6 +88,8 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 
 			commandExecutorService.zipProject(project.get());
 
+			jdlFileGeneratorService.writeFilesMappers(project.get());
+
 		} else {
 			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
 			httpStatus = HttpStatus.NOT_FOUND;
@@ -95,6 +97,5 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 		}
 		return new ResponseEntity<>(httpResponseBody, httpStatus);
 	}
-
 
 }

@@ -11,5 +11,9 @@ public class ConstantsAnnotations {
 	public static final String ANNOTATION_SERVICE = "@Service";
 	public static final String ANNOTATION_TRANSACTIONAL = "@Transactional";
 	public static final String ANNOTATION_NO_FLUENT_METHOD = "@noFluentMethod";
+	public static final String ANNOTATION_COMPONENT = "@Component\n";
+	public static final String ANNOTATION_AUTOWIRED = "@Autowired\n";
+	public static final String INJECT_MODEL_MAPPER= "private ConfiguredModelMapper modelMapper;\n";
+
 
 }

@@ -70,4 +70,5 @@ public class Constants {
 	public static final String APPLICATION_PROPERTIES_FILE = "application.properties";
 	public static final String SWAGGER_CONFIG_FILE = "SwaggerConfig.java";
 	public static final String POINT_ZIP = ".zip";
+	public static final String METHODE_MAP = "modelMapper.map";
 }

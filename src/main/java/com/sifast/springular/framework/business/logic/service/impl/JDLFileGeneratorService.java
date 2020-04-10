@@ -14,6 +14,7 @@ import com.sifast.springular.framework.business.logic.Executor.DtoFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.IServiceFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.DaoFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.JdlFileWriter;
+import com.sifast.springular.framework.business.logic.Executor.MapperFileWriter;
 import com.sifast.springular.framework.business.logic.common.constants.Constants;
 import com.sifast.springular.framework.business.logic.common.constants.ConstantsPath;
 import com.sifast.springular.framework.business.logic.entities.Project;
@@ -36,6 +37,9 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 
 	@Autowired
 	DaoFileWriter daoFileWriter;
+	
+	@Autowired
+	MapperFileWriter mapperFileWriter;
 
 	@Override
 	public void generateProjectWithJdl(Project project) throws IOException {
@@ -99,6 +103,16 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 
 	public void writeFilesDao(Project project) throws IOException {
 		daoFileWriter.writeDaoFiles(project);
+	}
+
+	@Override
+	public void writeFilesMappers(Project project) throws IOException {
+		project.getEntities().stream().forEach(entity -> {
+			mapperFileWriter.generateMapperFiles(entity, project);
+		});
+			
+		
+		
 	}
 
 }

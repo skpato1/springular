@@ -14,6 +14,12 @@ public class ConstantsAnnotations {
 	public static final String ANNOTATION_COMPONENT = "@Component\n";
 	public static final String ANNOTATION_AUTOWIRED = "@Autowired\n";
 	public static final String INJECT_MODEL_MAPPER= "private ConfiguredModelMapper modelMapper;\n";
+	public static final String ANNOTATION_SWAGGER_API_RESPONSES = "@ApiResponses";
+	public static final String ANNOTATION_SWAGGER_API_RESPONSE = "@ApiResponse";
+	public static final String ANNOTATION_SWAGGER_API_OPERATION = "@ApiOperation";
+	public static final String ANNOTATION_REQUEST_MAPPING = "@RequestMapping";
+
+	
 
 
 }

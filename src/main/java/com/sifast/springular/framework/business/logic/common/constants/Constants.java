@@ -71,4 +71,25 @@ public class Constants {
 	public static final String SWAGGER_CONFIG_FILE = "SwaggerConfig.java";
 	public static final String POINT_ZIP = ".zip";
 	public static final String METHODE_MAP = "modelMapper.map";
+	public static final String POINT = ".";
+	public static final String PARENTHESE_VALUE_EGALE_ACCOLADE="(value = {\n";
+	public static final String PARENTHESE_CODE_EGALE="(code =";
+	public static final String API_STATUS_ACCEPTED="ApiStatus.STATUS_ACCEPTED";
+	public static final String API_MESSAGE="message = ApiMessage.";
+	public static final String _CREATED_SUCCESSFULLY ="_CREATED_SUCCESSFULLY";
+	public static final String RESPONSE_EGALE = "response = ";
+	public static final String POINT_CLASS = ".class";
+	public static final String API_STATUS_BAD_REQUEST = "ApiStatus.STATUS_BAD_REQUEST";
+	public static final String INVALID_INPUT = "INVALID_INPUT";
+	public static final String HTTP_ERROR_RESPONSE= "HttpErrorResponse";
+	public static final String PARENTHESE_VALUE_EGALE="(value = ";
+	public static final String METHOD_EGALE="method =";
+	public static final String REQUEST_METHOD_POINT = "RequestMethod.";
+	public static final String POST = "POST";
+	public static final String RESPONSE_ENTITY = "ResponseEntity<Object> ";
+	public static final String BINDING_RESULT = "BindingResult";
+	public static final String GET = "GET";
+	public static final String INT = "int";
+	public static final String DELETE = "DELETE";
+	public static final String PUT = "PUT";
 }

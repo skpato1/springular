@@ -24,4 +24,11 @@ public class ConstantsImportPackage {
 	public static final String IMPORT_TRANSACTIONAL = "import org.springframework.transaction.annotation.Transactional;";
 	public static final String IMPORT_ENTITY_MODEL = "import com.sifast.model.";
 	public static final String PATTERN_PACKAGE_NAME = "com.sifast.springular.framework";
+	public static final String PACKAGE_MAPPER = "package com.sifast.common.mapper;";
+	public static final String IMPORT_AUTOWIRED="import org.springframework.beans.factory.annotation.Autowired;\n";
+	public static final String IMPORT_COMPONENT="import org.springframework.stereotype.Component;\n";
+	public static final String IMPORT_CONFIGURE_MODEL_MAPPER="import com.sifast.web.config.ConfiguredModelMapper;\n";
+	public static final String IMPORT_DTO ="import com.sifast.dto.";
+	public static final String IMPORT_COLLECTORS = "import java.util.stream.Collectors;\n";
+	public static final String IMPORT_ARRAY_LIST = "import java.util.ArrayList;\n";
 }

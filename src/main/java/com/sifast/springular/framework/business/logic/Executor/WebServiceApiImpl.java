@@ -260,7 +260,200 @@ public class WebServiceApiImpl {
 		String entities=ent.getNameEntity().toLowerCase().concat("s");
 		String variableService=ent.getNameEntity().concat("Service");
 		getAllWS(ent, myWriter, entities, variableService);
+		deleteWS(ent, myWriter, variableService);
+
 	}
+
+
+
+	private void deleteWS(BuisnessLogicEntity ent, FileWriter myWriter, String variableService) throws IOException {
+		overrideAnnotation(myWriter);
+		signatureOfDeleteMethod(ent, myWriter);
+		implementationOfDeleteMethod(ent, myWriter, variableService);
+		
+	}
+
+	private void signatureOfDeleteMethod(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+		
+		myWriter.write(Constants.PUBLIC
+				.concat(Constants.RESPONSE_ENTITY)
+				.concat("delete")
+				.concat(ent.getNameEntity())
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(ConstantsAnnotations.ANNOTATION_API_PARAM)
+				.concat(Constants.PARENTHESE_VALUE_EGALE)
+				.concat(Constants.DOUBLE_COTE)
+				.concat("ID of ")
+				.concat(ent.getNameEntity())
+				.concat(" that needs to be deleted")
+				.concat(Constants.DOUBLE_COTE)
+				.concat(Constants.VIRGULE)
+				.concat(Constants.REQUIRED_EGALE_TRUE)
+				.concat(Constants.VIRGULE)
+				.concat(Constants.ALLOWABLE_VALUES)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(" ")
+				.concat(ConstantsAnnotations.PATH_VARIABLE)
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(Constants.DOUBLE_COTE)
+				.concat(Constants.ID_MINUS)
+				.concat(Constants.DOUBLE_COTE)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(" ")
+				.concat(Constants.INT)
+				.concat(" ")
+				.concat(Constants.ID_MINUS)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.ACCOLADE_OUVRANT)
+				.concat(Constants.PATTERN_RETOUR_LIGNE));
+	}
+
+	private void implementationOfDeleteMethod(BuisnessLogicEntity ent, FileWriter myWriter, String variableService) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE
+				.concat(Constants.PATTERN_TABULATION)
+				);
+		loggerInfo(ent, myWriter);
+		String preDeleteEntity = "preDelete".concat(ent.getNameEntity().toLowerCase());
+		optionalObject(ent, myWriter, variableService.toLowerCase(), preDeleteEntity);
+		ifOptionalObjectIsPresent(ent, myWriter,preDeleteEntity,variableService.toLowerCase());
+		elseOptionalObjectIsPresent(ent, myWriter);
+		returnWS(myWriter);
+
+	}
+
+
+
+	
+
+
+
+	
+
+
+
+	private void ifOptionalObjectIsPresent(BuisnessLogicEntity ent, FileWriter myWriter, String preDeleteEntity,
+			String variableService) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		myWriter.write(Constants.IF
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(preDeleteEntity)
+				.concat(Constants.POINT)
+				.concat(Constants.IS_PRESENT_METHOD)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.ACCOLADE_OUVRANT)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(variableService)
+				.concat(Constants.POINT)
+				.concat(Constants.DELETE_METHOD)
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(variableService)
+				.concat(Constants.POINT)
+				.concat(Constants.GET_METHOD)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.PATTERN_POINT_VIRGULE)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.HTTP_STATUS_OK)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.LOGGER_INFO)
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(Constants.DOUBLE_COTE)
+				.concat("INFO level message: ")
+				.concat(ent.getNameEntity().toLowerCase())
+				.concat("with id = {} deleted")
+				.concat(Constants.DOUBLE_COTE)
+				.concat(Constants.VIRGULE)
+				.concat(Constants.ID_MINUS)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.ACCOLADE_FERMANTE)
+				);
+		
+	}
+
+	private void elseOptionalObjectIsPresent(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		myWriter.write(Constants.ELSE
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.ACCOLADE_OUVRANT)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.HTTP_ERROR_RESPONSE_SET_CODE_AND_MESSAGE)
+				.concat(ent.getNameEntity().toUpperCase())
+				.concat(Constants._NOT_FOUND)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.HTTP_STATUS_NOT_FOUND)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.HTTP_RESPONSE_BODY_EGALE_HTTP_ERROR_RESPONSE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.ACCOLADE_FERMANTE)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+
+				);
+		
+	}
+
+	private void optionalObject(BuisnessLogicEntity ent, FileWriter myWriter, String variableService,
+			String preDeleteEntity) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		myWriter.write(Constants.OPTIONAL
+				.concat(Constants.INFERIEUR)
+				.concat(ent.getNameEntity())
+				.concat(Constants.SUPERIEUR)
+				.concat(" ")
+				.concat(preDeleteEntity)
+				.concat(Constants.EGALE)
+				.concat(variableService)
+				.concat(Constants.POINT)
+				.concat(Constants.FIND_BY_ID)
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(Constants.ID_MINUS)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
+				);
+	}
+
+
+
+	private void loggerInfo(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		myWriter.write(Constants.LOGGER_INFO
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(Constants.DOUBLE_COTE)
+				.concat("Web Service delete")
+				.concat(ent.getNameEntity())
+				.concat(" invoked with id {}")
+				.concat(Constants.DOUBLE_COTE)
+				.concat(Constants.VIRGULE)
+				.concat(Constants.ID_MINUS)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.PATTERN_POINT_VIRGULE)
+				);
+	}
+
+
+
+	
 
 
 
@@ -333,11 +526,18 @@ public class WebServiceApiImpl {
 				.concat(Constants.COLLECTIONS_EMPTY_LIST)
 				.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
 				.concat(Constants.PATTERN_RETOUR_LIGNE)
-				.concat(Constants.PATTERN_TABULATION)
-				.concat(Constants.RETURN_WS)
-				.concat(Constants.PATTERN_TABULATION)
-				.concat(Constants.ACCOLADE_FERMANTE)
 				);
+				returnWS(myWriter);
+	}
+
+
+
+	private void returnWS(FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.PATTERN_TABULATION
+		.concat(Constants.RETURN_WS)
+		.concat(Constants.PATTERN_TABULATION)
+		.concat(Constants.ACCOLADE_FERMANTE)
+		);
 	}
 
 

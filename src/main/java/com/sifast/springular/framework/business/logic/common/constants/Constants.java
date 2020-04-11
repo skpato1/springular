@@ -112,4 +112,18 @@ public class Constants {
 	public static final String DEUX_POINTS = " : ";
 	public static final String COLLECTIONS_EMPTY_LIST = "Collections.emptyList()";
 	public static final String RETURN_WS="return new ResponseEntity<>(httpResponseBody, httpStatus);\n";
+	public static final String REQUIRED_EGALE_TRUE = " required = true ";
+	public static final String ALLOWABLE_VALUES = "allowableValues = \"range[1,infinity]\"";
+	public static final String LOGGER_INFO = "LOGGER.info";
+	public static final String OPTIONAL="Optional";
+	public static final String FIND_BY_ID = "findById";
+	public static final String IF = "if ";
+	public static final String IS_PRESENT_METHOD = "isPresent()";
+	public static final String DELETE_METHOD = "delete";
+	public static final String GET_METHOD = "get()";
+	public static final String HTTP_STATUS_NOT_FOUND ="httpStatus = HttpStatus.NOT_FOUND;\n";
+	public static final String ELSE = "else ";
+	public static final String HTTP_RESPONSE_BODY_EGALE_HTTP_ERROR_RESPONSE= "httpResponseBody = httpErrorResponse;\n";
+	public static final String HTTP_ERROR_RESPONSE_SET_CODE_AND_MESSAGE = "httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.";
+	public static final String _NOT_FOUND="_NOT_FOUND";
 }

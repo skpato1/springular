@@ -20,7 +20,6 @@ public class WebServiceApiImpl {
 	public void generateWebServicesImplFiles(BuisnessLogicEntity entity, Project project) {
 		project.getEntities().stream().forEach(ent -> {
 			try {
-				
 				FileWriter myWriter = writeImportsAndStructureOfClassInWSApi(ent);
 				injectServicesAndConfigInWS(ent, myWriter);
 				writeWebServicesMethods(ent, myWriter);
@@ -175,93 +174,169 @@ public class WebServiceApiImpl {
 
 
 
-	private void httpStatusDeclaration(FileWriter myWriter) throws IOException {
-		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-		myWriter.write(Constants.PATTERN_TABULATION);
-		myWriter.write(Constants.HTTP_HTTP_STATUS_DECLARATION);
-	}
-
-
-
-	private void httpResponseBodyDeclaration(FileWriter myWriter) throws IOException {
-		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-		myWriter.write(Constants.PATTERN_TABULATION);
-		myWriter.write(Constants.HTTP_RESPONSE_BODY_DECLARATION);
-	}
-
-
-
-	private void httpErrorResponseDeclaration(FileWriter myWriter) throws IOException {
-		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-		myWriter.write(Constants.PATTERN_TABULATION);
-		myWriter.write(Constants.HTTP_ERROR_RESPONSE_DECLARATION);
-	}
-
-
-
-	private void loggerDeclaration(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
-		myWriter.write(Constants.LOGGER
-				.concat(Constants.PARENTHESE_OUVRANTE)
-				.concat(ent.getNameEntity())
-				.concat("Api")
-				.concat(Constants.POINT_CLASS)
-				.concat(Constants.PARENTHESE_FERMANTE)
-				.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
-				);
-	}
-
-
-
-	private void injectModelMapper(FileWriter myWriter) throws IOException {
-		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-		myWriter.write(Constants.PATTERN_TABULATION);
-		myWriter.write(ConstantsAnnotations.ANNOTATION_AUTOWIRED);
-		myWriter.write(Constants.PATTERN_TABULATION);
-		myWriter.write(ConstantsAnnotations.INJECT_MODEL_MAPPER);
-	}
-
-
-
-	private void injectEntityMapper(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
-		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-		myWriter.write(Constants.PATTERN_TABULATION);
-		myWriter.write(ConstantsAnnotations.ANNOTATION_AUTOWIRED);
-		myWriter.write(Constants.PATTERN_TABULATION);
-		String fileMapper=ent.getNameEntity().concat("Mapper");
-		String variableMapper=ent.getNameEntity().toLowerCase().concat("Mapper");
-		myWriter.write(Constants.PRIVATE
-				.concat(fileMapper)
-				.concat(" ")
-				.concat(variableMapper)
-				.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
-				);
-	}
-
-
-
-	private void injectInterfaceService(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
-		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-		myWriter.write(Constants.PATTERN_TABULATION);
-		myWriter.write(ConstantsAnnotations.ANNOTATION_AUTOWIRED);
-		myWriter.write(Constants.PATTERN_TABULATION);
-		String fileService="I".concat(ent.getNameEntity()).concat("Service");
-		String variableService=ent.getNameEntity().toLowerCase().concat("Service");
-		myWriter.write(Constants.PRIVATE
-				.concat(fileService)
-				.concat(" ")
-				.concat(variableService)
-				.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
-				);
-	}
-
-
-
+	
 	private void writeWebServicesMethods(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
 		String entities=ent.getNameEntity().toLowerCase().concat("s");
 		String variableService=ent.getNameEntity().concat("Service");
 		getAllWS(ent, myWriter, entities, variableService);
 		deleteWS(ent, myWriter, variableService);
+		getByIdWS(ent, myWriter, variableService);
 
+	}
+
+
+
+	private void getByIdWS(BuisnessLogicEntity ent, FileWriter myWriter, String variableService) throws IOException {
+		overrideAnnotation(myWriter);
+		signatureOfGetByIdMethod(ent, myWriter);
+		implementationOfGetByIdMethod(ent, myWriter, variableService);
+	}
+
+
+
+	private void signatureOfGetByIdMethod(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.PUBLIC
+				.concat(Constants.RESPONSE_ENTITY)
+				.concat("get")
+				.concat(ent.getNameEntity())
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(ConstantsAnnotations.ANNOTATION_API_PARAM)
+				.concat(Constants.PARENTHESE_VALUE_EGALE)
+				.concat(Constants.DOUBLE_COTE)
+				.concat("ID of ")
+				.concat(ent.getNameEntity())
+				.concat(" that needs to be fetched")
+				.concat(Constants.DOUBLE_COTE)
+				.concat(Constants.VIRGULE)
+				.concat(Constants.REQUIRED_EGALE_TRUE)
+				.concat(Constants.VIRGULE)
+				.concat(Constants.ALLOWABLE_VALUES)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(" ")
+				.concat(ConstantsAnnotations.PATH_VARIABLE)
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(Constants.DOUBLE_COTE)
+				.concat(Constants.ID_MINUS)
+				.concat(Constants.DOUBLE_COTE)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(" ")
+				.concat(Constants.INT)
+				.concat(" ")
+				.concat(Constants.ID_MINUS)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.ACCOLADE_OUVRANT)
+				.concat(Constants.PATTERN_RETOUR_LIGNE));
+		
+	}
+
+
+
+	private void implementationOfGetByIdMethod(BuisnessLogicEntity ent, FileWriter myWriter, String variableService) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE
+				.concat(Constants.PATTERN_TABULATION)
+				);
+		loggerInfoGetById(ent, myWriter);
+		String entityToBefinded =ent.getNameEntity().toLowerCase();
+		optionalObject(ent, myWriter, variableService.toLowerCase(), entityToBefinded);
+		ifOptionalObjectIsPresentGetById(ent, myWriter,entityToBefinded,variableService.toLowerCase());
+		elseOptionalObjectIsPresentGetById(ent, myWriter);
+		returnWS(myWriter);
+		
+	}
+
+
+
+	
+
+
+
+	private void loggerInfoGetById(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		myWriter.write(Constants.LOGGER_INFO
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(Constants.DOUBLE_COTE)
+				.concat("Web Service get")
+				.concat(ent.getNameEntity())
+				.concat(" invoked with id {}")
+				.concat(Constants.DOUBLE_COTE)
+				.concat(Constants.VIRGULE)
+				.concat(Constants.ID_MINUS)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.PATTERN_POINT_VIRGULE)
+				);
+	}
+
+
+
+	private void ifOptionalObjectIsPresentGetById(BuisnessLogicEntity ent, FileWriter myWriter, String entityToBefinded,
+			String variableService) throws IOException {
+		
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		String entityMapper=ent.getNameEntity().toLowerCase().concat("Mapper");
+		String mapEntityToViewEntityDto="map".concat(ent.getNameEntity()).concat("ToView").concat(ent.getNameEntity()).concat("Dto");
+		myWriter.write(Constants.IF
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(entityToBefinded)
+				.concat(Constants.POINT)
+				.concat(Constants.IS_PRESENT_METHOD)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.ACCOLADE_OUVRANT)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.HTTP_STATUS_OK)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.HTTP_RESPONSE_BODY)
+				.concat(Constants.EGALE)
+				.concat(entityMapper)
+				.concat(Constants.POINT)
+				.concat(mapEntityToViewEntityDto)
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(ent.getNameEntity().toLowerCase())
+				.concat(Constants.POINT)
+				.concat(Constants.GET_METHOD)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.ACCOLADE_FERMANTE)
+				);
+	}
+	
+	private void elseOptionalObjectIsPresentGetById(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		myWriter.write(Constants.ELSE
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.ACCOLADE_OUVRANT)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.HTTP_ERROR_RESPONSE_SET_CODE_AND_MESSAGE)
+				.concat(ent.getNameEntity().toUpperCase())
+				.concat(Constants._NOT_FOUND)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.HTTP_STATUS_NOT_FOUND)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.HTTP_RESPONSE_BODY_EGALE_HTTP_ERROR_RESPONSE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.ACCOLADE_FERMANTE)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+
+				);
+		
 	}
 
 
@@ -562,6 +637,86 @@ public class WebServiceApiImpl {
 		myWriter.write(ConstantsAnnotations.ANNOTATION_OVERRIDE);
 		myWriter.write(Constants.PATTERN_TABULATION);
 	}
+
+	private void httpStatusDeclaration(FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		myWriter.write(Constants.HTTP_HTTP_STATUS_DECLARATION);
+	}
+
+
+
+	private void httpResponseBodyDeclaration(FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		myWriter.write(Constants.HTTP_RESPONSE_BODY_DECLARATION);
+	}
+
+
+
+	private void httpErrorResponseDeclaration(FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		myWriter.write(Constants.HTTP_ERROR_RESPONSE_DECLARATION);
+	}
+
+
+
+	private void loggerDeclaration(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.LOGGER
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(ent.getNameEntity())
+				.concat("Api")
+				.concat(Constants.POINT_CLASS)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
+				);
+	}
+
+
+
+	private void injectModelMapper(FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		myWriter.write(ConstantsAnnotations.ANNOTATION_AUTOWIRED);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		myWriter.write(ConstantsAnnotations.INJECT_MODEL_MAPPER);
+	}
+
+
+
+	private void injectEntityMapper(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		myWriter.write(ConstantsAnnotations.ANNOTATION_AUTOWIRED);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		String fileMapper=ent.getNameEntity().concat("Mapper");
+		String variableMapper=ent.getNameEntity().toLowerCase().concat("Mapper");
+		myWriter.write(Constants.PRIVATE
+				.concat(fileMapper)
+				.concat(" ")
+				.concat(variableMapper)
+				.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
+				);
+	}
+
+
+
+	private void injectInterfaceService(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		myWriter.write(ConstantsAnnotations.ANNOTATION_AUTOWIRED);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		String fileService="I".concat(ent.getNameEntity()).concat("Service");
+		String variableService=ent.getNameEntity().toLowerCase().concat("Service");
+		myWriter.write(Constants.PRIVATE
+				.concat(fileService)
+				.concat(" ")
+				.concat(variableService)
+				.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
+				);
+	}
+
 
 
 

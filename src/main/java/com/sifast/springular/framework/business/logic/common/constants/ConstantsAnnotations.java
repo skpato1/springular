@@ -21,5 +21,6 @@ public class ConstantsAnnotations {
 	public static final String ANNOTATION_REST_CONTROLLER = "@RestController";
 	public static final String ANNOTATION_CROSS_ORIGIN = "@CrossOrigin(\"*\")";
 	public static final String ANNOTATION_API="@Api";
-
+	public static final String ANNOTATION_API_PARAM= "@ApiParam";
+	public static final String PATH_VARIABLE = "@PathVariable";
 }

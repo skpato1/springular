@@ -115,7 +115,8 @@ public class DatabaseApi implements IDatabaseApi {
 	public ResponseEntity<Object> getAllDatabases() {
 		List<Database> databases = databaseService.findAll();
 		httpStatus = HttpStatus.OK;
-		httpResponseBody = !databases.isEmpty() ? databases.stream()
+		httpResponseBody = !databases.isEmpty()
+				? databases.stream()
 				.map(database -> modelMapper.map(database, ViewDatabaseDto.class)).collect(Collectors.toList())
 				: Collections.emptyList();
 		return new ResponseEntity<>(httpResponseBody, httpStatus);

@@ -96,7 +96,20 @@ public class Constants {
 	public static final String LOGGER = "private static final Logger LOGGER = LoggerFactory.getLogger";
 	public static final String HTTP_ERROR_RESPONSE_DECLARATION = "private HttpErrorResponse httpErrorResponse = new HttpErrorResponse();\n";
 	public static final String HTTP_RESPONSE_BODY_DECLARATION = "private Object httpResponseBody;\n";
-	public static final String HTTP_HTTP_STATUS_DECLARATION = "private HttpStatus httpStatus;\n"; 
-			
-	
+	public static final String HTTP_HTTP_STATUS_DECLARATION = "private HttpStatus httpStatus;\n";
+	public static final String FINDALL = "findAll"; 
+	public static final String HTTP_STATUS_OK =	"httpStatus = HttpStatus.OK;\n";
+	public static final String HTTP_RESPONSE_BODY = "httpResponseBody ";
+	public static final String NOT="!";
+	public static final String POINT_INTERROGATION=" ? ";
+	public static final String IS_EMPTY = "isEmpty()";
+	public static final String STREAM_METHOD = "stream()";
+	public static final String MAP_METHOD = "map";
+	public static final String FLECHE = "->";
+	public static final String MODEL_MAPPER_VARIABLE= "modelMapper";
+	public static final String COLLECT_METHOD = "collect";
+	public static final String COLLECTORS_LIST = "Collectors.toList()";
+	public static final String DEUX_POINTS = " : ";
+	public static final String COLLECTIONS_EMPTY_LIST = "Collections.emptyList()";
+	public static final String RETURN_WS="return new ResponseEntity<>(httpResponseBody, httpStatus);\n";
 }

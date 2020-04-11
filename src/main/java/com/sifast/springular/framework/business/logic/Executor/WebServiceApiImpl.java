@@ -20,6 +20,7 @@ public class WebServiceApiImpl {
 	public void generateWebServicesImplFiles(BuisnessLogicEntity entity, Project project) {
 		project.getEntities().stream().forEach(ent -> {
 			try {
+				
 				FileWriter myWriter = writeImportsAndStructureOfClassInWSApi(ent);
 				injectServicesAndConfigInWS(ent, myWriter);
 				writeWebServicesMethods(ent, myWriter);
@@ -255,9 +256,111 @@ public class WebServiceApiImpl {
 
 
 
-	private void writeWebServicesMethods(BuisnessLogicEntity ent, FileWriter myWriter) {
-		// TODO Auto-generated method stub
-		
+	private void writeWebServicesMethods(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+		String entities=ent.getNameEntity().toLowerCase().concat("s");
+		String variableService=ent.getNameEntity().concat("Service");
+		getAllWS(ent, myWriter, entities, variableService);
+	}
+
+
+
+	private void getAllWS(BuisnessLogicEntity ent, FileWriter myWriter, String entities, String variableService)
+			throws IOException {
+		overrideAnnotation(myWriter);
+		signatureOfGetAllMethod(ent, myWriter);
+		implementationOfGetAllMethod(ent, myWriter, entities, variableService);
+	}
+
+
+
+	private void implementationOfGetAllMethod(BuisnessLogicEntity ent, FileWriter myWriter, String entities,
+			String variableService) throws IOException {
+		String fileViewDto="View".concat(ent.getNameEntity()).concat("Dto");
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.TEST_LIST)
+				.concat(ent.getNameEntity())
+				.concat(Constants.SUPERIEUR)
+				.concat(" ")
+				.concat(entities)
+				.concat(Constants.EGALE)
+				.concat(variableService)
+				.concat(Constants.POINT)
+				.concat(Constants.FINDALL)
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.HTTP_STATUS_OK)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.HTTP_RESPONSE_BODY)
+				.concat(Constants.EGALE)
+				.concat(Constants.NOT)
+				.concat(entities)
+				.concat(Constants.POINT)
+				.concat(Constants.IS_EMPTY)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.POINT_INTERROGATION)
+				.concat(entities)
+				.concat(Constants.POINT)
+				.concat(Constants.STREAM_METHOD)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.POINT)
+				.concat(Constants.MAP_METHOD)
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(ent.getNameEntity().toLowerCase())
+				.concat(Constants.FLECHE)
+				.concat(Constants.MODEL_MAPPER_VARIABLE)
+				.concat(Constants.POINT)
+				.concat(Constants.MAP_METHOD)
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(ent.getNameEntity().toLowerCase())
+				.concat(Constants.VIRGULE)
+				.concat(fileViewDto)
+				.concat(Constants.POINT_CLASS)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.POINT)
+				.concat(Constants.COLLECT_METHOD)
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(Constants.COLLECTORS_LIST)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.DEUX_POINTS)
+				.concat(Constants.COLLECTIONS_EMPTY_LIST)
+				.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_RETOUR_LIGNE)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.RETURN_WS)
+				.concat(Constants.PATTERN_TABULATION)
+				.concat(Constants.ACCOLADE_FERMANTE)
+				);
+	}
+
+
+
+	private void signatureOfGetAllMethod(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.PUBLIC
+				.concat(Constants.RESPONSE_ENTITY)
+				.concat("getAll")
+				.concat(ent.getNameEntity())
+				.concat("s")
+				.concat(Constants.PARENTHESE_OUVRANTE)
+				.concat(Constants.PARENTHESE_FERMANTE)
+				.concat(Constants.ACCOLADE_OUVRANT));
+	}
+
+
+
+	private void overrideAnnotation(FileWriter myWriter) throws IOException {
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+		myWriter.write(Constants.PATTERN_TABULATION);
+		myWriter.write(ConstantsAnnotations.ANNOTATION_OVERRIDE);
+		myWriter.write(Constants.PATTERN_TABULATION);
 	}
 
 

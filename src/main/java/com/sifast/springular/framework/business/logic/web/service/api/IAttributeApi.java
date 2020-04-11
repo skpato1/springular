@@ -21,9 +21,9 @@ import io.swagger.annotations.ApiResponses;
 public interface IAttributeApi {
 	
 	@ApiResponses(value = {
-			@ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.ATTRIBUTE_CREATED_SUCCESSFULLY, response = ViewAttributeDto.class),
-			@ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class) })
-			@ApiOperation(value = "create an attribute ", response = ViewProjectDto.class)
+	@ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.ATTRIBUTE_CREATED_SUCCESSFULLY, response = ViewAttributeDto.class),
+	@ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class) })
+	@ApiOperation(value = "create an attribute ", response = ViewProjectDto.class)
 	@RequestMapping(value = "/attribute", method = RequestMethod.POST)
 	ResponseEntity<Object> saveAttribute(CreateAttributeDto attributeDto, BindingResult bindingResult);
 

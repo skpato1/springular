@@ -90,6 +90,8 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 
 			jdlFileGeneratorService.writeFilesMappers(project.get());
 
+			jdlFileGeneratorService.writeFilesInterfacesWebServicesApi(project.get());
+			
 		} else {
 			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
 			httpStatus = HttpStatus.NOT_FOUND;

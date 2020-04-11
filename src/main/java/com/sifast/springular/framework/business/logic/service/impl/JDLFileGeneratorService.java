@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.sifast.springular.framework.business.logic.Executor.DtoFileWriter;
 
 import com.sifast.springular.framework.business.logic.Executor.IServiceFileWriter;
+import com.sifast.springular.framework.business.logic.Executor.IWebServiceApi;
 import com.sifast.springular.framework.business.logic.Executor.DaoFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.JdlFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.MapperFileWriter;
@@ -40,6 +41,9 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 	
 	@Autowired
 	MapperFileWriter mapperFileWriter;
+	
+	@Autowired
+	IWebServiceApi iWebServiceApi;
 
 	@Override
 	public void generateProjectWithJdl(Project project) throws IOException {
@@ -112,6 +116,14 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 		});
 			
 		
+		
+	}
+
+	@Override
+	public void writeFilesInterfacesWebServicesApi(Project project) throws IOException {
+		project.getEntities().stream().forEach(entity -> {
+			iWebServiceApi.generateIWebServiceApiFiles(entity, project);
+		});
 		
 	}
 

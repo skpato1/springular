@@ -1,7 +1,7 @@
 package com.sifast.springular.framework.business.logic.common.constants;
 
 public class ConstantsImportPackage {
-	
+
 	public static final String IMPORT_SET = "import java.util.Set;\n";
 	public static final String IMPORT_LIST = "import java.util.List;\n";
 	public static final String PACKAGE_DTO = "package com.sifast.dto.";
@@ -25,10 +25,10 @@ public class ConstantsImportPackage {
 	public static final String IMPORT_ENTITY_MODEL = "import com.sifast.model.";
 	public static final String PATTERN_PACKAGE_NAME = "com.sifast.springular.framework";
 	public static final String PACKAGE_MAPPER = "package com.sifast.common.mapper;";
-	public static final String IMPORT_AUTOWIRED="import org.springframework.beans.factory.annotation.Autowired;\n";
-	public static final String IMPORT_COMPONENT="import org.springframework.stereotype.Component;\n";
-	public static final String IMPORT_CONFIGURE_MODEL_MAPPER="import com.sifast.web.config.ConfiguredModelMapper;\n";
-	public static final String IMPORT_DTO ="import com.sifast.dto.";
+	public static final String IMPORT_AUTOWIRED = "import org.springframework.beans.factory.annotation.Autowired;\n";
+	public static final String IMPORT_COMPONENT = "import org.springframework.stereotype.Component;\n";
+	public static final String IMPORT_CONFIGURE_MODEL_MAPPER = "import com.sifast.web.config.ConfiguredModelMapper;\n";
+	public static final String IMPORT_DTO = "import com.sifast.dto.";
 	public static final String IMPORT_COLLECTORS = "import java.util.stream.Collectors;\n";
 	public static final String IMPORT_ARRAY_LIST = "import java.util.ArrayList;\n";
 	public static final String PACKAGE_WEB_SERVICE_API_INTERFACE = "package com.sifast.web.service.api;";
@@ -42,7 +42,24 @@ public class ConstantsImportPackage {
 	public static final String IMPORT_SWAGGER_API_RESPONSES = "import io.swagger.annotations.ApiResponse;\n";
 	public static final String IMPORT_SWAGGER_API_RESPONSE = "import io.swagger.annotations.ApiResponses;\n";
 	public static final String IMPORT_SWAGGER_API_OPERATION = "import io.swagger.annotations.ApiOperation;\n";
+	public static final String PACKAGE_WEB_SERVICE_API_IMPL = "package com.sifast.web.service.impl;";
+	public static final String IMPORT_COLLECTIONS = "import java.util.Collections;\n";
+	public static final String IMPORT_OPTIONAL = "import java.util.Optional;\n";
+	public static final String IMPORT_LOGGER = "import org.slf4j.Logger;\n";
+	public static final String IMPORT_LOGGER_FACTORY = "import org.slf4j.LoggerFactory;\n";
+	public static final String IMPORT_HTTP_STATUS = "import org.springframework.http.HttpStatus;\n";
+	public static final String IMPORT_CROSS_ORIGIN = "import org.springframework.web.bind.annotation.CrossOrigin;\n";
+	public static final String IMPORT_PATH_VARIABLE = "import org.springframework.web.bind.annotation.PathVariable;\n";
+	public static final String IMPORT_REQUEST_BODY = "import org.springframework.web.bind.annotation.RequestBody;\n";
+	public static final String IMPORT_REST_CONTROLLER = "import org.springframework.web.bind.annotation.RestController;\n";
+	public static final String IMPORT_HTTP_COSTUM_CODE = "import com.sifast.common.enums.HttpCostumCode;\n";
+	public static final String IMPORT_HTTP_ERROR_RESPONSE = "import com.sifast.common.utils.HttpErrorResponse;\n";
+	public static final String IMPORT_ISERVICE = "import com.sifast.springular.framework.business.logic.service.";
+	public static final String IMPORT_MAPPER = "import com.sifast.common.mapper.";
+	public static final String IMPORT_IAPI = "import com.sifast.web.service.api.";
+	public static final String IMPORT_SWAGGER_API_PARAM = "import io.swagger.annotations.ApiParam;\n";
+	public static final String IMPORT_SWAGGER_API = "import io.swagger.annotations.Api;\n";
 
-
-
+	
+	
 }

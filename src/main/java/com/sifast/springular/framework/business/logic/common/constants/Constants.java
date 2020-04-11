@@ -92,4 +92,11 @@ public class Constants {
 	public static final String INT = "int";
 	public static final String DELETE = "DELETE";
 	public static final String PUT = "PUT";
+	public static final String SLASH_API = "/api/";
+	public static final String LOGGER = "private static final Logger LOGGER = LoggerFactory.getLogger";
+	public static final String HTTP_ERROR_RESPONSE_DECLARATION = "private HttpErrorResponse httpErrorResponse = new HttpErrorResponse();\n";
+	public static final String HTTP_RESPONSE_BODY_DECLARATION = "private Object httpResponseBody;\n";
+	public static final String HTTP_HTTP_STATUS_DECLARATION = "private HttpStatus httpStatus;\n"; 
+			
+	
 }

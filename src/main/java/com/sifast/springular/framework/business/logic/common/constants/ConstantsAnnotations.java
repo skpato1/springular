@@ -18,8 +18,8 @@ public class ConstantsAnnotations {
 	public static final String ANNOTATION_SWAGGER_API_RESPONSE = "@ApiResponse";
 	public static final String ANNOTATION_SWAGGER_API_OPERATION = "@ApiOperation";
 	public static final String ANNOTATION_REQUEST_MAPPING = "@RequestMapping";
-
-	
-
+	public static final String ANNOTATION_REST_CONTROLLER = "@RestController";
+	public static final String ANNOTATION_CROSS_ORIGIN = "@CrossOrigin(\"*\")";
+	public static final String ANNOTATION_API="@Api";
 
 }

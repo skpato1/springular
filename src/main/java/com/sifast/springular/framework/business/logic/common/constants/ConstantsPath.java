@@ -24,4 +24,5 @@ public class ConstantsPath {
 	public static final String PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES = "/Users/qc/Desktop/springular/sifast-spring-web/src/main/java/com/sifast/dto/";
 	public static final String PATH_TO_SPRINGULAR_MAPPER = "/Users/qc/Desktop/springular/sifast-spring-web/src/main/java/com/sifast/common/mapper/";
 	public static final String PATH_TO_SPRINGULAR_IWEBSERVICEAPI = "/Users/qc/Desktop/springular/sifast-spring-web/src/main/java/com/sifast/web/service/api/";
+	public static final String PATH_TO_SPRINGULAR_WS_API = "/Users/qc/Desktop/springular/sifast-spring-web/src/main/java/com/sifast/web/service/impl/";
 }

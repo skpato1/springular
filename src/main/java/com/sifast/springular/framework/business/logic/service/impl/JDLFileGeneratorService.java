@@ -139,4 +139,54 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 		
 	}
 
+	@Override
+	public void addConstantsInApiMessageFile(Project project) throws IOException {
+		project.getEntities().stream().forEach(entity -> {
+			try {
+				File file = new File(ConstantsPath.PATH_TO_SPRINGULAR_COMMON
+						.concat("ApiMessage.java"));
+				String fileContext = FileUtils.readFileToString(file);
+				if (!fileContext.contains(entity.getNameEntity().toUpperCase().concat(Constants._NOT_FOUND)))
+				{
+					fileContext = fileContext.replaceFirst("\\{", "\\{"
+							.concat(Constants.PATTERN_RETOUR_LIGNE)
+							.concat(Constants.PATTERN_RETOUR_LIGNE)
+							.concat(Constants.PATTERN_TABULATION)
+							.concat(Constants.CONSTANTS_DECLARATION)
+							.concat(entity.getNameEntity().toUpperCase())
+							.concat(Constants._NOT_FOUND)
+							.concat(Constants.EGALE)
+							.concat(Constants.DOUBLE_COTE)
+							.concat(entity.getNameEntity().toUpperCase())
+							.concat(Constants._NOT_FOUND)
+							.concat(Constants.DOUBLE_COTE)
+							.concat(Constants.PATTERN_POINT_VIRGULE)
+							);
+					if (!fileContext.contains(entity.getNameEntity().toUpperCase().concat(Constants._CREATED_SUCCESSFULLY)))
+					{
+						fileContext = fileContext.replaceFirst("\\{", "\\{"
+								.concat(Constants.PATTERN_RETOUR_LIGNE)
+								.concat(Constants.PATTERN_RETOUR_LIGNE)
+								.concat(Constants.PATTERN_TABULATION)
+								.concat(Constants.CONSTANTS_DECLARATION)
+								.concat(entity.getNameEntity().toUpperCase())
+								.concat(Constants._CREATED_SUCCESSFULLY)
+								.concat(Constants.EGALE)
+								.concat(Constants.DOUBLE_COTE)
+								.concat(entity.getNameEntity().toUpperCase())
+								.concat(Constants._CREATED_SUCCESSFULLY)
+								.concat(Constants.DOUBLE_COTE)
+								.concat(Constants.PATTERN_POINT_VIRGULE)
+								);
+					}
+				}
+					
+				FileUtils.write(file, fileContext);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		
+	}
+
 }

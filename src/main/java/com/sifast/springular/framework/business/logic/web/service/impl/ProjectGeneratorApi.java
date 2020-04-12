@@ -89,10 +89,13 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 			commandExecutorService.zipProject(project.get());
 
 			jdlFileGeneratorService.writeFilesMappers(project.get());
+			
+			jdlFileGeneratorService.addConstantsInApiMessageFile(project.get());
 
 			jdlFileGeneratorService.writeFilesInterfacesWebServicesApi(project.get());
 
 			jdlFileGeneratorService.writeFilesWebServicesApiImpl(project.get());
+
 
 		} else {
 			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);

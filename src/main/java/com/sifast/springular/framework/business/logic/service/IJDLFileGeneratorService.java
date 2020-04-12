@@ -19,5 +19,7 @@ public interface IJDLFileGeneratorService {
 	public void writeFilesMappers(Project project)throws IOException;
 	public void writeFilesInterfacesWebServicesApi(Project project)throws IOException;
 	public void writeFilesWebServicesApiImpl(Project project)throws IOException;
+	public void addConstantsInApiMessageFile(Project project)throws IOException;
+
 
 }

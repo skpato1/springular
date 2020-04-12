@@ -126,4 +126,5 @@ public class Constants {
 	public static final String HTTP_RESPONSE_BODY_EGALE_HTTP_ERROR_RESPONSE= "httpResponseBody = httpErrorResponse;\n";
 	public static final String HTTP_ERROR_RESPONSE_SET_CODE_AND_MESSAGE = "httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.";
 	public static final String _NOT_FOUND="_NOT_FOUND";
+	public static final String CONSTANTS_DECLARATION = "public static final String ";
 }

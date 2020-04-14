@@ -372,7 +372,11 @@ public class DtoFileWriter {
 						String getterAttribute = firstLetter.toUpperCase()
 								.concat(attributeForGetterAndSetter.getNameAttribute().substring(1));
 						myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC)
-								.concat(attributeForGetterAndSetter.getTypeAttribute().name()).concat(" ").concat("get")
+								.concat(attributeForGetterAndSetter.getTypeAttribute().name())
+								.concat(Constants.INFERIEUR)
+								.concat(typeSetDto)
+								.concat(Constants.SUPERIEUR)
+								.concat(" ").concat("get")
 								.concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE)
 								.concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
 								.concat(Constants.PATTERN_RETOUR_LIGNE)
@@ -458,21 +462,43 @@ public class DtoFileWriter {
 	private void writeViewRelationshipAttributeFromAttribute(BuisnessLogicEntity ent, FileWriter myWriter) {
 		ent.getAttributes().stream().forEach(attribute -> {
 			try {
+
 				String firstLetter = attribute.getNameAttribute().charAt(0)+"";
-				String view= firstLetter.toUpperCase()+attribute.getNameAttribute().substring(1,attribute.getNameAttribute().length()-1);
-					if(attribute.getTypeAttribute().equals(AttributesTypeEnum.List))
+				String view= firstLetter.toUpperCase()+attribute.getNameAttribute().substring(1,attribute.getNameAttribute().length());
+				String viewDto= firstLetter.toUpperCase()+attribute.getNameAttribute().substring(1,attribute.getNameAttribute().length()-1);
+
+				if(attribute.getNameAttribute().endsWith("s"))
+				{
+					
+						myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE)
+						.concat(AttributesTypeEnum.Set.name())
+						.concat(Constants.INFERIEUR)
+						.concat("View")
+						.concat(viewDto)
+						.concat("Dto")
+						.concat(Constants.SUPERIEUR)
+						.concat(" ")
+						.concat(attribute.getNameAttribute())
+						.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+				}	
+				
+					if(attribute.getTypeAttribute().equals(AttributesTypeEnum.List) && !attribute.getNameAttribute().endsWith("s"))
 					{
 					myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE)
+							.concat(AttributesTypeEnum.Set.name())
+							.concat(Constants.INFERIEUR)
 							.concat("View")
 							.concat(view)
 							.concat("Dto")
+							.concat(Constants.SUPERIEUR)
 							.concat(" ")
 							.concat(attribute.getNameAttribute())
 							.concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
 					}
-					if(attribute.getTypeAttribute().equals(AttributesTypeEnum.Set))
+					if(attribute.getTypeAttribute().equals(AttributesTypeEnum.Set) && !attribute.getNameAttribute().endsWith("s"))
 					{
-					myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE)
+						
+							myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE)
 							.concat(AttributesTypeEnum.Set.name())
 							.concat(Constants.INFERIEUR)
 							.concat("View")

@@ -23,6 +23,26 @@ public class BuisnessLogicEntityDto {
 	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	private int project_id;
 
+	private Boolean createListIdsIfSlave;
+
+	private Boolean createListDtosIfSlave;
+
+	public Boolean getCreateListIdsIfSlave() {
+		return createListIdsIfSlave;
+	}
+
+	public void setCreateListIdsIfSlave(Boolean createListIdsIfSlave) {
+		this.createListIdsIfSlave = createListIdsIfSlave;
+	}
+
+	public Boolean getCreateListDtosIfSlave() {
+		return createListDtosIfSlave;
+	}
+
+	public void setCreateListDtosIfSlave(Boolean createListDtosIfSlave) {
+		this.createListDtosIfSlave = createListDtosIfSlave;
+	}
+
 	public String getNameEntity() {
 		return nameEntity;
 	}

@@ -20,7 +20,7 @@ public class WebServiceApiImpl {
 	public void generateWebServicesImplFiles(BuisnessLogicEntity entity, Project project) {
 		project.getEntities().stream().forEach(ent -> {
 			try {
-				FileWriter myWriter = writeImportsAndStructureOfClassInWSApi(ent);
+				FileWriter myWriter = writeImportsAndStructureOfClassInWSApi(project,ent);
 				injectServicesAndConfigInWS(ent, myWriter);
 				writeWebServicesMethods(ent, myWriter);
 				closeAccoladeAndFile(myWriter);
@@ -32,8 +32,11 @@ public class WebServiceApiImpl {
 
 	
 
-	private FileWriter writeImportsAndStructureOfClassInWSApi(BuisnessLogicEntity ent) throws IOException {
-		File file = new File(ConstantsPath.PATH_TO_SPRINGULAR_WS_API
+	private FileWriter writeImportsAndStructureOfClassInWSApi(Project project,BuisnessLogicEntity ent) throws IOException {
+		File file = new File(
+				ConstantsPath.DESKTOP
+				.concat(project.getNameProject())
+				.concat(ConstantsPath.PATH_TO_PROJECT_WS_API)
 				.concat(ent.getNameEntity())
 				.concat("Api.java"));
 		String fileApi = ent.getNameEntity().concat("Api");

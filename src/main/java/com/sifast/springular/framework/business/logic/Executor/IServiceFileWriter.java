@@ -17,7 +17,10 @@ public class IServiceFileWriter {
 	
 	public void writeIServiceFiles(Project project) throws IOException {
 		project.getEntities().stream().forEach(entity->{
-			File file = new File(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_SERVICE_PACKAGE_FILES
+			File file = new File(
+					ConstantsPath.DESKTOP
+					.concat(project.getNameProject())
+					.concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_SERVICE_PACKAGE_FILES)
 					.concat("I").concat(entity.getNameEntity()).concat("Service.java"));
 			try {
 				FileWriter myWriter=new FileWriter(file);
@@ -47,7 +50,10 @@ public class IServiceFileWriter {
 	}
 	public void writeImplementServiceFiles(Project project) throws IOException{
 		project.getEntities().stream().forEach(entity->{
-			File file = new File(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_SERVICE_IMPL_PACKAGE_FILES
+			File file = new File(
+					ConstantsPath.DESKTOP
+					.concat(project.getNameProject())
+					.concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_SERVICE_IMPL_PACKAGE_FILES)
 					.concat(entity.getNameEntity()).concat("Service.java"));
 			try
 			{

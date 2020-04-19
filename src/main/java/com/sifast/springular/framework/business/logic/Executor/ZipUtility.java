@@ -74,9 +74,11 @@ public class ZipUtility {
                 continue;
             }
             zos.putNextEntry(new ZipEntry(parentFolder + "/" + file.getName()));
-            BufferedInputStream bis = new BufferedInputStream(
+            @SuppressWarnings("resource")
+			BufferedInputStream bis = new BufferedInputStream(
                     new FileInputStream(file));
-            long bytesRead = 0;
+            @SuppressWarnings("unused")
+			long bytesRead = 0;
             byte[] bytesIn = new byte[BUFFER_SIZE];
             int read = 0;
             while ((read = bis.read(bytesIn)) != -1) {
@@ -96,9 +98,11 @@ public class ZipUtility {
     private void zipFile(File file, ZipOutputStream zos)
             throws FileNotFoundException, IOException {
         zos.putNextEntry(new ZipEntry(file.getName()));
-        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(
+        @SuppressWarnings("resource")
+		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(
                 file));
-        long bytesRead = 0;
+        @SuppressWarnings("unused")
+		long bytesRead = 0;
         byte[] bytesIn = new byte[BUFFER_SIZE];
         int read = 0;
         while ((read = bis.read(bytesIn)) != -1) {

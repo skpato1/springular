@@ -62,7 +62,10 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 	public void extendTimeStampInGeneratedEntities(Project project) throws IOException {
 		project.getEntities().stream().forEach(entity -> {
 			try {
-				File file = new File(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES
+				File file = new File(
+						ConstantsPath.DESKTOP
+						.concat(project.getNameProject())
+						.concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES)
 						+ entity.getNameEntity().concat(".java"));
 				String fileContext = FileUtils.readFileToString(file);
 				fileContext = fileContext.replaceAll(Constants.IMPLEMENTS, Constants.EXTEND_TIMESTAMP_ENTITY);
@@ -78,8 +81,11 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 	public void deleteUnusedCommentsInGeneratedEntities(Project project) throws IOException {
 		project.getEntities().stream().forEach(entity -> {
 			try {
-				File file = new File(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES
-						+ entity.getNameEntity().concat(".java"));
+				File file = new File(
+						ConstantsPath.DESKTOP
+						.concat(project.getNameProject())
+						.concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES)
+						.concat(entity.getNameEntity().concat(".java")));
 				String fileContext = FileUtils.readFileToString(file);
 				fileContext = fileContext.replaceAll(Constants.UNUSED_COMMENTS_FOR_ATTRIBUE, "");
 				fileContext = fileContext.replaceAll(Constants.UNUSED_COMMENTS_FOR_METHOD, "");
@@ -93,10 +99,7 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 
 	@Override
 	public void createFilesInEachFolderDTO(Project project) throws IOException {
-		project.getEntities().stream().forEach(entity -> {
-			dtoFileWriter.generateViewFilesInEachFolderDTO(entity, project);
-
-		});
+		dtoFileWriter.generateViewFilesInEachFolderDTO(project);
 		dtoFileWriter.generateCreateFilesInEachFolderDTO(project);
 	}
 
@@ -143,7 +146,10 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 	public void addConstantsInApiMessageFile(Project project) throws IOException {
 		project.getEntities().stream().forEach(entity -> {
 			try {
-				File file = new File(ConstantsPath.PATH_TO_SPRINGULAR_COMMON
+				File file = new File(
+						ConstantsPath.DESKTOP
+						.concat(project.getNameProject())
+						.concat(ConstantsPath.PATH_TO_PROJECT_COMMON)
 						.concat("ApiMessage.java"));
 				String fileContext = FileUtils.readFileToString(file);
 				if (!fileContext.contains(entity.getNameEntity().toUpperCase().concat(Constants._NOT_FOUND)))

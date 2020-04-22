@@ -71,10 +71,11 @@ public class DatabaseApi implements IDatabaseApi {
 			Optional<Project> project = projectService.findById(databaseDto.getProject_id());
 			if (project.isPresent()) {
 				Database databaseToBeSaved = databaseMapper.mapCreateDatabase(databaseDto);
+				project.get().setDatabase(databaseToBeSaved);
 				databaseToBeSaved.setProject(project.get());
 				Database saveddatabase = databaseService.save(databaseToBeSaved);
 				commandExecutorService.createDataBase(databaseDto.getNameDatabase());
-				commandExecutorService.generateApplicationPropertiesFromAngular(databaseDto.getTypeDatabase(), databaseDto.getNameDatabase(), databaseDto.getUsernameDatabase(), databaseDto.getPasswordDatabase());
+				commandExecutorService.generateApplicationPropertiesFromAngular(project.get(),databaseDto.getTypeDatabase(), databaseDto.getNameDatabase(), databaseDto.getUsernameDatabase(), databaseDto.getPasswordDatabase());
 				httpStatus = HttpStatus.OK;
 				httpResponseBody = modelMapper.map(saveddatabase, ViewDatabaseDto.class);
 			} else {

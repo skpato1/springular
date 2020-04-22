@@ -28,345 +28,292 @@ import com.sifast.springular.framework.business.logic.service.ICommandExecutorSe
 @Service
 public class CommandExecutorService implements ICommandExecutorService {
 
-	@Value("${app.path}")
-	private String appDirectory;
+    @Value("${app.path}")
+    private String appDirectory;
 
-	@Value("${file.path}")
-	private String fileJDL;
+    @Value("${file.path}")
+    private String fileJDL;
 
-	@Value("${file.generate.path}")
-	private String fileJdlToGenerate;
+    @Value("${file.generate.path}")
+    private String fileJdlToGenerate;
 
-	@Value("${variable.environment}")
-	private String pathVaribleEnvironment;
+    @Value("${variable.environment}")
+    private String pathVaribleEnvironment;
 
-	@Autowired
-	DtoFileWriter dtoFileWriter;
-	
-	@Autowired
-	ZipUtility zip;
+    @Autowired
+    DtoFileWriter dtoFileWriter;
 
-	@Override
-	public String executeCommand(String cmd) throws IOException, InterruptedException {
-		List<String> commands = new ArrayList<String>();
-		commands.add(CommandConstantsLinux.PATTERN_CMD_SH);
-		commands.add(Constants.PATTERN_CMD_SH_OPTION_C);
-		commands.add(cmd);
-		SystemCommandExecutor commandExecutor = new SystemCommandExecutor(commands);
-		commandExecutor.executeCommand();
-		StringBuilder stdout = commandExecutor.getStandardOutputFromCommand();
-		StringBuilder stderr = commandExecutor.getStandardErrorFromCommand();
+    @Autowired
+    ZipUtility zip;
 
-		if (stdout != null) {
-			return stdout.toString();
+    @Override
+    public String executeCommand(String cmd) throws IOException, InterruptedException {
+        List<String> commands = new ArrayList<String>();
+        commands.add(CommandConstantsLinux.PATTERN_CMD_SH);
+        commands.add(Constants.PATTERN_CMD_SH_OPTION_C);
+        commands.add(cmd);
+        SystemCommandExecutor commandExecutor = new SystemCommandExecutor(commands);
+        commandExecutor.executeCommand();
+        StringBuilder stdout = commandExecutor.getStandardOutputFromCommand();
+        StringBuilder stderr = commandExecutor.getStandardErrorFromCommand();
 
-		} else
-			return stderr.toString();
+        if (stdout != null) {
+            return stdout.toString();
 
-	}
+        } else {
+            return stderr.toString();
+        }
 
-	@Override
-	public void createDataBase(String nameDB) throws IOException, InterruptedException {
-		executeCommand(Constants.PATTERN_CMD_MYSQL_DB.concat(nameDB).concat(Constants.PATTERN_POINT_VIRGULE)
-				.concat(Constants.PATTERN_ANTI_SLASH));
+    }
 
-	}
+    @Override
+    public void createDataBase(String nameDB) throws IOException, InterruptedException {
+        executeCommand(Constants.PATTERN_CMD_MYSQL_DB.concat(nameDB).concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_ANTI_SLASH));
 
-	@Override
-	public void cloneSpringularFrameworkSocleFromGitlab(Project project, boolean isWindows)
-			throws IOException, InterruptedException {
-		executeCommand(Constants.PATTERN_GIT_CLONE.concat(project.getUsernameProject()).concat(Constants.PATTERN_SLASH)
-				.concat(Constants.OLD_PROJECT_NAME_TO_CLONE).concat(Constants.PATTERN_POINT_GIT));
-		
+    }
 
-	}
-	
-	@Override
-	public void generateApplicationPropertiesFromAngular(String typeDB, String nameDB, String usernameDB, String pwdDB)
-			throws IOException, InterruptedException {
+    @Override
+    public void cloneSpringularFrameworkSocleFromGitlab(Project project, boolean isWindows) throws IOException, InterruptedException {
+        executeCommand(Constants.PATTERN_GIT_CLONE.concat(project.getUsernameProject()).concat(Constants.PATTERN_SLASH).concat(Constants.OLD_PROJECT_NAME_TO_CLONE)
+                .concat(Constants.PATTERN_POINT_GIT));
 
-		File file = new File(ConstantsPath.PATTERN_PATH_APPLICATION_PROPERTIES);
-		String fileContext = FileUtils.readFileToString(file);
-		fileContext = fileContext.replaceAll(Constants.PATTERN_DATABASE_NAME, nameDB);
-		fileContext = fileContext.replaceAll(Constants.PATTERN_DATABASE_USERNAME, usernameDB);
-		fileContext = fileContext.replaceAll(Constants.PATTERN_DATABASE_PASSWORD, pwdDB);
-		FileUtils.write(file, fileContext);
+    }
 
-	}
+    @Override
+    public void generateApplicationPropertiesFromAngular(Project project, String typeDB, String nameDB, String usernameDB, String pwdDB) throws IOException, InterruptedException {
 
-	@Override
-	public void executeJdlFromTerminal(boolean isWindows) throws IOException, InterruptedException {
-		String path = pathVaribleEnvironment;
-		ProcessBuilder processBuilder = null;
-		try {
-			if (isWindows) {
-				processBuilder = new ProcessBuilder("bash", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate)
-						.concat(" ").concat(Constants.SKIP_INSTALL_NODE_MODULES));
-			} else {
-				processBuilder = new ProcessBuilder("sh", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate)
-						.concat(" ").concat(Constants.SKIP_INSTALL_NODE_MODULES));
-			}
-			Map<String, String> env = processBuilder.environment();
-			processBuilder.directory(new File(appDirectory));
-			env.put("PATH", path);
-			Process process = processBuilder.start();
-			StreamGobbler streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
-			Executors.newSingleThreadExecutor().submit(streamGobbler);
-			process.waitFor();
-			File file = new File(fileJdlToGenerate);
-			file.delete();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATTERN_PROJECT_PATH_APPLICATION_PROPERTIES));
+        String fileContext = FileUtils.readFileToString(file);
+        fileContext = fileContext.replaceAll(Constants.PATTERN_DATABASE_NAME, nameDB);
+        fileContext = fileContext.replaceAll(Constants.PATTERN_DATABASE_USERNAME, usernameDB);
+        fileContext = fileContext.replaceAll(Constants.PATTERN_DATABASE_PASSWORD, pwdDB);
+        FileUtils.write(file, fileContext);
 
-	}
+    }
 
-	@Override
-	public void copyEntitiesToGeneratedProject(Project project, boolean isWindows)
-			throws IOException, InterruptedException {
-		String entitiesFiles = extraireEntitiesFilesToCopy(project);
-		executeCopyEntitiesCommandForDifferentOs(isWindows, entitiesFiles);
-	}
+    @Override
+    public void executeJdlFromTerminal(boolean isWindows) throws IOException, InterruptedException {
+        String path = pathVaribleEnvironment;
+        ProcessBuilder processBuilder = null;
+        try {
+            if (isWindows) {
+                processBuilder = new ProcessBuilder("bash", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate).concat(" ").concat(Constants.SKIP_INSTALL_NODE_MODULES));
+            } else {
+                processBuilder = new ProcessBuilder("sh", "-c", "jhipster import-jdl ".concat(fileJdlToGenerate).concat(" ").concat(Constants.SKIP_INSTALL_NODE_MODULES));
+            }
+            Map<String, String> env = processBuilder.environment();
+            processBuilder.directory(new File(appDirectory));
+            env.put("PATH", path);
+            Process process = processBuilder.start();
+            StreamGobbler streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
+            Executors.newSingleThreadExecutor().submit(streamGobbler);
+            process.waitFor();
+            File file = new File(fileJdlToGenerate);
+            file.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	public void executeCopyEntitiesCommandForDifferentOs(boolean isWindows, String entitiesFiles)
-			throws IOException, InterruptedException {
-		if (isWindows) {
-			executeCommand(CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(ConstantsPath.PATH_TO_GENERATED_JHIPSTER_PROJECT)
-					.concat(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE));
-		} else {
+    }
 
-			executeCommand(CommandConstantsLinux.COPY_COMMAND_LINUX_FILES
-					.concat(ConstantsPath.PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES).concat(entitiesFiles).concat("} ")
-					.concat(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE));
-			System.out.println(CommandConstantsLinux.COPY_COMMAND_LINUX_FILES
-					.concat(ConstantsPath.PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES).concat(entitiesFiles).concat("} ")
-					.concat(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE));	
-		}
-	}
+    @Override
+    public void copyEntitiesToGeneratedProject(Project project, boolean isWindows) throws IOException, InterruptedException {
+        String entitiesFiles = extraireEntitiesFilesToCopy(project);
+        executeCopyEntitiesCommandForDifferentOs(project, isWindows, entitiesFiles);
+    }
 
-	public String extraireEntitiesFilesToCopy(Project project) {
-		List<BuisnessLogicEntity> entitiesToCopy = project.getEntities();
-		String entitiesFiles = "{";
-		for (int i = 0; i < entitiesToCopy.size(); i++) {
-			entitiesFiles += entitiesToCopy.get(i).getNameEntity().concat(".java").concat(",");
-		}
-		entitiesFiles = charRemoveAt(entitiesFiles, entitiesFiles.length() - 1);
-		return entitiesFiles;
-	}
+    public void executeCopyEntitiesCommandForDifferentOs(Project project, boolean isWindows, String entitiesFiles) throws IOException, InterruptedException {
+        if (isWindows) {
+            executeCommand(CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(ConstantsPath.PATH_TO_GENERATED_JHIPSTER_PROJECT).concat(ConstantsPath.DESKTOP)
+                    .concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE));
+        } else {
 
-	public static String charRemoveAt(String str, int p) {
-		return str.substring(0, p) + str.substring(p + 1);
-	}
+            executeCommand(CommandConstantsLinux.COPY_COMMAND_LINUX_FILES.concat(ConstantsPath.PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES).concat(entitiesFiles).concat("} ")
+                    .concat(ConstantsPath.DESKTOP).concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE));
 
-	@Override
-	public void createFolderForEachDto(Project project) throws IOException, InterruptedException {
-		project.getEntities().stream().forEach(entity -> {
-			try {
-				executeCommand(Constants.MKDIR_COMMAND
-						.concat(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
-						.concat(entity.getNameEntity().toLowerCase()));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
+        }
+    }
 
-	}
+    public String extraireEntitiesFilesToCopy(Project project) {
+        List<BuisnessLogicEntity> entitiesToCopy = project.getEntities();
+        String entitiesFiles = "{";
+        for (int i = 0; i < entitiesToCopy.size(); i++) {
+            entitiesFiles += entitiesToCopy.get(i).getNameEntity().concat(".java").concat(",");
+        }
+        entitiesFiles = charRemoveAt(entitiesFiles, entitiesFiles.length() - 1);
+        return entitiesFiles;
+    }
 
-	public void copyDaoToGeneratedProject(Project project, boolean isWindows) throws IOException, InterruptedException {
-		String daoFiles = extraireDaoFilesToCopy(project);
-		executeCopyDaoCommandForDifferentOs(isWindows, daoFiles);
-	}
+    public static String charRemoveAt(String str, int p) {
+        return str.substring(0, p) + str.substring(p + 1);
+    }
 
-	private void executeCopyDaoCommandForDifferentOs(boolean isWindows, String daoFiles)
-			throws IOException, InterruptedException {
+    @Override
+    public void createFolderForEachDto(Project project) throws IOException, InterruptedException {
+        project.getEntities().stream().forEach(entity -> {
+            try {
+                executeCommand(Constants.MKDIR_COMMAND.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
+                        .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES).concat(entity.getNameEntity().toLowerCase()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
-		if (isWindows) {
-			executeCommand(CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(ConstantsPath.PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT)
-					.concat(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE));
-		} else {
+    }
 
-			executeCommand(CommandConstantsLinux.COPY_COMMAND_LINUX_FILES
-					.concat(ConstantsPath.PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT_FILES).concat(daoFiles).concat("} ")
-					.concat(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE));
+    @Override
+    public void copyDaoToGeneratedProject(Project project, boolean isWindows) throws IOException, InterruptedException {
+        String daoFiles = extraireDaoFilesToCopy(project);
+        executeCopyDaoCommandForDifferentOs(project, isWindows, daoFiles);
+    }
 
-		}
+    private void executeCopyDaoCommandForDifferentOs(Project project, boolean isWindows, String daoFiles) throws IOException, InterruptedException {
 
-	}
+        if (isWindows) {
+            executeCommand(CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(ConstantsPath.PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT).concat(ConstantsPath.DESKTOP)
+                    .concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DAO_PACKAGE));
+        } else {
 
-	private String extraireDaoFilesToCopy(Project project) {
-		List<BuisnessLogicEntity> daoToCopy = project.getEntities();
-		String daoFiles = "{";
-		for (int i = 0; i < daoToCopy.size(); i++) {
-			daoFiles += daoToCopy.get(i).getNameEntity().concat("Repository.java").concat(",");
-		}
-		daoFiles = charRemoveAt(daoFiles, daoFiles.length() - 1);
-		return daoFiles;
-	}
+            executeCommand(CommandConstantsLinux.COPY_COMMAND_LINUX_FILES.concat(ConstantsPath.PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT_FILES).concat(daoFiles).concat("} ")
+                    .concat(ConstantsPath.DESKTOP).concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DAO_PACKAGE));
 
-	@Override
-	public void renameDaoToGeneratedProject(Project project, boolean isWindows)
-			throws IOException, InterruptedException {
-		project.getEntities().stream().forEach(entity -> {
-			try {
-				executeCommand(CommandConstantsLinux.RENAME_COMMAND_LINUX_FILES
-						.concat(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES)
-						.concat(entity.getNameEntity().concat("Repository.java "))
-						.concat(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES).concat("I")
-						.concat(entity.getNameEntity()).concat("Dao.java"));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
+        }
 
-	}
+    }
 
-	@Override
-	public void copyEntitiesToDtoFolder(Project project, boolean isWindows) throws IOException, InterruptedException {
-		String EntitiesToCopyFiles = extraireEntitiesFilesToCopy(project);
-		System.out.println(EntitiesToCopyFiles);
-		executeCopyEntitiesToDtoCommandForDifferentOs(isWindows, EntitiesToCopyFiles, project);
-	}
+    private String extraireDaoFilesToCopy(Project project) {
+        List<BuisnessLogicEntity> daoToCopy = project.getEntities();
+        String daoFiles = "{";
+        for (int i = 0; i < daoToCopy.size(); i++) {
+            daoFiles += daoToCopy.get(i).getNameEntity().concat("Repository.java").concat(",");
+        }
+        daoFiles = charRemoveAt(daoFiles, daoFiles.length() - 1);
+        return daoFiles;
+    }
 
-	@Override
-	public void renameDTo(Project project, boolean isWindows) throws IOException, InterruptedException {
-		project.getEntities().stream().forEach(entity -> {
-			try {
-				executeCommand(CommandConstantsLinux.RENAME_COMMAND_LINUX_FILES
-						.concat(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
-						.concat(entity.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH)
-						.concat(entity.getNameEntity()).concat(".java ")
-						.concat(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
-						.concat(entity.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH)
-						.concat(entity.getNameEntity()).concat("Dto.java"));
-				dtoFileWriter.generateSuperFilesInEachFolderDTO(entity, project);
+    @Override
+    public void renameDaoToGeneratedProject(Project project, boolean isWindows) throws IOException, InterruptedException {
+        project.getEntities().stream().forEach(entity -> {
+            try {
+                executeCommand(CommandConstantsLinux.RENAME_COMMAND_LINUX_FILES.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
+                        .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES).concat(entity.getNameEntity().concat("Repository.java "))
+                        .concat(ConstantsPath.DESKTOP).concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES).concat("I")
+                        .concat(entity.getNameEntity()).concat("Dao.java"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
+    }
 
-	}
+    @Override
+    public void copyEntitiesToDtoFolder(Project project, boolean isWindows) throws IOException, InterruptedException {
+        String EntitiesToCopyFiles = extraireEntitiesFilesToCopy(project);
+        executeCopyEntitiesToDtoCommandForDifferentOs(isWindows, EntitiesToCopyFiles, project);
+    }
 
-	private void executeCopyEntitiesToDtoCommandForDifferentOs(boolean isWindows, String entitiesToCopyFiles,
-			Project project) throws IOException, InterruptedException {
-		project.getEntities().stream().forEach(entity -> {
+    @Override
+    public void renameDTo(Project project, boolean isWindows) throws IOException, InterruptedException {
+        project.getEntities().stream().forEach(entity -> {
+            try {
+                executeCommand(CommandConstantsLinux.RENAME_COMMAND_LINUX_FILES.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
+                        .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES).concat(entity.getNameEntity().toLowerCase())
+                        .concat(Constants.PATTERN_SLASH).concat(entity.getNameEntity()).concat(".java ").concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
+                        .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES).concat(entity.getNameEntity().toLowerCase())
+                        .concat(Constants.PATTERN_SLASH).concat(entity.getNameEntity()).concat("Dto.java"));
+                dtoFileWriter.generateSuperFilesInEachFolderDTO(entity, project);
 
-			try {
-				if (isWindows) {
-					executeCopyCommandWindows(entity);
-				} else {
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
-					executeCopyCommandLinux(entity);
+    }
 
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+    private void executeCopyEntitiesToDtoCommandForDifferentOs(boolean isWindows, String entitiesToCopyFiles, Project project) throws IOException, InterruptedException {
+        project.getEntities().stream().forEach(entity -> {
 
-		});
+            try {
+                if (isWindows) {
+                    executeCopyCommandWindows(project, entity);
+                } else {
 
-	}
+                    executeCopyCommandLinux(project, entity);
 
-	private void executeCopyCommandLinux(BuisnessLogicEntity entity) throws IOException, InterruptedException {
-		executeCommand(CommandConstantsLinux.COPY_COMMAND_LINUX_FILES_CP
-				.concat(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES).concat(entity.getNameEntity())
-				.concat(".java ").concat(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
-				.concat(entity.getNameEntity().toLowerCase()));
-	}
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-	private void executeCopyCommandWindows(BuisnessLogicEntity entity) throws IOException, InterruptedException {
-		executeCommand(
-				CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES)
-						.concat(ConstantsPath.PATH_TO_SPRINGULAR_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
-						.concat(entity.getNameEntity().toLowerCase()));
-	}
+        });
 
-	@Override
-	public void editNameProjectAfterCloning(Project project, boolean isWindows)
-			throws IOException, InterruptedException {
-			
-						renameProjectFolder(project);
-						editPomFilesWithTheNewProjectName(project);
-			
-	}
+    }
 
-	private void editPomFilesWithTheNewProjectName(Project project) throws IOException {
-		File pom = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW
-				.concat(project.getNameProject())
-				.concat(Constants.PATTERN_SLASH)
-				.concat(Constants.POM_XML));
-		File  pomPersistence= new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW
-				.concat(project.getNameProject())
-				.concat(Constants.PATTERN_SLASH)
-				.concat(ConstantsModules.SIFAST_SPRING_PERSISTENCE)
-				.concat(Constants.PATTERN_SLASH)
-				.concat(Constants.POM_XML));
-		File pomService = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW
-				.concat(project.getNameProject())
-				.concat(Constants.PATTERN_SLASH)
-				.concat(ConstantsModules.SIFAST_SPRING_SERVICE)
-				.concat(Constants.PATTERN_SLASH)
-				.concat(Constants.POM_XML));
-		File pomWeb = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW
-				.concat(project.getNameProject())
-				.concat(Constants.PATTERN_SLASH)
-				.concat(ConstantsModules.SIFAST_SPRING_WEB)
-				.concat(Constants.PATTERN_SLASH)
-				.concat(Constants.POM_XML));
-		File pomCommon = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW
-				.concat(project.getNameProject())
-				.concat(Constants.PATTERN_SLASH)
-				.concat(ConstantsModules.SIFAST_SPRING_COMMON)
-				.concat(Constants.PATTERN_SLASH)
-				.concat(Constants.POM_XML));
-		
-		File applicationPropertiesFile = new File(ConstantsPath.APPLICATION_PROPERTIES_SPRINGULAR_DESKTOP);
-		
-		File swaggerConfigFile = new File(
-				ConstantsPath.SWAGGER_CONFIG_FILE_PATH
-				.concat(Constants.SWAGGER_CONFIG_FILE)
-				);
-		
-		editPomFile(project, pom);
-		editPomFile(project, pomPersistence);
-		editPomFile(project, pomService);
-		editPomFile(project, pomWeb);
-		editPomFile(project, pomCommon);
-		editPomFile(project, applicationPropertiesFile);
-		editPomFile(project, swaggerConfigFile);
+    private void executeCopyCommandLinux(Project project, BuisnessLogicEntity entity) throws IOException, InterruptedException {
+        executeCommand(CommandConstantsLinux.COPY_COMMAND_LINUX_FILES_CP.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
+                .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES).concat(entity.getNameEntity()).concat(".java ").concat(ConstantsPath.DESKTOP)
+                .concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES).concat(entity.getNameEntity().toLowerCase()));
+    }
 
+    private void executeCopyCommandWindows(Project project, BuisnessLogicEntity entity) throws IOException, InterruptedException {
+        executeCommand(CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
+                .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES).concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
+                .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES).concat(entity.getNameEntity().toLowerCase()));
+    }
 
+    @Override
+    public void editNameProjectAfterCloning(Project project, boolean isWindows) throws IOException, InterruptedException {
 
-		
-	}
+        renameProjectFolder(project);
+        editPomFilesWithTheNewProjectName(project);
 
-	private void editPomFile(Project project, File file) throws IOException {
-		String fileContext = FileUtils.readFileToString(file);
-		fileContext = fileContext.replaceAll(Constants.OLD_PROJECT_NAME,project.getNameProject());
-		fileContext = fileContext.replaceAll(Constants.OLD_PROJECT_NAME_ALT,project.getNameProject());
-		FileUtils.write(file, fileContext);
-	}
+    }
 
-	private void renameProjectFolder(Project project) throws IOException, InterruptedException {
-		executeCommand(
-				CommandConstantsLinux.RENAME_COMMAND_LINUX_FILES
-		.concat(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE).concat(" ")
-		.concat(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW)
-		.concat(project.getNameProject())
-		);
-	}
+    private void editPomFilesWithTheNewProjectName(Project project) throws IOException {
+        File pom = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH).concat(Constants.POM_XML));
+        File pomPersistence = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH)
+                .concat(ConstantsModules.SIFAST_SPRING_PERSISTENCE).concat(Constants.PATTERN_SLASH).concat(Constants.POM_XML));
+        File pomService = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH)
+                .concat(ConstantsModules.SIFAST_SPRING_SERVICE).concat(Constants.PATTERN_SLASH).concat(Constants.POM_XML));
+        File pomWeb = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH)
+                .concat(ConstantsModules.SIFAST_SPRING_WEB).concat(Constants.PATTERN_SLASH).concat(Constants.POM_XML));
+        File pomCommon = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH)
+                .concat(ConstantsModules.SIFAST_SPRING_COMMON).concat(Constants.PATTERN_SLASH).concat(Constants.POM_XML));
 
-	
-	@Override
-	public void zipProject(Project project) throws FileNotFoundException, IOException {
-		List<File> folder = new ArrayList<File>();
-		File file = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW+project.getNameProject());
-		folder.add(file);
-		zip.zip(folder, ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW+project.getNameProject()+Constants.POINT_ZIP);
-		
-	}
+        File applicationPropertiesFile = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.APPLICATION_PROPERTIES_PROJECT_DESKTOP));
 
-	
-	
+        File swaggerConfigFile = new File(
+                ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.SWAGGER_PROJECT_CONFIG_FILE_PATH).concat(Constants.SWAGGER_CONFIG_FILE));
+
+        editPomFile(project, pom);
+        editPomFile(project, pomPersistence);
+        editPomFile(project, pomService);
+        editPomFile(project, pomWeb);
+        editPomFile(project, pomCommon);
+        editPomFile(project, applicationPropertiesFile);
+        editPomFile(project, swaggerConfigFile);
+
+    }
+
+    private void editPomFile(Project project, File file) throws IOException {
+        String fileContext = FileUtils.readFileToString(file);
+        fileContext = fileContext.replaceAll(Constants.OLD_PROJECT_NAME, project.getNameProject());
+        fileContext = fileContext.replaceAll(Constants.OLD_PROJECT_NAME_ALT, project.getNameProject());
+        FileUtils.write(file, fileContext);
+    }
+
+    private void renameProjectFolder(Project project) throws IOException, InterruptedException {
+        executeCommand(CommandConstantsLinux.RENAME_COMMAND_LINUX_FILES.concat(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE).concat(" ")
+                .concat(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW).concat(project.getNameProject()));
+    }
+
+    @Override
+    public void zipProject(Project project) throws FileNotFoundException, IOException {
+        List<File> folder = new ArrayList<File>();
+        File file = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW + project.getNameProject());
+        folder.add(file);
+        zip.zip(folder, ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW + project.getNameProject() + Constants.POINT_ZIP);
+
+    }
 
 }

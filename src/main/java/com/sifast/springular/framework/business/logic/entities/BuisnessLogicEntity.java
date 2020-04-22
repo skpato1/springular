@@ -27,7 +27,12 @@ public class BuisnessLogicEntity extends TimestampEntity implements Serializable
 	@Column(name = "name_entity")
 	private String nameEntity;
 	
-
+	@Column(name = "create_list_ids_if_slave")
+	private Boolean createListIdsIfSlave;
+	
+	@Column(name = "create_list_dtos_if_slave")
+	private Boolean createListDtosIfSlave;
+	
 	@OneToMany(cascade=CascadeType.ALL , mappedBy="buisnessLogicEntity" ,fetch=FetchType.LAZY)
 	private List<Attribute> attributes;
 	
@@ -40,6 +45,27 @@ public class BuisnessLogicEntity extends TimestampEntity implements Serializable
 	
 	@OneToMany(cascade=CascadeType.ALL , mappedBy="slaveEntity" ,fetch=FetchType.LAZY)
 	private List<Relationship> relationshipsSlave;
+	
+	
+
+	public Boolean getCreateListIdsIfSlave() {
+		return createListIdsIfSlave;
+	}
+
+	public void setCreateListIdsIfSlave(Boolean createListIdsIfSlave) {
+		this.createListIdsIfSlave = createListIdsIfSlave;
+	}
+
+	public Boolean getCreateListDtosIfSlave() {
+		return createListDtosIfSlave;
+	}
+
+	
+
+	public void setCreateListDtosIfSlave(Boolean createListDtosIfSlave) {
+		this.createListDtosIfSlave = createListDtosIfSlave;
+	}
+
 	
 	
 	public List<Attribute> getAttributes() {
@@ -90,6 +116,27 @@ public class BuisnessLogicEntity extends TimestampEntity implements Serializable
 		this.nameEntity = nameEntity;
 	}
 
-	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("BuisnessLogicEntity [id=");
+		builder.append(id);
+		builder.append(", nameEntity=");
+		builder.append(nameEntity);
+		builder.append(", createListIdsIfSlave=");
+		builder.append(createListIdsIfSlave);
+		builder.append(", createListDtosIfSlave=");
+		builder.append(createListDtosIfSlave);
+		builder.append(", attributes=");
+		builder.append(attributes);
+		builder.append(", project=");
+		builder.append(project);
+		builder.append(", relationshipsMaster=");
+		builder.append(relationshipsMaster);
+		builder.append(", relationshipsSlave=");
+		builder.append(relationshipsSlave);
+		builder.append("]");
+		return builder.toString();
+	}
 
 }

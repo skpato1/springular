@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -20,7 +21,6 @@ import com.sifast.springular.framework.business.logic.common.ProjectStatus;
 @Table(name = "T_project")
 public class Project extends TimestampEntity implements Serializable {
 
-	
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -38,7 +38,20 @@ public class Project extends TimestampEntity implements Serializable {
 
 	@Column(name = "path_project")
 	private String pathProject;
-	
+
+	@Column(name = "username_project")
+	private String usernameProject;
+
+	@Column(name = "status_project")
+	private ProjectStatus statusProject;
+
+	@OneToOne(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
+	@JoinColumn(name = "database_id")
+	private Database database;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "project", fetch = FetchType.LAZY)
+	private List<BuisnessLogicEntity> entities;
+
 	public String getUsernameProject() {
 		return usernameProject;
 	}
@@ -46,14 +59,6 @@ public class Project extends TimestampEntity implements Serializable {
 	public void setUsernameProject(String usernameProject) {
 		this.usernameProject = usernameProject;
 	}
-
-	@Column(name = "username_project")
-	private String usernameProject;
-	
-	
-	@Column(name = "status_project")
-	private ProjectStatus statusProject;
-	
 
 	public Project() {
 
@@ -67,15 +72,12 @@ public class Project extends TimestampEntity implements Serializable {
 		this.statusProject = statusProject;
 	}
 
-	public Project(String nameProject, String portProject, String typeProject, String pathProject
-			) {
+	public Project(String nameProject, String portProject, String typeProject, String pathProject) {
 		this.nameProject = nameProject;
 		this.portProject = portProject;
 		this.typeProject = typeProject;
 		this.pathProject = pathProject;
 	}
-
-
 
 	public String getPathProject() {
 		return pathProject;
@@ -101,9 +103,6 @@ public class Project extends TimestampEntity implements Serializable {
 		this.typeProject = typeProject;
 	}
 
-	@OneToOne
-	private Database database;
-
 	public Database getDatabase() {
 		return database;
 	}
@@ -111,9 +110,6 @@ public class Project extends TimestampEntity implements Serializable {
 	public void setDatabase(Database database) {
 		this.database = database;
 	}
-
-	@OneToMany(cascade = CascadeType.ALL,mappedBy="project",fetch = FetchType.LAZY)
-	private List<BuisnessLogicEntity> entities;
 
 	public List<BuisnessLogicEntity> getEntities() {
 		return entities;
@@ -135,12 +131,8 @@ public class Project extends TimestampEntity implements Serializable {
 		return nameProject;
 	}
 
-	
-
 	public void setNameProject(String nameProject) {
 		this.nameProject = nameProject;
 	}
-
-	
 
 }

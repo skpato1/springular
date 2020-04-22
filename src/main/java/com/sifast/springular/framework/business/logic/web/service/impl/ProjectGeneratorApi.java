@@ -72,13 +72,13 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 
 			commandExecutorService.renameDaoToGeneratedProject(project.get(), isWindows);
 
+			jdlFileGeneratorService.addConstantsInApiMessageFile(project.get());
+
 			jdlFileGeneratorService.writeFilesDao(project.get());
 
 			jdlFileGeneratorService.writeFilesIService(project.get());
 
 			jdlFileGeneratorService.writeFilesService(project.get());
-
-			jdlFileGeneratorService.createFilesInEachFolderDTO(project.get());
 
 			commandExecutorService.copyEntitiesToDtoFolder(project.get(), isWindows);
 
@@ -86,16 +86,13 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 
 			jdlFileGeneratorService.createFilesInEachFolderDTO(project.get());
 
-			commandExecutorService.zipProject(project.get());
-
 			jdlFileGeneratorService.writeFilesMappers(project.get());
-			
-			jdlFileGeneratorService.addConstantsInApiMessageFile(project.get());
 
 			jdlFileGeneratorService.writeFilesInterfacesWebServicesApi(project.get());
 
 			jdlFileGeneratorService.writeFilesWebServicesApiImpl(project.get());
 
+			commandExecutorService.zipProject(project.get());
 
 		} else {
 			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);

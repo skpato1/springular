@@ -19,7 +19,7 @@ public class MapperFileWriter {
 	public void generateMapperFiles(BuisnessLogicEntity entity, Project project) {
 		project.getEntities().stream().forEach(ent -> {
 			try {
-				FileWriter myWriter = writeImportsAndStructureOfClassInMappers(ent);
+				FileWriter myWriter = writeImportsAndStructureOfClassInMappers(project,ent);
 				injectServicesAndCongigMapper(ent, myWriter);
 				writeCreateMapper(ent, myWriter);
 				writeViewMapper(ent, myWriter);
@@ -122,8 +122,11 @@ public class MapperFileWriter {
 		
 	}
 
-	private FileWriter writeImportsAndStructureOfClassInMappers(BuisnessLogicEntity ent) throws IOException {
-		File file = new File(ConstantsPath.PATH_TO_SPRINGULAR_MAPPER
+	private FileWriter writeImportsAndStructureOfClassInMappers(Project project,BuisnessLogicEntity ent) throws IOException {
+		File file = new File(
+				ConstantsPath.DESKTOP
+				.concat(project.getNameProject())
+				.concat(ConstantsPath.PATH_TO_PROJECT_MAPPER)
 				.concat(ent.getNameEntity())
 				.concat("Mapper.java"));
 		String fileMapper = ent.getNameEntity().concat("Mapper");

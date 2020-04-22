@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sifast.springular.framework.business.logic.common.ApiMessage;
+import com.sifast.springular.framework.business.logic.common.BuisnessLogicException;
 import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
 import com.sifast.springular.framework.business.logic.entities.Attribute;
@@ -68,6 +69,10 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
 		LOGGER.info("Web service saveBuisnessLogicEntity invoked with buisnessLogicEntityDto {}",
 				buisnessLogicEntityDto);
 		try {
+			if (buisnessLogicEntityDto.getCreateListDtosIfSlave().equals(buisnessLogicEntityDto.getCreateListIdsIfSlave()))
+					{
+						throw new BuisnessLogicException(ApiMessage.CHOICES_MUST_BE_DIFFERENT);
+					}
 			Optional<Project> project = projectService.findById(buisnessLogicEntityDto.getProject_id());
 			if (project.isPresent()) {
 				BuisnessLogicEntity entityToBeSaved = buisnessLogicEntityMapper.mapCreateBuisnessLogicEntity(buisnessLogicEntityDto);
@@ -91,7 +96,13 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
 				httpStatus = HttpStatus.NOT_FOUND;
 				httpResponseBody = httpErrorResponse;
 			}
-		} catch (Exception e) {
+		} 
+		
+		catch (BuisnessLogicException e) {
+			httpStatus = HttpStatus.BAD_REQUEST;
+			httpResponseBody = new HttpErrorResponse(HttpCostumCode.BAD_REQUEST.getValue(), e.getMessage());
+		}
+		catch (Exception e) {
 			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.SERVER_ERROR.getValue(), ApiMessage.ERR_SAVE);
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			httpResponseBody = httpErrorResponse;

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,6 +33,9 @@ public class Database extends TimestampEntity implements Serializable {
 	@Column(name = "password_database")
 	private String passwordDatabase;
 	
+	@OneToOne(mappedBy = "database" , fetch = FetchType.LAZY)
+	 private Project project;
+	
 	public String getUsernameDatabase() {
 		return usernameDatabase;
 	}
@@ -48,8 +52,7 @@ public class Database extends TimestampEntity implements Serializable {
 		this.passwordDatabase = passwordDatabase;
 	}
 
-	@OneToOne(mappedBy = "database")
-	 private Project project;
+	
 	
 	public Project getProject() {
 		return project;

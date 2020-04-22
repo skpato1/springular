@@ -3,7 +3,7 @@ package com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEnti
 public class ViewBuisnessLogicEntityDto extends BuisnessLogicEntityDto {
 	
 	private int id;
-
+	
 
 	public int getId() {
 		return id;

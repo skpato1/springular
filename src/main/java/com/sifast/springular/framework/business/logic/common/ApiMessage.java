@@ -75,6 +75,8 @@ public class ApiMessage {
 	public static final String RELATIONSHIP_CREATED_SUCCESSFULLY = "RELATIONSHIP_CREATED_SUCCESSFULLY";
 
 	public static final String RELATIONSHIP_NOT_FOUND = "RELATIONSHIP_NOT_FOUND";
+
+	public static final String CHOICES_MUST_BE_DIFFERENT = "CHOICES_MUST_BE_DIFFERENT";
 			
 			
     private ApiMessage() {

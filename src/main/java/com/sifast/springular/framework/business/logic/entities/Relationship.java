@@ -66,12 +66,23 @@ public class Relationship extends TimestampEntity implements Serializable {
 	public void setSlaveEntity(BuisnessLogicEntity slaveEntity) {
 		this.slaveEntity = slaveEntity;
 	}
-	
-	
+
 	@Override
 	public String toString() {
-		return "Relationship [id=" + id + ", typeRelationship=" + typeRelationship + ", masterEntity=" + masterEntity
-				+ ", slaveEntity=" + slaveEntity + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Relationship [id=");
+		builder.append(id);
+		builder.append(", typeRelationship=");
+		builder.append(typeRelationship);
+		builder.append(", masterEntity=");
+		builder.append(masterEntity);
+		builder.append(", slaveEntity=");
+		builder.append(slaveEntity);
+		builder.append("]");
+		return builder.toString();
 	}
+	
+	
+	
 
 }

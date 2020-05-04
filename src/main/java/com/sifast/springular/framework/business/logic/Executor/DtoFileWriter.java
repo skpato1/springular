@@ -50,10 +50,26 @@ public class DtoFileWriter {
         List<String> relationshipsNamesManyToMany = entity.getRelationshipsMaster().stream()
                 .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.ManyToMany.name()))
                 .map(relationship -> relationship.getSlaveEntity().getNameEntity()).collect(Collectors.toList());
+
+        List<String> relationshipsNamesOneToManyMaster = entity.getRelationshipsMaster().stream()
+                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.OneToMany.name()))
+                .map(relationship -> relationship.getSlaveEntity().getNameEntity()).collect(Collectors.toList());
+
         List<Attribute> attributes = new ArrayList<>();
         for (int i = 0; i < entity.getAttributes().size(); i++) {
             attributes.add(entity.getAttributes().get(i));
         }
+
+        for (int i = 0; i < relationshipsNamesOneToManyMaster.size(); i++) {
+            if (entity.getCreateListIdsIfSlave()) {
+                Attribute attOneToManyMaster = new Attribute();
+                attOneToManyMaster.setNameAttribute(relationshipsNamesOneToManyMaster.get(i).toLowerCase().concat("Ids"));
+                attOneToManyMaster.setTypeAttribute(AttributesTypeEnum.Set);
+                attributes.add(attOneToManyMaster);
+            }
+
+        }
+
         for (int i = 0; i < relationshipsNamesOneToMany.size(); i++) {
 
             Attribute attOneToMany = new Attribute();
@@ -148,10 +164,13 @@ public class DtoFileWriter {
         FileWriter myWriter = new FileWriter(file);
         myWriter.write("");
         myWriter.write(ConstantsImportPackage.PACKAGE_DTO.concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+
+        myWriter.write(ConstantsImportPackage.IMPORT_SET);
+
         ent.getAttributes().stream().forEach(attribute -> {
-            if (attribute.getTypeAttribute().equals(AttributesTypeEnum.Set)) {
+            if (attribute.getTypeAttribute().toString().equals("LocalDate") || attribute.getTypeAttribute().name().equals(AttributesTypeEnum.LocalDate)) {
                 try {
-                    myWriter.write(ConstantsImportPackage.IMPORT_SET);
+                    myWriter.write(ConstantsImportPackage.IMPORT_LOCAL_DATE);
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -314,7 +333,8 @@ public class DtoFileWriter {
                 File fileView = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
                         .concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH).concat("View").concat(ent.getNameEntity().concat("Dto.java")));
                 String fileDto = "View".concat(ent.getNameEntity()).concat("Dto");
-                FileWriter myWriter = writeViewImportsAndStructureOfClassInDto(project, ent);
+                FileWriter myWriter = writeViewImportsAndStructureOfClassInDto(project, ent, attributes);
+
                 writeViewAttributesInDto(ent, myWriter);
                 writeViewRelationshipAttributeFromAttribute(ent, myWriter, attributes);
                 writeViewGettersAndSettersForDto(ent, myWriter);
@@ -572,7 +592,7 @@ public class DtoFileWriter {
 
     }
 
-    private FileWriter writeViewImportsAndStructureOfClassInDto(Project project, BuisnessLogicEntity ent) throws IOException {
+    private FileWriter writeViewImportsAndStructureOfClassInDto(Project project, BuisnessLogicEntity ent, List<Attribute> attributes) throws IOException {
         String fileDto = "View".concat(ent.getNameEntity()).concat("Dto");
         File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
                 .concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH).concat(fileDto).concat(".java"));
@@ -582,6 +602,26 @@ public class DtoFileWriter {
         myWriter.write(ConstantsImportPackage.PACKAGE_DTO.concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
 
         myWriter.write(ConstantsImportPackage.IMPORT_SET);
+        attributes.stream().forEach(attribute -> {
+            String firstLetter = attribute.getNameAttribute().charAt(0) + "";
+            String view = firstLetter.toUpperCase() + attribute.getNameAttribute().substring(1, attribute.getNameAttribute().length());
+            String viewDto = view.substring(0, view.length() - 1);
+            try {
+
+                if (attribute.getNameAttribute().endsWith("s") && !attribute.getNameAttribute().endsWith("ss")) {
+                    myWriter.write(ConstantsImportPackage.IMPORT_DTO.concat(attribute.getNameAttribute().substring(0, attribute.getNameAttribute().length() - 1))
+                            .concat(Constants.POINT).concat("View").concat(viewDto).concat("Dto").concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                }
+                if (!attribute.getNameAttribute().endsWith("s") && attribute.getTypeAttribute().toString().equals(AttributesTypeEnum.List.toString())) {
+                    myWriter.write(ConstantsImportPackage.IMPORT_DTO.concat(attribute.getNameAttribute()).concat(Constants.POINT).concat("View").concat(view).concat("Dto")
+                            .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                }
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        });
 
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);

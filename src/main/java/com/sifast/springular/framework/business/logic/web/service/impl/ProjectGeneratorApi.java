@@ -52,50 +52,53 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
         if (project.isPresent()) {
             httpStatus = HttpStatus.OK;
 
-            commandExecutorService.cloneSpringularFrameworkSocleFromGitlab(project.get(), isWindows);
-
-            commandExecutorService.editNameProjectAfterCloning(project.get(), isWindows);
-
-            commandExecutorService.createFolderForEachDto(project.get());
-
-            jdlFileGeneratorService.generateProjectWithJdl(project.get());
-
-            commandExecutorService.executeJdlFromTerminal(isWindows);
-
-            commandExecutorService.copyEntitiesToGeneratedProject(project.get(), isWindows);
-
-            jdlFileGeneratorService.extendTimeStampInGeneratedEntities(project.get());
-
-            jdlFileGeneratorService.deleteUnusedCommentsInGeneratedEntities(project.get());
-
-            commandExecutorService.copyDaoToGeneratedProject(project.get(), isWindows);
-
-            commandExecutorService.renameDaoToGeneratedProject(project.get(), isWindows);
-
-            jdlFileGeneratorService.addConstantsInApiMessageFile(project.get());
-
-            jdlFileGeneratorService.writeFilesDao(project.get());
-
-            jdlFileGeneratorService.writeFilesIService(project.get());
-
-            jdlFileGeneratorService.writeFilesService(project.get());
-
-            jdlFileGeneratorService.writeValidators(project.get());
-
-            commandExecutorService.copyEntitiesToDtoFolder(project.get(), isWindows);
+            /*
+             * commandExecutorService.cloneSpringularFrameworkSocleFromGitlab(project.get(), isWindows);
+             *
+             * commandExecutorService.editNameProjectAfterCloning(project.get(), isWindows);
+             *
+             * commandExecutorService.createFolderForEachDto(project.get());
+             *
+             * jdlFileGeneratorService.generateProjectWithJdl(project.get());
+             *
+             * commandExecutorService.executeJdlFromTerminal(isWindows);
+             *
+             * commandExecutorService.copyEntitiesToGeneratedProject(project.get(), isWindows);
+             *
+             * jdlFileGeneratorService.extendTimeStampInGeneratedEntities(project.get());
+             *
+             * jdlFileGeneratorService.deleteUnusedCommentsInGeneratedEntities(project.get());
+             *
+             * commandExecutorService.copyDaoToGeneratedProject(project.get(), isWindows);
+             *
+             * commandExecutorService.renameDaoToGeneratedProject(project.get(), isWindows);
+             *
+             * jdlFileGeneratorService.addConstantsInApiMessageFile(project.get());
+             *
+             * jdlFileGeneratorService.writeFilesDao(project.get());
+             *
+             * jdlFileGeneratorService.writeFilesIService(project.get());
+             *
+             * jdlFileGeneratorService.writeFilesService(project.get());
+             *
+             * jdlFileGeneratorService.writeValidators(project.get());
+             *
+             * commandExecutorService.copyEntitiesToDtoFolder(project.get(), isWindows);
+             *
+             * commandExecutorService.renameDTo(project.get(), isWindows);
+             *
+             * jdlFileGeneratorService.createFilesInEachFolderDTO(project.get());
+             *
+             * jdlFileGeneratorService.writeFilesMappers(project.get());
+             *
+             * jdlFileGeneratorService.writeFilesInterfacesWebServicesApi(project.get());
+             *
+             * jdlFileGeneratorService.writeFilesWebServicesApiImpl(project.get());
+             *
+             * commandExecutorService.zipProject(project.get());
+             */
 
             commandExecutorService.renameDTo(project.get(), isWindows);
-
-            jdlFileGeneratorService.createFilesInEachFolderDTO(project.get());
-
-            jdlFileGeneratorService.writeFilesMappers(project.get());
-
-            jdlFileGeneratorService.writeFilesInterfacesWebServicesApi(project.get());
-
-            jdlFileGeneratorService.writeFilesWebServicesApiImpl(project.get());
-
-            commandExecutorService.zipProject(project.get());
-
         } else {
             httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
             httpStatus = HttpStatus.NOT_FOUND;

@@ -68,6 +68,7 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
                 File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES)
                         + entity.getNameEntity().concat(".java"));
                 String fileContext = FileUtils.readFileToString(file);
+                fileContext = fileContext.replaceAll("springular.framework.domain", "model");
                 fileContext = fileContext.replaceAll(Constants.IMPLEMENTS, Constants.EXTEND_TIMESTAMP_ENTITY);
                 FileUtils.write(file, fileContext);
             } catch (Exception e) {
@@ -159,6 +160,10 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
                                         .concat(Constants.DOUBLE_COTE).concat(Constants.PATTERN_POINT_VIRGULE));
                     }
                 }
+                fileContext.replaceFirst("\\}", "\\}".concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION)
+                        .concat(Constants.ERROR_LEVEL_MESSAGE)
+
+                );
 
                 FileUtils.write(file, fileContext);
             } catch (Exception e) {

@@ -43,4 +43,8 @@ public class ConstantsAnnotations {
     public static final String ANNOTATION_API_PARAM = "@ApiParam";
 
     public static final String PATH_VARIABLE = "@PathVariable";
+
+    public static final String ANNOTATION_REQUEST_BODY = "@RequestBody";
+
+    public static final String ANNOTATION_VALIDATED = "@Validated";
 }

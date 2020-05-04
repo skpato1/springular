@@ -7,23 +7,21 @@ import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEnti
 import com.sifast.springular.framework.business.logic.web.config.ConfiguredModelMapper;
 import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.CreateBuisnessLogicEntityDto;
 import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.ViewBuisnessLogicEntityDto;
+
 @Component
 public class BuisnessLogicEntityMapper {
-	
-	
-	@Autowired
+
+    @Autowired
     private ConfiguredModelMapper modelMapper;
-	
-	
-	public BuisnessLogicEntity mapCreateBuisnessLogicEntity(CreateBuisnessLogicEntityDto buisnessLogicEntityDto) {
+
+    public BuisnessLogicEntity mapCreateBuisnessLogicEntity(CreateBuisnessLogicEntityDto buisnessLogicEntityDto) {
         BuisnessLogicEntity mappedBuisnessLogicEntity = modelMapper.map(buisnessLogicEntityDto, BuisnessLogicEntity.class);
         return mappedBuisnessLogicEntity;
     }
-	
-	 public ViewBuisnessLogicEntityDto mapBuisnessLogicEntityToViewBuisnessLogicEntityDto(BuisnessLogicEntity buisnessLogicEntity) {
-	        ViewBuisnessLogicEntityDto viewBuisnessLogicEntityDto = modelMapper.map(buisnessLogicEntity, ViewBuisnessLogicEntityDto.class);
-	        return viewBuisnessLogicEntityDto;
-	    }
 
+    public ViewBuisnessLogicEntityDto mapBuisnessLogicEntityToViewBuisnessLogicEntityDto(BuisnessLogicEntity buisnessLogicEntity) {
+        ViewBuisnessLogicEntityDto viewBuisnessLogicEntityDto = modelMapper.map(buisnessLogicEntity, ViewBuisnessLogicEntityDto.class);
+        return viewBuisnessLogicEntityDto;
+    }
 
 }

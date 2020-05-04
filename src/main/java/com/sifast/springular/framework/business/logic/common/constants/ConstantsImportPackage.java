@@ -70,11 +70,11 @@ public class ConstantsImportPackage {
 
     public static final String IMPORT_REQUEST_METHOD = "import org.springframework.web.bind.annotation.RequestMethod;\n";
 
-    public static final String IMPORT_API_MESSAGE = "import com.sifast.springular.framework.business.logic.common.ApiMessage;\n";
+    public static final String IMPORT_API_MESSAGE = "import com.sifast.common.ApiMessage;\n";
 
-    public static final String IMPORT_API_STATUS = "import com.sifast.springular.framework.business.logic.common.ApiStatus;\n";
+    public static final String IMPORT_API_STATUS = "import com.sifast.common.constants.ApiStatus;\n";
 
-    public static final String IMPORT_HTTP_ERROR_MESSAGE = "import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;\n";
+    public static final String IMPORT_HTTP_ERROR_MESSAGE = "import com.sifast.common.utils.HttpErrorResponse;\n";
 
     public static final String IMPORT_SWAGGER_API_RESPONSES = "import io.swagger.annotations.ApiResponse;\n";
 
@@ -106,7 +106,7 @@ public class ConstantsImportPackage {
 
     public static final String IMPORT_HTTP_ERROR_RESPONSE = "import com.sifast.common.utils.HttpErrorResponse;\n";
 
-    public static final String IMPORT_ISERVICE = "import com.sifast.springular.framework.business.logic.service.";
+    public static final String IMPORT_ISERVICE = "import com.sifast.service.";
 
     public static final String IMPORT_MAPPER = "import com.sifast.common.mapper.";
 
@@ -118,4 +118,13 @@ public class ConstantsImportPackage {
 
     public static final String PACKAGE_VALIDAORS = "package com.sifast.validator;";
 
+    public static final String IMPORT_LOCAL_DATE = "import java.time.LocalDate;\n";
+
+    public static final String IMPORT_HASH_SET = "import java.util.HashSet;\n";
+
+    public static final String IMPORT_VALIDATOR = "import com.sifast.validator.";
+
+    public static final String IMPORT_IWEBSERVICES_VALIDATORS = "import com.sifast.common.utils.IWebServicesValidators;\n";
+
+    public static final String IMPORT_ANNOTATION_VALIDATED = "import org.springframework.validation.annotation.Validated;\n";
 }

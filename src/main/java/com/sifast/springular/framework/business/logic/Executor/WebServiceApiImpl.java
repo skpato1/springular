@@ -63,6 +63,9 @@ public class WebServiceApiImpl {
         myWriter.write(ConstantsImportPackage.IMPORT_API_MESSAGE);
         myWriter.write(ConstantsImportPackage.IMPORT_HTTP_COSTUM_CODE);
         myWriter.write(ConstantsImportPackage.IMPORT_HTTP_ERROR_RESPONSE);
+
+        myWriter.write(ConstantsImportPackage.IMPORT_EXCEPTION.concat("Cho").concat(Constants.EXCEPTION).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+
         myWriter.write(ConstantsImportPackage.IMPORT_ENTITY_MODEL.concat(ent.getNameEntity()).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
 
         myWriter.write(ConstantsImportPackage.IMPORT_ISERVICE.concat(interfaceService).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
@@ -153,6 +156,163 @@ public class WebServiceApiImpl {
         deleteWS(ent, myWriter, variableService);
         getByIdWS(ent, myWriter, variableService);
         saveWs(ent, myWriter, variableService);
+        updateWs(ent, myWriter, variableService);
+
+    }
+
+    private void updateWs(BuisnessLogicEntity ent, FileWriter myWriter, String variableService) throws IOException {
+        overrideAnnotation(myWriter);
+        signatureOfUodateMethod(ent, myWriter);
+        implementationOfUpdateMethod(ent, myWriter, variableService);
+        findEntityById(ent, myWriter, variableService);
+
+    }
+
+    private void signatureOfUodateMethod(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+        myWriter.write(Constants.PUBLIC.concat(Constants.RESPONSE_ENTITY).concat("update").concat(ent.getNameEntity()).concat(Constants.PARENTHESE_OUVRANTE)
+                .concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION).concat(Constants.PATTERN_TABULATION)
+
+                .concat(ConstantsAnnotations.ANNOTATION_API_PARAM).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.VALUE_EGALE).concat(Constants.DOUBLE_COTE)
+                .concat("ID of ").concat(ent.getNameEntity()).concat("that will be updated").concat(Constants.DOUBLE_COTE).concat(Constants.VIRGULE)
+                .concat(Constants.REQUIRED_EGALE_TRUE).concat(Constants.VIRGULE).concat(Constants.ALLOWABLE_VALUES).concat(Constants.PARENTHESE_FERMANTE).concat(" ")
+                .concat(ConstantsAnnotations.PATH_VARIABLE).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.DOUBLE_COTE).concat(Constants.ID_MINUS)
+                .concat(Constants.DOUBLE_COTE).concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(AttributesTypeEnum.Long.toString().toLowerCase()).concat(" ")
+                .concat(Constants.ID_MINUS).concat(Constants.VIRGULE)
+
+                .concat(Constants.PATTERN_RETOUR_LIGNE)
+
+                .concat(ConstantsAnnotations.ANNOTATION_API_PARAM).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.REQUIRED_EGALE_TRUE).concat(Constants.VIRGULE)
+                .concat(Constants.VALUE_EGALE).concat(Constants.DOUBLE_COTE).concat(ent.getNameEntity().toLowerCase()).concat(Constants.DOUBLE_COTE).concat(Constants.VIRGULE)
+                .concat(Constants.NAME_EGALE).concat(Constants.DOUBLE_COTE).concat(ent.getNameEntity().toLowerCase()).concat(Constants.DOUBLE_COTE)
+                .concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(ConstantsAnnotations.ANNOTATION_REQUEST_BODY).concat(Constants.PATTERN_RETOUR_LIGNE)
+                .concat(Constants.PATTERN_TABULATION).concat(ConstantsAnnotations.ANNOTATION_VALIDATED).concat(Constants.PARENTHESE_VALUE_EGALE).concat(Constants.ACCOLADE_OUVRANT)
+                .concat("IWebServicesValidators.class").concat(Constants.ACCOLADE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE).concat(" Create").concat(ent.getNameEntity())
+                .concat("Dto").concat(" ").concat(ent.getNameEntity().toLowerCase()).concat("Dto")
+
+                .concat(Constants.VIRGULE).concat(" ").concat(Constants.BINDING_RESULT).concat(" ").concat(Constants.BINDING_RESULT.toLowerCase())
+                .concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
+    }
+
+    private void implementationOfUpdateMethod(BuisnessLogicEntity ent, FileWriter myWriter, String variableService) throws IOException {
+        myWriter.write(Constants.PATTERN_RETOUR_LIGNE.concat(Constants.PATTERN_TABULATION));
+        loggerInfoUpdate(ent, myWriter);
+        tryUpdate(ent, myWriter, variableService);
+        catchUpdate(ent, myWriter);
+        returnWS(myWriter);
+        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+
+    }
+
+    private void tryUpdate(BuisnessLogicEntity ent, FileWriter myWriter, String variableService) throws IOException {
+        openTryMethod(myWriter);
+        validateInputData(ent, myWriter);
+        entityFindById(ent, myWriter);
+        String mappedEntity = mappedEntity(ent, myWriter);
+        setMappedEntity(ent, myWriter, mappedEntity);
+        String updateEntity = updateEntity(ent, myWriter, mappedEntity);
+        saveHttpResponseBody(ent, myWriter, updateEntity);
+        httpStatusAccepted(myWriter);
+        closeTryMethod(myWriter);
+
+    }
+
+    private void httpStatusAccepted(FileWriter myWriter) throws IOException {
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.HTTP_STATUS_ACCEPTED);
+
+    }
+
+    private String updateEntity(BuisnessLogicEntity ent, FileWriter myWriter, String mappedEntity) throws IOException {
+        myWriter.write(Constants.PATTERN_TABULATION);
+        String variableService = ent.getNameEntity().toLowerCase().concat("Service");
+        String updatedEntity = "updated".concat(ent.getNameEntity());
+        myWriter.write(ent.getNameEntity().concat(" ").concat(updatedEntity).concat(Constants.EGALE).concat(variableService).concat(Constants.POINT).concat("save")
+                .concat(Constants.PARENTHESE_OUVRANTE).concat(mappedEntity).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
+
+        );
+        return updatedEntity;
+    }
+
+    private void setMappedEntity(BuisnessLogicEntity ent, FileWriter myWriter, String mappedEntity) throws IOException {
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(mappedEntity.concat(Constants.POINT).concat(Constants.SET_METHOD).concat(Constants.ID).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.ID_MINUS)
+                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+    }
+
+    private String mappedEntity(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+        myWriter.write(Constants.PATTERN_TABULATION);
+        String mappedEntity = "mapped".concat(ent.getNameEntity());
+        String variableMapper = ent.getNameEntity().toLowerCase().concat("Mapper");
+
+        myWriter.write(ent.getNameEntity().concat(" ").concat(mappedEntity).concat(Constants.EGALE).concat(variableMapper).concat(Constants.POINT).concat("map")
+                .concat(ent.getNameEntity()).concat("Dto").concat("To").concat(ent.getNameEntity()).concat(Constants.PARENTHESE_OUVRANTE)
+                .concat(ent.getNameEntity().toLowerCase().concat("Dto")).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+        return mappedEntity;
+    }
+
+    private void entityFindById(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write("find".concat(ent.getNameEntity()).concat("ById").concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.ID_MINUS).concat(Constants.PARENTHESE_FERMANTE)
+                .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+
+    }
+
+    private void catchUpdate(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+        catchUpdateGenericMethod(myWriter);
+        httpResponseBodyBadRequest(myWriter);
+        httpStatusBadRequest(myWriter);
+        closeCatch(myWriter);
+        catchUpdateFinalMethod(myWriter);
+        httpResponseBodyServerError(myWriter);
+        httpStatusInternalServerError(myWriter);
+        closeCatch(myWriter);
+    }
+
+    private void httpResponseBodyServerError(FileWriter myWriter) throws IOException {
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.HTTP_RESPONSE_BODY_SERVER_ERROR);
+    }
+
+    private void httpResponseBodyBadRequest(FileWriter myWriter) throws IOException {
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.HTTP_RESPONSE_BODY_BAD_REQUEST);
+
+    }
+
+    private void httpStatusBadRequest(FileWriter myWriter) throws IOException {
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
+    }
+
+    private void catchUpdateGenericMethod(FileWriter myWriter) throws IOException {
+        myWriter.write(Constants.PATTERN_RETOUR_LIGNE.concat(Constants.PATTERN_TABULATION));
+        myWriter.write(Constants.CATCH);
+        myWriter.write(Constants.PARENTHESE_OUVRANTE);
+        myWriter.write("Cho".concat(Constants.DECLARATION_EXCEPTION_EX_IN_CATCH));
+        myWriter.write(Constants.PARENTHESE_FERMANTE);
+        myWriter.write(Constants.ACCOLADE_OUVRANT);
+        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+
+    }
+
+    private void catchUpdateFinalMethod(FileWriter myWriter) throws IOException {
+        myWriter.write(Constants.PATTERN_RETOUR_LIGNE.concat(Constants.PATTERN_TABULATION));
+        myWriter.write(Constants.CATCH);
+        myWriter.write(Constants.PARENTHESE_OUVRANTE);
+        myWriter.write("final ".concat(Constants.DECLARATION_EXCEPTION_EX_IN_CATCH));
+        myWriter.write(Constants.PARENTHESE_FERMANTE);
+        myWriter.write(Constants.ACCOLADE_OUVRANT);
+        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+
+    }
+
+    private void loggerInfoUpdate(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.LOGGER_INFO.concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.DOUBLE_COTE).concat("Web Service update").concat(ent.getNameEntity())
+                .concat(" invoked with args {}").concat(Constants.DOUBLE_COTE).concat(Constants.VIRGULE).concat(ent.getNameEntity().toLowerCase()).concat("Dto")
+                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE));
 
     }
 
@@ -160,6 +320,60 @@ public class WebServiceApiImpl {
         overrideAnnotation(myWriter);
         signatureOfSaveMethod(ent, myWriter);
         implementationOfSaveMethod(ent, myWriter, variableService);
+    }
+
+    private void findEntityById(BuisnessLogicEntity ent, FileWriter myWriter, String variableService) throws IOException {
+        signatureOfFindByIdMethod(ent, myWriter);
+        implementationOfFindByIdMethod(ent, myWriter, variableService);
+        returnFindByIdMethod(ent, myWriter);
+
+    }
+
+    private void returnFindByIdMethod(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.RETURN.concat(ent.getNameEntity().toLowerCase()).concat(Constants.POINT).concat(Constants.GET_METHOD)
+                .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
+
+        );
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.ACCOLADE_FERMANTE);
+
+    }
+
+    private void implementationOfFindByIdMethod(BuisnessLogicEntity ent, FileWriter myWriter, String variableService) throws IOException {
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.OPTIONAL.concat(Constants.INFERIEUR).concat(ent.getNameEntity()).concat(Constants.SUPERIEUR).concat(" ").concat(ent.getNameEntity().toLowerCase())
+                .concat(Constants.EGALE).concat(variableService).concat(Constants.POINT).concat(Constants.FIND_BY_ID).concat(Constants.PARENTHESE_OUVRANTE)
+                .concat(Constants.ID_MINUS).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.IF.concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.NOT).concat(ent.getNameEntity().toLowerCase()).concat(Constants.POINT)
+                .concat(Constants.IS_PRESENT_METHOD).concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.THROW_NEW.concat("Cho").concat(Constants.EXCEPTION).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.API_MESSAGE_STRING)
+                .concat(Constants.POINT).concat(ent.getNameEntity().toUpperCase()).concat(Constants._NOT_FOUND).concat(Constants.PARENTHESE_FERMANTE)
+                .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
+
+        );
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.ACCOLADE_FERMANTE);
+        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+
+    }
+
+    private void signatureOfFindByIdMethod(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+        myWriter.write(Constants.PATTERN_TABULATION);
+        myWriter.write(Constants.PRIVATE.concat(ent.getNameEntity()).concat(" find").concat(ent.getNameEntity()).concat("ById").concat(Constants.PARENTHESE_OUVRANTE)
+                .concat(AttributesTypeEnum.Long.toString().toLowerCase()).concat(" ").concat(Constants.ID_MINUS).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.THROWS)
+                .concat("Cho").concat(Constants.EXCEPTION).concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE)
+
+        );
+
     }
 
     private void signatureOfSaveMethod(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
@@ -183,6 +397,7 @@ public class WebServiceApiImpl {
         trySave(ent, myWriter, variableService);
         catchSave(ent, myWriter);
         returnWS(myWriter);
+        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
     }
 
     private void trySave(BuisnessLogicEntity ent, FileWriter myWriter, String lowerCase) throws IOException {

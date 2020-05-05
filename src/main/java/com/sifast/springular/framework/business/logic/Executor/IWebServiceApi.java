@@ -91,8 +91,8 @@ public class IWebServiceApi {
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(Constants.RESPONSE_ENTITY.concat("update").concat(ent.getNameEntity()).concat(Constants.PARENTHESE_OUVRANTE)
-                .concat(AttributesTypeEnum.Long.toString().toLowerCase()).concat(" ").concat(Constants.ID_MINUS).concat(Constants.VIRGULE).concat(fileDto).concat(" ")
-                .concat(fileDto.toLowerCase()).concat(Constants.VIRGULE).concat(Constants.BINDING_RESULT).concat(" ").concat(Constants.BINDING_RESULT.toLowerCase())
+                .concat(AttributesTypeEnum.Long.toString().toLowerCase()).concat(" ").concat(Constants.ID_MINUS).concat(Constants.VIRGULE).concat("Create".concat(fileDto))
+                .concat(" ").concat(fileDto.toLowerCase()).concat(Constants.VIRGULE).concat(Constants.BINDING_RESULT).concat(" ").concat(Constants.BINDING_RESULT.toLowerCase())
                 .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
 
     }

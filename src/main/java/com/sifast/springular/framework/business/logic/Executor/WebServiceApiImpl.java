@@ -64,7 +64,7 @@ public class WebServiceApiImpl {
         myWriter.write(ConstantsImportPackage.IMPORT_HTTP_COSTUM_CODE);
         myWriter.write(ConstantsImportPackage.IMPORT_HTTP_ERROR_RESPONSE);
 
-        myWriter.write(ConstantsImportPackage.IMPORT_EXCEPTION.concat("Cho").concat(Constants.EXCEPTION).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+        myWriter.write(ConstantsImportPackage.IMPORT_EXCEPTION.concat("Custom").concat(Constants.EXCEPTION).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
 
         myWriter.write(ConstantsImportPackage.IMPORT_ENTITY_MODEL.concat(ent.getNameEntity()).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
 
@@ -289,7 +289,7 @@ public class WebServiceApiImpl {
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE.concat(Constants.PATTERN_TABULATION));
         myWriter.write(Constants.CATCH);
         myWriter.write(Constants.PARENTHESE_OUVRANTE);
-        myWriter.write("Cho".concat(Constants.DECLARATION_EXCEPTION_EX_IN_CATCH));
+        myWriter.write("Custom".concat(Constants.DECLARATION_EXCEPTION_EX_IN_CATCH));
         myWriter.write(Constants.PARENTHESE_FERMANTE);
         myWriter.write(Constants.ACCOLADE_OUVRANT);
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
@@ -354,7 +354,7 @@ public class WebServiceApiImpl {
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(Constants.PATTERN_TABULATION);
-        myWriter.write(Constants.THROW_NEW.concat("Cho").concat(Constants.EXCEPTION).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.API_MESSAGE_STRING)
+        myWriter.write(Constants.THROW_NEW.concat("Custom").concat(Constants.EXCEPTION).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.API_MESSAGE_STRING)
                 .concat(Constants.POINT).concat(ent.getNameEntity().toUpperCase()).concat(Constants._NOT_FOUND).concat(Constants.PARENTHESE_FERMANTE)
                 .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
 
@@ -370,7 +370,7 @@ public class WebServiceApiImpl {
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(Constants.PRIVATE.concat(ent.getNameEntity()).concat(" find").concat(ent.getNameEntity()).concat("ById").concat(Constants.PARENTHESE_OUVRANTE)
                 .concat(AttributesTypeEnum.Long.toString().toLowerCase()).concat(" ").concat(Constants.ID_MINUS).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.THROWS)
-                .concat("Cho").concat(Constants.EXCEPTION).concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE)
+                .concat("Custom").concat(Constants.EXCEPTION).concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE)
 
         );
 

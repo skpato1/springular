@@ -27,9 +27,9 @@ public class DtoFileWriter {
             try {
                 List<Attribute> attributes = writeRelationshipsAttributesInDto(ent);
                 String fileDto = ent.getNameEntity().concat("Dto");
-                FileWriter myWriter = writeImportsAndStructureOfClassInDto(project, ent);
+                FileWriter myWriter = writeImportsAndStructureOfClassInDto(project, ent, attributes);
                 writeAttributesWithValidationAnnotationInDto(ent, myWriter, attributes);
-                writeGettersAndSettersForDto(myWriter, attributes);
+                writeGettersAndSettersForDto(myWriter, attributes, ent);
                 writeToStringMethodInDto(ent, fileDto, myWriter);
                 closeAccoladeAndFile(myWriter);
             } catch (Exception e) {
@@ -157,7 +157,7 @@ public class DtoFileWriter {
         myWriter.close();
     }
 
-    private FileWriter writeImportsAndStructureOfClassInDto(Project project, BuisnessLogicEntity ent) throws IOException {
+    private FileWriter writeImportsAndStructureOfClassInDto(Project project, BuisnessLogicEntity ent, List<Attribute> attributes) throws IOException {
         File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
                 .concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH).concat(ent.getNameEntity()).concat("Dto.java"));
         String fileDto = ent.getNameEntity().concat("Dto");
@@ -177,6 +177,21 @@ public class DtoFileWriter {
                 }
             }
         });
+        attributes.stream().forEach(attribute -> {
+            if (ent.getCreateListDtosIfSlave() && attribute.getTypeAttribute().name().equals(AttributesTypeEnum.Set.name())) {
+                try {
+                    String first = firstLetterUpperCase(attribute);
+                    first = first.substring(0, first.length() - 1);
+                    String dto = first.concat("Dto");
+                    myWriter.write(ConstantsImportPackage.IMPORT_DTO.concat(attribute.getNameAttribute().substring(0, attribute.getNameAttribute().length() - 1))
+                            .concat(Constants.POINT).concat(dto).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+
         myWriter.write(ConstantsImportPackage.IMPORT_DTO_VALIDATION_NOT_EMPTY);
         myWriter.write(ConstantsImportPackage.IMPORT_DTO_VALIDATION_NOT_NULL);
         myWriter.write(ConstantsImportPackage.IMPORT_DTO_VALIDATION_SIZE);
@@ -229,7 +244,7 @@ public class DtoFileWriter {
 
     }
 
-    private void writeGettersAndSettersForDto(FileWriter myWriter, List<Attribute> attributes) {
+    private void writeGettersAndSettersForDto(FileWriter myWriter, List<Attribute> attributes, BuisnessLogicEntity ent) {
         attributes.stream().forEach(attributeForGetterAndSetter -> {
             String firstLetter = attributeForGetterAndSetter.getNameAttribute().charAt(0) + "";
             String getterAttribute = firstLetter.toUpperCase().concat(attributeForGetterAndSetter.getNameAttribute().substring(1));
@@ -254,23 +269,51 @@ public class DtoFileWriter {
                             .concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
                             .concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
                 } else {
-                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(attributeForGetterAndSetter.getTypeAttribute().name()).concat(Constants.INFERIEUR)
-                            .concat(Constants.LONG).concat(" ").concat("get").concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE)
-                            .concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE)
-                            .concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.RETURN))
-                            .concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
-                            .concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
-                    myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-                    myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+                    if (ent.getCreateListDtosIfSlave()) {
+                        String typeSetDto = viewFileDto(attributeForGetterAndSetter);
+                        typeSetDto = typeSetDto.substring(4);
+                        String getterrAttribute = firstLetterUpperCase(attributeForGetterAndSetter);
 
-                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(Constants.VOID).concat("set").concat(getterAttribute)
-                            .concat(Constants.PARENTHESE_OUVRANTE).concat(attributeForGetterAndSetter.getTypeAttribute().name()).concat(Constants.INFERIEUR).concat(Constants.LONG)
-                            .concat(" ").concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
-                            .concat(Constants.PATTERN_RETOUR_LIGNE)
-                            .concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.THIS).concat(attributeForGetterAndSetter.getNameAttribute())
-                                    .concat(Constants.EGALE).concat(attributeForGetterAndSetter.getNameAttribute()))
-                            .concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
-                            .concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+                        myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(attributeForGetterAndSetter.getTypeAttribute().name())
+                                .concat(Constants.INFERIEUR).concat(typeSetDto).concat(Constants.SUPERIEUR).concat(" ").concat("get").concat(getterrAttribute)
+                                .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
+                                .concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.RETURN))
+                                .concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
+                                .concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+                        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+                        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+
+                        myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(Constants.VOID).concat("set").concat(getterrAttribute)
+                                .concat(Constants.PARENTHESE_OUVRANTE).concat(attributeForGetterAndSetter.getTypeAttribute().name()).concat(Constants.INFERIEUR).concat(typeSetDto)
+                                .concat(Constants.SUPERIEUR).concat(" ").concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.PARENTHESE_FERMANTE).concat(" ")
+                                .concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE)
+                                .concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.THIS)
+                                        .concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.EGALE).concat(attributeForGetterAndSetter.getNameAttribute()))
+                                .concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
+                                .concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+
+                        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+                        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+                    } else {
+
+                        myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(attributeForGetterAndSetter.getTypeAttribute().name())
+                                .concat(Constants.INFERIEUR).concat(Constants.LONG).concat(" ").concat("get").concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE)
+                                .concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE)
+                                .concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.RETURN))
+                                .concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
+                                .concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+                        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+                        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+
+                        myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(Constants.VOID).concat("set").concat(getterAttribute)
+                                .concat(Constants.PARENTHESE_OUVRANTE).concat(attributeForGetterAndSetter.getTypeAttribute().name()).concat(Constants.INFERIEUR)
+                                .concat(Constants.LONG).concat(" ").concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.PARENTHESE_FERMANTE).concat(" ")
+                                .concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE)
+                                .concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.THIS)
+                                        .concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.EGALE).concat(attributeForGetterAndSetter.getNameAttribute()))
+                                .concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
+                                .concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+                    }
 
                 }
                 myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
@@ -438,7 +481,7 @@ public class DtoFileWriter {
                 if (attribute.getNameAttribute().endsWith("s")) {
                     view = view.substring(0, view.length() - 1);
                     myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE).concat(AttributesTypeEnum.Set.name()).concat(Constants.INFERIEUR).concat("View")
-                            .concat(view).concat("Dto").concat(Constants.SUPERIEUR).concat(" ").concat(attribute.getNameAttribute())
+                            .concat(view).concat("Dto").concat(Constants.SUPERIEUR).concat(" ").concat(attribute.getNameAttribute().concat("123"))
                             .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
                 }
 
@@ -526,9 +569,11 @@ public class DtoFileWriter {
             myWriter.write(Constants.PATTERN_TABULATION);
             myWriter.write(Constants.PATTERN_TABULATION);
             List<Attribute> attributes = ent.getAttributes();
-            if (attributes.get(0).getNameAttribute() != Constants.ID_MINUS) {
-                myWriter.write(Constants.BUILDER_APPEND.concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.DOUBLE_COTE).concat(Constants.ID_MINUS).concat(Constants.EGALE)
-                        .concat(Constants.DOUBLE_COTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+            if (attributes != null && !attributes.isEmpty()) {
+                if (attributes.get(0).getNameAttribute() != Constants.ID_MINUS) {
+                    myWriter.write(Constants.BUILDER_APPEND.concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.DOUBLE_COTE).concat(Constants.ID_MINUS).concat(Constants.EGALE)
+                            .concat(Constants.DOUBLE_COTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                }
             } else {
                 myWriter.write(Constants.BUILDER_APPEND.concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.DOUBLE_COTE).concat(Constants.VIRGULE).concat(" ")
                         .concat(Constants.ID_MINUS).concat(Constants.EGALE).concat(Constants.DOUBLE_COTE).concat(Constants.PARENTHESE_FERMANTE)

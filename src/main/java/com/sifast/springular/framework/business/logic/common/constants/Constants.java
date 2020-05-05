@@ -283,4 +283,21 @@ public class Constants {
     public static final String HASHSET_DECLARATION = "new HashSet<>";
 
     public static final String ERROR_LEVEL_MESSAGE = "public static final String ERROR_LEVEL_MESSAGE = \"ERROR_LEVEL_MESSAGE\";";
+
+    public static final String HTTP_STATUS_ACCEPTED = "httpStatus = HttpStatus.ACCEPTED;\n";
+
+    public static final String HTTP_STATUS_BAD_REQUEST = "httpStatus = HttpStatus.INTERNAL_BAD_REQUEST;\n";
+
+    public static final String HTTP_RESPONSE_BODY_BAD_REQUEST = "httpResponseBody = new HttpErrorResponse(HttpCostumCode.BAD_REQUEST.getValue(),ex.getMessage());\n";
+
+    public static final String HTTP_RESPONSE_BODY_SERVER_ERROR = "httpResponseBody = new HttpErrorResponse(HttpCostumCode.SERVER_ERROR.getValue(), ApiMessage.SERVER_ERROR_OCCURRED);\n";
+
+    public static final String THROWS = " throws ";
+
+    public static final String EXCEPTION = "Exception";
+
+    public static final String THROW_NEW = "throw new ";
+
+    public static final String API_MESSAGE_STRING = "ApiMessage";
+
 }

@@ -127,4 +127,6 @@ public class ConstantsImportPackage {
     public static final String IMPORT_IWEBSERVICES_VALIDATORS = "import com.sifast.common.utils.IWebServicesValidators;\n";
 
     public static final String IMPORT_ANNOTATION_VALIDATED = "import org.springframework.validation.annotation.Validated;\n";
+
+    public static final String IMPORT_EXCEPTION = "import com.sifast.exception.";
 }

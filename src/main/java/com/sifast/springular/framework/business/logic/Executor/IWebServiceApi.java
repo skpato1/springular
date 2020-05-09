@@ -58,6 +58,8 @@ public class IWebServiceApi {
         myWriter.write(ConstantsImportPackage.IMPORT_SWAGGER_API_OPERATION);
         myWriter.write(ConstantsImportPackage.IMPORT_SWAGGER_API_RESPONSE);
         myWriter.write(ConstantsImportPackage.IMPORT_SWAGGER_API_RESPONSES);
+        myWriter.write(ConstantsImportPackage.IMPORT_SAWAGGER_AUTHORIZATION);
+        myWriter.write(ConstantsImportPackage.IMPORT_SAWAGGER_AUTHORIZATION_SCOPE);
 
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
@@ -72,16 +74,20 @@ public class IWebServiceApi {
         String fileViewDto = "View".concat(ent.getNameEntity()).concat("Dto");
         String fileDto = ent.getNameEntity().concat("Dto");
         signatureSaveApi(ent, myWriter, fileCreateDto, fileViewDto);
-        signatureGetApi(ent, myWriter);
-        signatureGetAllApi(ent, myWriter);
-        signatureDeleteApi(ent, myWriter);
-        signatureUpdateApi(ent, myWriter, fileDto);
+        signatureGetApi(ent, myWriter, fileViewDto);
+        signatureGetAllApi(ent, myWriter, fileViewDto);
+        signatureDeleteApi(ent, myWriter, fileViewDto);
+        signatureUpdateApi(ent, myWriter, fileDto, fileViewDto);
     }
 
-    private void signatureUpdateApi(BuisnessLogicEntity ent, FileWriter myWriter, String fileDto) throws IOException {
+    private void signatureUpdateApi(BuisnessLogicEntity ent, FileWriter myWriter, String fileDto, String fileViewDto) throws IOException {
 
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
         myWriter.write(Constants.PATTERN_TABULATION);
+
+        myWriter.write(ConstantsAnnotations.ANNOTATION_SWAGGER_API_OPERATION.concat(Constants.PARENTHESE_VALUE_EGALE).concat(Constants.DOUBLE_COTE).concat("update ")
+                .concat(ent.getNameEntity().toLowerCase()).concat(Constants.DOUBLE_COTE).concat(Constants.VIRGULE).concat(Constants.RESPONSE_EGALE).concat(fileViewDto)
+                .concat(Constants.POINT_CLASS).concat(Constants.VIRGULE).concat(Constants.SWAGGER_API_OPERATION_AUTHORIZATION_SCOPE_READ).concat(Constants.PARENTHESE_FERMANTE));
 
         myWriter.write(ConstantsAnnotations.ANNOTATION_REQUEST_MAPPING.concat(Constants.PARENTHESE_VALUE_EGALE).concat(Constants.DOUBLE_COTE).concat(Constants.PATTERN_SLASH)
                 .concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH).concat(Constants.ACCOLADE_OUVRANT).concat(Constants.ID_MINUS)
@@ -97,9 +103,13 @@ public class IWebServiceApi {
 
     }
 
-    private void signatureDeleteApi(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+    private void signatureDeleteApi(BuisnessLogicEntity ent, FileWriter myWriter, String fileViewDto) throws IOException {
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
         myWriter.write(Constants.PATTERN_TABULATION);
+
+        myWriter.write(ConstantsAnnotations.ANNOTATION_SWAGGER_API_OPERATION.concat(Constants.PARENTHESE_VALUE_EGALE).concat(Constants.DOUBLE_COTE).concat("delete ")
+                .concat(ent.getNameEntity().toLowerCase()).concat(Constants.DOUBLE_COTE).concat(Constants.VIRGULE).concat(Constants.RESPONSE_EGALE).concat(fileViewDto)
+                .concat(Constants.POINT_CLASS).concat(Constants.VIRGULE).concat(Constants.SWAGGER_API_OPERATION_AUTHORIZATION_SCOPE_READ).concat(Constants.PARENTHESE_FERMANTE));
 
         myWriter.write(ConstantsAnnotations.ANNOTATION_REQUEST_MAPPING.concat(Constants.PARENTHESE_VALUE_EGALE).concat(Constants.DOUBLE_COTE).concat(Constants.PATTERN_SLASH)
                 .concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH).concat(Constants.ACCOLADE_OUVRANT).concat(Constants.ID_MINUS)
@@ -114,9 +124,13 @@ public class IWebServiceApi {
 
     }
 
-    private void signatureGetAllApi(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+    private void signatureGetAllApi(BuisnessLogicEntity ent, FileWriter myWriter, String fileViewDto) throws IOException {
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
         myWriter.write(Constants.PATTERN_TABULATION);
+
+        myWriter.write(ConstantsAnnotations.ANNOTATION_SWAGGER_API_OPERATION.concat(Constants.PARENTHESE_VALUE_EGALE).concat(Constants.DOUBLE_COTE).concat("getAll ")
+                .concat(ent.getNameEntity().toLowerCase()).concat(Constants.DOUBLE_COTE).concat(Constants.VIRGULE).concat(Constants.RESPONSE_EGALE).concat(fileViewDto)
+                .concat(Constants.POINT_CLASS).concat(Constants.VIRGULE).concat(Constants.SWAGGER_API_OPERATION_AUTHORIZATION_SCOPE_READ).concat(Constants.PARENTHESE_FERMANTE));
 
         myWriter.write(ConstantsAnnotations.ANNOTATION_REQUEST_MAPPING.concat(Constants.PARENTHESE_VALUE_EGALE).concat(Constants.DOUBLE_COTE).concat(Constants.PATTERN_SLASH)
                 .concat(ent.getNameEntity().toLowerCase()).concat("s").concat(Constants.DOUBLE_COTE).concat(Constants.VIRGULE).concat(Constants.METHOD_EGALE)
@@ -129,9 +143,13 @@ public class IWebServiceApi {
 
     }
 
-    private void signatureGetApi(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+    private void signatureGetApi(BuisnessLogicEntity ent, FileWriter myWriter, String fileViewDto) throws IOException {
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
         myWriter.write(Constants.PATTERN_TABULATION);
+
+        myWriter.write(ConstantsAnnotations.ANNOTATION_SWAGGER_API_OPERATION.concat(Constants.PARENTHESE_VALUE_EGALE).concat(Constants.DOUBLE_COTE).concat("get ")
+                .concat(ent.getNameEntity().toLowerCase()).concat(Constants.DOUBLE_COTE).concat(Constants.VIRGULE).concat(Constants.RESPONSE_EGALE).concat(fileViewDto)
+                .concat(Constants.POINT_CLASS).concat(Constants.VIRGULE).concat(Constants.SWAGGER_API_OPERATION_AUTHORIZATION_SCOPE_READ).concat(Constants.PARENTHESE_FERMANTE));
 
         myWriter.write(ConstantsAnnotations.ANNOTATION_REQUEST_MAPPING.concat(Constants.PARENTHESE_VALUE_EGALE).concat(Constants.DOUBLE_COTE).concat(Constants.PATTERN_SLASH)
                 .concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH).concat(Constants.ACCOLADE_OUVRANT).concat(Constants.ID_MINUS)
@@ -164,9 +182,10 @@ public class IWebServiceApi {
                 .concat(Constants.PARENTHESE_FERMANTE));
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
         myWriter.write(Constants.PATTERN_TABULATION);
+
         myWriter.write(ConstantsAnnotations.ANNOTATION_SWAGGER_API_OPERATION.concat(Constants.PARENTHESE_VALUE_EGALE).concat(Constants.DOUBLE_COTE).concat("save ")
                 .concat(ent.getNameEntity().toLowerCase()).concat(Constants.DOUBLE_COTE).concat(Constants.VIRGULE).concat(Constants.RESPONSE_EGALE).concat(fileViewDto)
-                .concat(Constants.POINT_CLASS).concat(Constants.PARENTHESE_FERMANTE));
+                .concat(Constants.POINT_CLASS).concat(Constants.VIRGULE).concat(Constants.SWAGGER_API_OPERATION_AUTHORIZATION_SCOPE_READ).concat(Constants.PARENTHESE_FERMANTE));
 
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
         myWriter.write(Constants.PATTERN_TABULATION);

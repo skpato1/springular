@@ -44,11 +44,6 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
     @Autowired
     private IProjectService projectService;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.sifast.springular.framework.business.logic.web.service.api.IProjectGeneratorApi#generateProjectWithJdl(int)
-     */
     @Override
     public ResponseEntity<Object> generateProjectWithJdl(@PathVariable int id) throws IOException, InterruptedException {
         LOGGER.info("Web service generateProjectWithJdl invoked with projectDto {}", id);

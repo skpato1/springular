@@ -91,8 +91,18 @@ public class MapperFileWriter {
                             .concat(Constants.POINT).concat("get").concat(entity.getNameEntity()).concat("Ids").concat(Constants.PARENTHESE_OUVRANTE)
                             .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE)
                             .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION));
-                    myWriter.write(Constants.PATTERN_TABULATION.concat("mapped").concat(ent.getNameEntity()).concat(Constants.POINT).concat(Constants.SET_METHOD)
-                            .concat(entity.getNameEntity()).concat("s").concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.HASHSET_DECLARATION)
+
+                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.IF).concat(Constants.PARENTHESE_OUVRANTE).concat(entity.getNameEntity().toLowerCase()).concat("s")
+                            .concat(Constants.POINT).concat(Constants.IS_EMPTY).concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
+                            .concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION).concat(Constants.PATTERN_TABULATION).concat(Constants.THROW_NEW)
+                            .concat("Custom").concat(Constants.EXCEPTION).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.API_MESSAGE)
+                            .concat(entity.getNameEntity().toUpperCase()).concat(Constants._NOT_FOUND).concat(Constants.PARENTHESE_FERMANTE)
+                            .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION).concat(Constants.PATTERN_TABULATION)
+                            .concat(Constants.ACCOLADE_FERMANTE).concat(Constants.PATTERN_RETOUR_LIGNE)
+
+                    );
+                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat("mapped").concat(ent.getNameEntity()).concat(Constants.POINT)
+                            .concat(Constants.SET_METHOD).concat(entity.getNameEntity()).concat("s").concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.HASHSET_DECLARATION)
                             .concat(Constants.PARENTHESE_OUVRANTE).concat(entity.getNameEntity().toLowerCase()).concat("s").concat(Constants.PARENTHESE_FERMANTE)
                             .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
 
@@ -114,9 +124,20 @@ public class MapperFileWriter {
                             .concat(Constants.PARENTHESE_OUVRANTE).concat(ent.getNameEntity().toLowerCase()).concat("Dto").concat(Constants.POINT).concat("get")
                             .concat(entity.getNameEntity()).concat("Id").concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE)
                             .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION));
-                    myWriter.write(Constants.PATTERN_TABULATION.concat("mapped").concat(ent.getNameEntity()).concat(Constants.POINT).concat(Constants.SET_METHOD)
-                            .concat(entity.getNameEntity()).concat(Constants.PARENTHESE_OUVRANTE).concat(entity.getNameEntity().toLowerCase()).concat(Constants.POINT)
-                            .concat(Constants.GET_METHOD).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+
+                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.IF).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.NOT)
+                            .concat(entity.getNameEntity().toLowerCase()).concat(Constants.POINT).concat(Constants.IS_PRESENT_METHOD).concat(Constants.PARENTHESE_FERMANTE)
+                            .concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION)
+                            .concat(Constants.PATTERN_TABULATION).concat(Constants.THROW_NEW).concat("Custom").concat(Constants.EXCEPTION).concat(Constants.PARENTHESE_OUVRANTE)
+                            .concat(Constants.API_MESSAGE).concat(entity.getNameEntity().toUpperCase()).concat(Constants._NOT_FOUND).concat(Constants.PARENTHESE_FERMANTE)
+                            .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION).concat(Constants.PATTERN_TABULATION)
+                            .concat(Constants.ACCOLADE_FERMANTE).concat(Constants.PATTERN_RETOUR_LIGNE)
+
+                    );
+
+                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat("mapped").concat(ent.getNameEntity()).concat(Constants.POINT)
+                            .concat(Constants.SET_METHOD).concat(entity.getNameEntity()).concat(Constants.PARENTHESE_OUVRANTE).concat(entity.getNameEntity().toLowerCase())
+                            .concat(Constants.POINT).concat(Constants.GET_METHOD).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block

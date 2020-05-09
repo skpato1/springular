@@ -46,7 +46,7 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.sifast.springular.framework.business.logic.web.service.api.IProjectGeneratorApi#generateProjectWithJdl(int)
      */
     @Override

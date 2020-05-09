@@ -286,7 +286,7 @@ public class Constants {
 
     public static final String HTTP_STATUS_ACCEPTED = "httpStatus = HttpStatus.ACCEPTED;\n";
 
-    public static final String HTTP_STATUS_BAD_REQUEST = "httpStatus = HttpStatus.INTERNAL_BAD_REQUEST;\n";
+    public static final String HTTP_STATUS_BAD_REQUEST = "httpStatus = HttpStatus.BAD_REQUEST;\n";
 
     public static final String HTTP_RESPONSE_BODY_BAD_REQUEST = "httpResponseBody = new HttpErrorResponse(HttpCostumCode.BAD_REQUEST.getValue(),ex.getMessage());\n";
 

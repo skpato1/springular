@@ -282,7 +282,7 @@ public class WebServiceApiImpl {
 
     private void httpStatusBadRequest(FileWriter myWriter) throws IOException {
         myWriter.write(Constants.PATTERN_TABULATION);
-        myWriter.write(Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
+        myWriter.write(Constants.HTTP_STATUS_BAD_REQUEST);
     }
 
     private void catchUpdateGenericMethod(FileWriter myWriter) throws IOException {
@@ -474,16 +474,15 @@ public class WebServiceApiImpl {
     }
 
     private void catchSave(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {
+        catchUpdateGenericMethod(myWriter);
+        httpResponseBodyBadRequest(myWriter);
+        httpStatusBadRequest(myWriter);
+        closeCatch(myWriter);
         catchMethod(myWriter);
-
         httpErrorResponseSet(ent, myWriter);
-
         httpResponseBody(myWriter);
-
         httpStatusInternalServerError(myWriter);
-
         catchLoggerError(myWriter);
-
         closeCatch(myWriter);
 
     }
@@ -558,6 +557,7 @@ public class WebServiceApiImpl {
         optionalObject(ent, myWriter, variableService, entityToBefinded);
         ifOptionalObjectIsPresentGetById(ent, myWriter, entityToBefinded, variableService);
         elseOptionalObjectIsPresentGetById(ent, myWriter);
+
         returnWS(myWriter);
 
     }

@@ -129,4 +129,9 @@ public class ConstantsImportPackage {
     public static final String IMPORT_ANNOTATION_VALIDATED = "import org.springframework.validation.annotation.Validated;\n";
 
     public static final String IMPORT_EXCEPTION = "import com.sifast.exception.";
+
+    public static final String IMPORT_SAWAGGER_AUTHORIZATION = "import io.swagger.annotations.Authorization;\n";
+
+    public static final String IMPORT_SAWAGGER_AUTHORIZATION_SCOPE = "import io.swagger.annotations.AuthorizationScope;\n";
+
 }

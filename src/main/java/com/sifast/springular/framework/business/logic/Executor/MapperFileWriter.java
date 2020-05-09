@@ -73,7 +73,7 @@ public class MapperFileWriter {
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(Constants.PUBLIC.concat(ent.getNameEntity()).concat(" ").concat("map").concat(ent.getNameEntity()).concat("DtoTo").concat(ent.getNameEntity())
-                .concat(Constants.PARENTHESE_OUVRANTE).concat("Create").concat(ent.getNameEntity()).concat("Dto ").concat(fileDto).concat(Constants.PARENTHESE_FERMANTE)
+                .concat(Constants.PARENTHESE_OUVRANTE).concat(ent.getNameEntity()).concat("Dto ").concat(fileDto).concat(Constants.PARENTHESE_FERMANTE)
                 .concat(Constants.ACCOLADE_OUVRANT));
 
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
@@ -186,7 +186,7 @@ public class MapperFileWriter {
             List<BuisnessLogicEntity> slaveEntities) throws IOException {
         File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_MAPPER).concat(ent.getNameEntity()).concat("Mapper.java"));
         String fileMapper = ent.getNameEntity().concat("Mapper");
-        String fileCreateDto = "Create".concat(ent.getNameEntity()).concat("Dto");
+        String fileCreateDto = ent.getNameEntity().concat("Dto");
         String fileViewDto = "View".concat(ent.getNameEntity()).concat("Dto");
         String fileDto = ent.getNameEntity().concat("Dto");
 

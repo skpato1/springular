@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.sifast.springular.framework.business.logic.Executor.DaoFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.DtoFileWriter;
+import com.sifast.springular.framework.business.logic.Executor.FileWrite;
 import com.sifast.springular.framework.business.logic.Executor.IServiceFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.IWebServiceApi;
-import com.sifast.springular.framework.business.logic.Executor.JdlFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.MapperFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.ValidatorWriter;
 import com.sifast.springular.framework.business.logic.Executor.WebServiceApiImpl;
@@ -29,7 +29,7 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
     private String fileJdlToGenerate;
 
     @Autowired
-    JdlFileWriter jdlFileWriter;
+    FileWrite fileWriter;
 
     @Autowired
     DtoFileWriter dtoFileWriter;
@@ -55,9 +55,9 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
     @Override
     public void generateProjectWithJdl(Project project) throws IOException {
         FileWriter myWriter = new FileWriter(fileJdlToGenerate);
-        jdlFileWriter.writeProjectDetailsInJdlFile(project, myWriter);
-        jdlFileWriter.writeEntitiesInJdlFile(project, myWriter);
-        jdlFileWriter.writeRelationshipsInJdlFile(project, myWriter);
+        fileWriter.writeProjectDetailsInJdlFile(project, myWriter);
+        fileWriter.writeEntitiesInJdlFile(project, myWriter);
+        fileWriter.writeRelationshipsInJdlFile(project, myWriter);
         myWriter.close();
     }
 
@@ -98,7 +98,6 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
     @Override
     public void createFilesInEachFolderDTO(Project project) throws IOException {
         dtoFileWriter.generateViewFilesInEachFolderDTO(project);
-        dtoFileWriter.generateCreateFilesInEachFolderDTO(project);
     }
 
     @Override

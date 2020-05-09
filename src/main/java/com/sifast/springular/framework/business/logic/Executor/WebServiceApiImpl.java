@@ -33,7 +33,7 @@ public class WebServiceApiImpl {
     private FileWriter writeImportsAndStructureOfClassInWSApi(Project project, BuisnessLogicEntity ent) throws IOException {
         File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_WS_API).concat(ent.getNameEntity()).concat("Api.java"));
         String fileApi = ent.getNameEntity().concat("Api");
-        String fileCreateDto = "Create".concat(ent.getNameEntity()).concat("Dto");
+        String fileCreateDto = ent.getNameEntity().concat("Dto");
         String fileViewDto = "View".concat(ent.getNameEntity()).concat("Dto");
         String fileDto = ent.getNameEntity().concat("Dto");
         String interfaceService = "I".concat(ent.getNameEntity()).concat("Service");
@@ -186,8 +186,8 @@ public class WebServiceApiImpl {
                 .concat(Constants.NAME_EGALE).concat(Constants.DOUBLE_COTE).concat(ent.getNameEntity().toLowerCase()).concat(Constants.DOUBLE_COTE)
                 .concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(ConstantsAnnotations.ANNOTATION_REQUEST_BODY).concat(Constants.PATTERN_RETOUR_LIGNE)
                 .concat(Constants.PATTERN_TABULATION).concat(ConstantsAnnotations.ANNOTATION_VALIDATED).concat(Constants.PARENTHESE_VALUE_EGALE).concat(Constants.ACCOLADE_OUVRANT)
-                .concat("IWebServicesValidators.class").concat(Constants.ACCOLADE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE).concat(" Create").concat(ent.getNameEntity())
-                .concat("Dto").concat(" ").concat(ent.getNameEntity().toLowerCase()).concat("Dto")
+                .concat("IWebServicesValidators.class").concat(Constants.ACCOLADE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE).concat(ent.getNameEntity()).concat("Dto")
+                .concat(" ").concat(ent.getNameEntity().toLowerCase()).concat("Dto")
 
                 .concat(Constants.VIRGULE).concat(" ").concat(Constants.BINDING_RESULT).concat(" ").concat(Constants.BINDING_RESULT.toLowerCase())
                 .concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
@@ -384,9 +384,9 @@ public class WebServiceApiImpl {
                 .concat(ent.getNameEntity().toLowerCase()).concat(Constants.DOUBLE_COTE).concat(Constants.PARENTHESE_FERMANTE).concat(" ")
                 .concat(ConstantsAnnotations.ANNOTATION_REQUEST_BODY).concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION)
                 .concat(ConstantsAnnotations.ANNOTATION_VALIDATED).concat(Constants.PARENTHESE_VALUE_EGALE).concat(Constants.ACCOLADE_OUVRANT)
-                .concat("IWebServicesValidators.class").concat(Constants.ACCOLADE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE).concat(" Create").concat(ent.getNameEntity())
-                .concat("Dto").concat(" ").concat(ent.getNameEntity().toLowerCase()).concat("Dto").concat(Constants.VIRGULE).concat(" ").concat(Constants.BINDING_RESULT)
-                .concat(" ").concat(Constants.BINDING_RESULT.toLowerCase()).concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
+                .concat("IWebServicesValidators.class").concat(Constants.ACCOLADE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE).concat(ent.getNameEntity()).concat("Dto")
+                .concat(" ").concat(ent.getNameEntity().toLowerCase()).concat("Dto").concat(Constants.VIRGULE).concat(" ").concat(Constants.BINDING_RESULT).concat(" ")
+                .concat(Constants.BINDING_RESULT.toLowerCase()).concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
                 .concat(Constants.PATTERN_RETOUR_LIGNE));
 
     }

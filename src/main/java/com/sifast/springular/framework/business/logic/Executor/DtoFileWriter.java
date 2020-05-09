@@ -222,10 +222,19 @@ public class DtoFileWriter {
                 } else {
                     String firstLetter = "" + attribute.getNameAttribute().charAt(0);
                     String attributeDto = firstLetter.toUpperCase() + attribute.getNameAttribute().substring(1, attribute.getNameAttribute().length() - 1);
-                    if (ent.getCreateListDtosIfSlave()) {
+                    String attributeDtoEndsWithDto = firstLetter.toUpperCase() + attribute.getNameAttribute().substring(1, attribute.getNameAttribute().length() - 4);
+
+                    if (ent.getCreateListDtosIfSlave() && attribute.getNameAttribute().endsWith("Dto")) {
                         myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE).concat(attribute.getTypeAttribute().name()).concat(Constants.INFERIEUR)
-                                .concat(attributeDto).concat("Dto").concat(Constants.SUPERIEUR).concat(" ").concat(attribute.getNameAttribute())
+                                .concat(attributeDtoEndsWithDto).concat("Dto").concat(Constants.SUPERIEUR).concat(" ").concat(attribute.getNameAttribute())
                                 .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                    }
+                    if (ent.getCreateListDtosIfSlave()) {
+                        if (!attribute.getNameAttribute().endsWith("Dto")) {
+                            myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE).concat(attribute.getTypeAttribute().name()).concat(Constants.INFERIEUR)
+                                    .concat(attributeDto).concat("Dto").concat(Constants.SUPERIEUR).concat(" ").concat(attribute.getNameAttribute())
+                                    .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                        }
                     } else {
 
                         myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE).concat(attribute.getTypeAttribute().name()).concat(Constants.INFERIEUR)
@@ -269,7 +278,39 @@ public class DtoFileWriter {
                             .concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
                             .concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
                 } else {
-                    if (ent.getCreateListDtosIfSlave()) {
+
+                    if (ent.getCreateListDtosIfSlave() && attributeForGetterAndSetter.getNameAttribute().endsWith("Dto")) {
+                        String attributeDtoEndsWithDto = firstLetter.toUpperCase()
+                                + attributeForGetterAndSetter.getNameAttribute().substring(1, attributeForGetterAndSetter.getNameAttribute().length() - 4).concat("Dto");
+
+                        String typeSetDto = viewFileDto(attributeForGetterAndSetter);
+                        typeSetDto = typeSetDto.substring(4);
+                        String getterrAttribute = firstLetterUpperCase(attributeForGetterAndSetter);
+
+                        myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(attributeForGetterAndSetter.getTypeAttribute().name())
+                                .concat(Constants.INFERIEUR).concat(attributeDtoEndsWithDto).concat(Constants.SUPERIEUR).concat(" ").concat("get").concat(getterrAttribute)
+                                .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
+                                .concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.RETURN))
+                                .concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
+                                .concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+                        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+                        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+
+                        myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(Constants.VOID).concat("set").concat(getterrAttribute)
+                                .concat(Constants.PARENTHESE_OUVRANTE).concat(attributeForGetterAndSetter.getTypeAttribute().name()).concat(Constants.INFERIEUR)
+                                .concat(attributeDtoEndsWithDto).concat(Constants.SUPERIEUR).concat(" ").concat(attributeForGetterAndSetter.getNameAttribute())
+                                .concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE)
+                                .concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.THIS)
+                                        .concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.EGALE).concat(attributeForGetterAndSetter.getNameAttribute()))
+                                .concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
+                                .concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+
+                        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+                        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+
+                    }
+
+                    if (ent.getCreateListDtosIfSlave() && !attributeForGetterAndSetter.getNameAttribute().endsWith("Dto")) {
                         String typeSetDto = viewFileDto(attributeForGetterAndSetter);
                         typeSetDto = typeSetDto.substring(4);
                         String getterrAttribute = firstLetterUpperCase(attributeForGetterAndSetter);
@@ -294,7 +335,9 @@ public class DtoFileWriter {
 
                         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
                         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-                    } else {
+
+                    }
+                    if (ent.getCreateListIdsIfSlave()) {
 
                         myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(attributeForGetterAndSetter.getTypeAttribute().name())
                                 .concat(Constants.INFERIEUR).concat(Constants.LONG).concat(" ").concat("get").concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE)
@@ -325,63 +368,27 @@ public class DtoFileWriter {
         });
     }
 
-    public void generateCreateFilesInEachFolderDTO(Project project) {
-
-        project.getEntities().stream().forEach(ent -> {
-            try {
-                @SuppressWarnings("unused")
-                File fileCreate = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
-                        .concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH).concat("Create").concat(ent.getNameEntity().concat("Dto.java")));
-                FileWriter myWriter = writeCreateImportsAndStructureOfClassInDto(project, ent);
-                closeAccoladeAndFile(myWriter);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-    }
-
-    private FileWriter writeCreateImportsAndStructureOfClassInDto(Project project, BuisnessLogicEntity ent) throws IOException {
-        String fileDto = "Create".concat(ent.getNameEntity()).concat("Dto");
-        File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
-                .concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH).concat(fileDto).concat(".java"));
-
-        FileWriter myWriter = new FileWriter(file);
-        myWriter.write("");
-        myWriter.write(ConstantsImportPackage.PACKAGE_DTO.concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
-        ent.getAttributes().stream().forEach(attribute -> {
-            if (attribute.getTypeAttribute().equals(AttributesTypeEnum.Set)) {
-                try {
-                    myWriter.write(ConstantsImportPackage.IMPORT_SET);
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-        myWriter.write(Constants.PUBLIC_CLASS.concat(fileDto).concat(Constants.EXTENDS).concat(ent.getNameEntity()).concat("Dto").concat(Constants.PATTERN_RETOUR_LIGNE)
-                .concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
-        return myWriter;
-    }
-
     public void generateViewFilesInEachFolderDTO(Project project) {
 
         project.getEntities().stream().forEach(ent -> {
             try {
-                List<Attribute> attributes = writeViewRelationshipsAttributesInDto(ent);
+                List<Attribute> attributes = writeRelationshipsAttributesInDto(ent);
+                List<Attribute> attributesView = writeViewRelationshipsAttributesInDto(ent);
+                for (int i = 0; i < attributesView.size(); i++) {
+                    for (int j = 0; j < attributes.size(); j++) {
+                        if (attributes.get(j).getNameAttribute().equals(attributesView.get(i).getNameAttribute())) {
+                            attributes.get(j).setNameAttribute(attributes.get(j).getNameAttribute().concat("Dto"));
+                        }
+                    }
+
+                }
                 @SuppressWarnings("unused")
                 File fileView = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
                         .concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH).concat("View").concat(ent.getNameEntity().concat("Dto.java")));
                 String fileDto = "View".concat(ent.getNameEntity()).concat("Dto");
-                FileWriter myWriter = writeViewImportsAndStructureOfClassInDto(project, ent, attributes);
-
-                writeViewAttributesInDto(ent, myWriter);
-                writeViewRelationshipAttributeFromAttribute(ent, myWriter, attributes);
-                writeViewGettersAndSettersForDto(ent, myWriter);
-                writeViewGettersAndSettersForRelationshipAttributes(ent, myWriter, attributes);
+                FileWriter myWriter = writeViewImportsAndStructureOfClassInDto(project, ent, attributesView);
+                writeViewAttributes(ent, attributes, attributesView, myWriter);
+                writeViewGettersAndSetters(ent, attributes, attributesView, myWriter);
                 writeViewToStringMethodInDto(ent, fileDto, myWriter);
                 closeAccoladeAndFile(myWriter);
             } catch (Exception e) {
@@ -389,6 +396,18 @@ public class DtoFileWriter {
             }
         });
 
+    }
+
+    private void writeViewGettersAndSetters(BuisnessLogicEntity ent, List<Attribute> attributes, List<Attribute> attributesView, FileWriter myWriter) {
+        writeViewGettersAndSettersForDto(ent, myWriter);
+        writeViewGettersAndSettersForRelationshipAttributes(ent, myWriter, attributesView);
+        writeGettersAndSettersForDto(myWriter, attributes, ent);
+    }
+
+    private void writeViewAttributes(BuisnessLogicEntity ent, List<Attribute> attributes, List<Attribute> attributesView, FileWriter myWriter) {
+        writeViewAttributesInDto(ent, myWriter);
+        writeViewRelationshipAttributeFromAttribute(ent, myWriter, attributesView);
+        writeAttributesWithValidationAnnotationInDto(ent, myWriter, attributes);
     }
 
     private void writeViewGettersAndSettersForRelationshipAttributes(BuisnessLogicEntity ent, FileWriter myWriter, List<Attribute> attributes) {
@@ -445,6 +464,7 @@ public class DtoFileWriter {
                     myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
                     myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
                 }
+
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -466,22 +486,23 @@ public class DtoFileWriter {
         return typeSetDto;
     }
 
-    private void writeViewRelationshipAttributeFromAttribute(BuisnessLogicEntity ent, FileWriter myWriter, List<Attribute> attributes) {
-        attributes.stream().forEach(attribute -> {
+    private void writeViewRelationshipAttributeFromAttribute(BuisnessLogicEntity ent, FileWriter myWriter, List<Attribute> attributesView) {
+        attributesView.stream().forEach(attributeView -> {
+
             try {
 
-                String firstLetter = attribute.getNameAttribute().charAt(0) + "";
-                String view = firstLetter.toUpperCase() + attribute.getNameAttribute().substring(1, attribute.getNameAttribute().length());
+                String firstLetter = attributeView.getNameAttribute().charAt(0) + "";
+                String view = firstLetter.toUpperCase() + attributeView.getNameAttribute().substring(1, attributeView.getNameAttribute().length());
 
-                if (attribute.getTypeAttribute().equals(AttributesTypeEnum.List) && !attribute.getNameAttribute().endsWith("s")) {
-                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE).concat("View").concat(view).concat("Dto").concat(" ").concat(attribute.getNameAttribute())
-                            .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                if (attributeView.getTypeAttribute().equals(AttributesTypeEnum.List) && !attributeView.getNameAttribute().endsWith("s")) {
+                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE).concat("View").concat(view).concat("Dto").concat(" ")
+                            .concat(attributeView.getNameAttribute()).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
                 }
 
-                if (attribute.getNameAttribute().endsWith("s")) {
+                if (attributeView.getNameAttribute().endsWith("s")) {
                     view = view.substring(0, view.length() - 1);
                     myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE).concat(AttributesTypeEnum.Set.name()).concat(Constants.INFERIEUR).concat("View")
-                            .concat(view).concat("Dto").concat(Constants.SUPERIEUR).concat(" ").concat(attribute.getNameAttribute().concat("123"))
+                            .concat(view).concat("Dto").concat(Constants.SUPERIEUR).concat(" ").concat(attributeView.getNameAttribute())
                             .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
                 }
 
@@ -647,6 +668,16 @@ public class DtoFileWriter {
         myWriter.write(ConstantsImportPackage.PACKAGE_DTO.concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
 
         myWriter.write(ConstantsImportPackage.IMPORT_SET);
+        ent.getAttributes().stream().forEach(attribute -> {
+            if (attribute.getTypeAttribute().toString().equals("LocalDate") || attribute.getTypeAttribute().name().equals(AttributesTypeEnum.LocalDate)) {
+                try {
+                    myWriter.write(ConstantsImportPackage.IMPORT_LOCAL_DATE);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
         attributes.stream().forEach(attribute -> {
             String firstLetter = attribute.getNameAttribute().charAt(0) + "";
             String view = firstLetter.toUpperCase() + attribute.getNameAttribute().substring(1, attribute.getNameAttribute().length());
@@ -667,11 +698,30 @@ public class DtoFileWriter {
             }
 
         });
+        attributes.stream().forEach(attribute -> {
+            if (ent.getCreateListDtosIfSlave() && attribute.getTypeAttribute().name().equals(AttributesTypeEnum.Set.name())) {
+                try {
+                    String first = firstLetterUpperCase(attribute);
+                    first = first.substring(0, first.length() - 1);
+                    String dto = first.concat("Dto");
+                    myWriter.write(ConstantsImportPackage.IMPORT_DTO.concat(attribute.getNameAttribute().substring(0, attribute.getNameAttribute().length() - 1))
+                            .concat(Constants.POINT).concat(dto).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
 
+        myWriter.write(ConstantsImportPackage.IMPORT_DTO_VALIDATION_NOT_EMPTY);
+        myWriter.write(ConstantsImportPackage.IMPORT_DTO_VALIDATION_NOT_NULL);
+        myWriter.write(ConstantsImportPackage.IMPORT_DTO_VALIDATION_SIZE);
+        myWriter.write(ConstantsImportPackage.IMPORT_DTO_API_MESSAGE);
+        myWriter.write(ConstantsImportPackage.IMPORT_DTO_CONSTANTS);
+        myWriter.write(ConstantsImportPackage.IMPORT_DTO_IWebServicesValidators);
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-        myWriter.write(Constants.PUBLIC_CLASS.concat(fileDto).concat(Constants.EXTENDS).concat(ent.getNameEntity()).concat("Dto").concat(Constants.PATTERN_RETOUR_LIGNE)
-                .concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
+        myWriter.write(Constants.PUBLIC_CLASS.concat(fileDto).concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
         return myWriter;
     }
 

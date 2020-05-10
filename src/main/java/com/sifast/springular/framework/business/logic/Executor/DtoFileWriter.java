@@ -255,8 +255,12 @@ public class DtoFileWriter {
 
     private void writeGettersAndSettersForDto(FileWriter myWriter, List<Attribute> attributes, BuisnessLogicEntity ent) {
         attributes.stream().forEach(attributeForGetterAndSetter -> {
-            String firstLetter = attributeForGetterAndSetter.getNameAttribute().charAt(0) + "";
-            String getterAttribute = firstLetter.toUpperCase().concat(attributeForGetterAndSetter.getNameAttribute().substring(1));
+            String firstLetter = null;
+            String getterAttribute = null;
+            if (!attributeForGetterAndSetter.getNameAttribute().equals("") && !attributeForGetterAndSetter.getNameAttribute().isEmpty()) {
+                firstLetter = attributeForGetterAndSetter.getNameAttribute().charAt(0) + "";
+                getterAttribute = firstLetter.toUpperCase().concat(attributeForGetterAndSetter.getNameAttribute().substring(1));
+            }
             try {
                 if (!attributeForGetterAndSetter.getTypeAttribute().name().equals(AttributesTypeEnum.Set.name())
                         && !attributeForGetterAndSetter.getTypeAttribute().name().contains(AttributesTypeEnum.List.name())) {
@@ -376,7 +380,8 @@ public class DtoFileWriter {
                 List<Attribute> attributesView = writeViewRelationshipsAttributesInDto(ent);
                 for (int i = 0; i < attributesView.size(); i++) {
                     for (int j = 0; j < attributes.size(); j++) {
-                        if (attributes.get(j).getNameAttribute().equals(attributesView.get(i).getNameAttribute())) {
+                        if (attributes.get(j).getNameAttribute().equals(attributesView.get(i).getNameAttribute())
+                                && attributes.get(j).getTypeAttribute().equals(AttributesTypeEnum.Set)) {
                             attributes.get(j).setNameAttribute(attributes.get(j).getNameAttribute().concat("Dto"));
                         }
                     }

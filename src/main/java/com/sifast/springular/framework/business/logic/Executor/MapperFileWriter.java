@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.sifast.springular.framework.business.logic.common.AttributesTypeEnum;
+import com.sifast.springular.framework.business.logic.common.RelationshipTypeEnum;
 import com.sifast.springular.framework.business.logic.common.constants.Constants;
 import com.sifast.springular.framework.business.logic.common.constants.ConstantsAnnotations;
 import com.sifast.springular.framework.business.logic.common.constants.ConstantsImportPackage;
@@ -22,6 +23,18 @@ import com.sifast.springular.framework.business.logic.service.impl.RelationshipS
 @Component
 public class MapperFileWriter {
 
+    Boolean checkManyMaster = false;
+
+    Boolean checkManySlave = false;
+
+    String checkMasterEntityOfSlaveRelationShips = null;
+
+    String checkSlaveEntityOfSlaveRelaionShips = null;
+
+    String checkMasterEntityOfMasterRelationShips = null;
+
+    String checkSlaveEntityOfMasterRelationShips = null;
+
     @Autowired
     RelationshipService relationshipService;
 
@@ -32,11 +45,7 @@ public class MapperFileWriter {
                 List<Relationship> relationsMaster = relationshipService.findByMasterEntity(ent);
                 List<Relationship> relationsSlave = relationshipService.findBySlaveEntity(ent);
 
-                @SuppressWarnings("unused")
-                // master fihem objets
                 List<BuisnessLogicEntity> entitiesMaster = relationsSlave.stream().map(Relationship::getMasterEntity).collect(Collectors.toList());
-                @SuppressWarnings("unused")
-                // slave fihem list
                 List<BuisnessLogicEntity> entitiesSlave = relationsMaster.stream().map(Relationship::getSlaveEntity).collect(Collectors.toList());
 
                 FileWriter myWriter = writeImportsAndStructureOfClassInMappers(project, ent, entitiesMaster, entitiesSlave);
@@ -73,8 +82,8 @@ public class MapperFileWriter {
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(Constants.PUBLIC.concat(ent.getNameEntity()).concat(" ").concat("map").concat(ent.getNameEntity()).concat("DtoTo").concat(ent.getNameEntity())
-                .concat(Constants.PARENTHESE_OUVRANTE).concat(ent.getNameEntity()).concat("Dto ").concat(fileDto).concat(Constants.PARENTHESE_FERMANTE)
-                .concat(Constants.ACCOLADE_OUVRANT));
+                .concat(Constants.PARENTHESE_OUVRANTE).concat(ent.getNameEntity()).concat("Dto ").concat(fileDto).concat(Constants.PARENTHESE_FERMANTE).concat(" ")
+                .concat(Constants.THROWS).concat(Constants.CUSTOM).concat(Constants.EXCEPTION).concat(" ").concat(Constants.ACCOLADE_OUVRANT));
 
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
         myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(ent.getNameEntity()).concat(" mapped").concat(ent.getNameEntity())
@@ -95,7 +104,7 @@ public class MapperFileWriter {
                     myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.IF).concat(Constants.PARENTHESE_OUVRANTE).concat(entity.getNameEntity().toLowerCase()).concat("s")
                             .concat(Constants.POINT).concat(Constants.IS_EMPTY).concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
                             .concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION).concat(Constants.PATTERN_TABULATION).concat(Constants.THROW_NEW)
-                            .concat("Custom").concat(Constants.EXCEPTION).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.API_MESSAGE)
+                            .concat("Custom").concat(Constants.EXCEPTION).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.API_MESSAGE_STRING).concat(Constants.POINT)
                             .concat(entity.getNameEntity().toUpperCase()).concat(Constants._NOT_FOUND).concat(Constants.PARENTHESE_FERMANTE)
                             .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION).concat(Constants.PATTERN_TABULATION)
                             .concat(Constants.ACCOLADE_FERMANTE).concat(Constants.PATTERN_RETOUR_LIGNE)
@@ -115,9 +124,31 @@ public class MapperFileWriter {
             }
         });
 
-        masterEntities.stream().forEach(entity -> {
-            try {
-                if (entity.getCreateListIdsIfSlave()) {
+        ent.getRelationshipsSlave().forEach(slaveEntity -> {
+            if (!slaveEntity.getTypeRelationship().equals(RelationshipTypeEnum.ManyToMany)) {
+                checkManySlave = true;
+                checkMasterEntityOfSlaveRelationShips = slaveEntity.getMasterEntity().getNameEntity();
+                checkSlaveEntityOfSlaveRelaionShips = slaveEntity.getSlaveEntity().getNameEntity();
+
+            }
+
+        });
+
+        ent.getRelationshipsMaster().forEach(masterEntity -> {
+            if (!masterEntity.getTypeRelationship().equals(RelationshipTypeEnum.ManyToMany)) {
+                checkManyMaster = true;
+                checkMasterEntityOfMasterRelationShips = masterEntity.getMasterEntity().getNameEntity();
+                checkSlaveEntityOfMasterRelationShips = masterEntity.getSlaveEntity().getNameEntity();
+
+            }
+
+        });
+        if (checkManyMaster == true && checkManySlave == true
+                && (ent.getNameEntity().equals(checkMasterEntityOfSlaveRelationShips) || ent.getNameEntity().equals(checkSlaveEntityOfSlaveRelaionShips)
+                        || ent.getNameEntity().equals(checkMasterEntityOfMasterRelationShips) || ent.getNameEntity().equals(checkSlaveEntityOfMasterRelationShips))) {
+            masterEntities.forEach(entity -> {
+
+                try {
                     myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.OPTIONAL).concat(Constants.INFERIEUR)
                             .concat(entity.getNameEntity()).concat(Constants.SUPERIEUR).concat(" ").concat(entity.getNameEntity().toLowerCase()).concat(Constants.EGALE)
                             .concat(entity.getNameEntity().toLowerCase()).concat("Service").concat(Constants.POINT).concat(Constants.FIND_BY_ID)
@@ -129,21 +160,22 @@ public class MapperFileWriter {
                             .concat(entity.getNameEntity().toLowerCase()).concat(Constants.POINT).concat(Constants.IS_PRESENT_METHOD).concat(Constants.PARENTHESE_FERMANTE)
                             .concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION)
                             .concat(Constants.PATTERN_TABULATION).concat(Constants.THROW_NEW).concat("Custom").concat(Constants.EXCEPTION).concat(Constants.PARENTHESE_OUVRANTE)
-                            .concat(Constants.API_MESSAGE).concat(entity.getNameEntity().toUpperCase()).concat(Constants._NOT_FOUND).concat(Constants.PARENTHESE_FERMANTE)
-                            .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION).concat(Constants.PATTERN_TABULATION)
-                            .concat(Constants.ACCOLADE_FERMANTE).concat(Constants.PATTERN_RETOUR_LIGNE)
+                            .concat(Constants.API_MESSAGE_STRING).concat(Constants.POINT).concat(entity.getNameEntity().toUpperCase()).concat(Constants._NOT_FOUND)
+                            .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION)
+                            .concat(Constants.PATTERN_TABULATION).concat(Constants.ACCOLADE_FERMANTE).concat(Constants.PATTERN_RETOUR_LIGNE)
 
                     );
 
                     myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat("mapped").concat(ent.getNameEntity()).concat(Constants.POINT)
                             .concat(Constants.SET_METHOD).concat(entity.getNameEntity()).concat(Constants.PARENTHESE_OUVRANTE).concat(entity.getNameEntity().toLowerCase())
                             .concat(Constants.POINT).concat(Constants.GET_METHOD).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        });
+
+            });
+        }
 
         myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.RETURN).concat(" mapped").concat(ent.getNameEntity())
                 .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION).concat(Constants.ACCOLADE_FERMANTE));
@@ -219,6 +251,8 @@ public class MapperFileWriter {
         myWriter.write(ConstantsImportPackage.IMPORT_HASH_SET);
         myWriter.write(ConstantsImportPackage.IMPORT_SET);
         myWriter.write(ConstantsImportPackage.IMPORT_OPTIONAL);
+        myWriter.write(ConstantsImportPackage.IMPORT_API_MESSAGE);
+        myWriter.write(ConstantsImportPackage.IMPORT_EXCEPTION.concat("Custom").concat(Constants.EXCEPTION).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
 
         myWriter.write(ConstantsImportPackage.IMPORT_CONFIGURE_MODEL_MAPPER);
         myWriter.write(ConstantsImportPackage.IMPORT_DTO.concat(ent.getNameEntity().toLowerCase()).concat(Constants.POINT).concat(fileCreateDto)

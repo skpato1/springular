@@ -303,4 +303,6 @@ public class Constants {
     public static final String SWAGGER_API_OPERATION_AUTHORIZATION_SCOPE_READ = "authorizations = {\n" + "            @Authorization(value = ApiMessage.OAUTH2SCHEMA, scopes = {\n"
             + "                    @AuthorizationScope(scope = \"read\", description = \"\") }) }";
 
+    public static final String CUSTOM = "Custom";
+
 }

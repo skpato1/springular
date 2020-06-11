@@ -52,11 +52,16 @@ public class MapperFileWriter {
                 injectServicesAndCongigMapper(ent, myWriter, entitiesMaster, entitiesSlave);
                 writeCreateMapper(ent, myWriter, entitiesMaster, entitiesSlave);
                 writeViewMapper(ent, myWriter);
+                writeMapToVersionDtoMapper(ent, myWriter);
                 closeAccoladeAndFile(myWriter);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    private void writeMapToVersionDtoMapper(BuisnessLogicEntity ent, FileWriter myWriter) {
+
     }
 
     private void writeViewMapper(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {

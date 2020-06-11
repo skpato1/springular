@@ -13,6 +13,9 @@ target/
 .springBeans
 .sts4-cache
 .DS_Store
+.metadata/*
+.metadata
+.metadata/
 
 
 ### IntelliJ IDEA ###
@@ -22,6 +25,10 @@ target/
 *.ipr
 *.DS_Store
 .DS_Store
+.metadata/*
+.metadata
+.metadata/
+
 
 ### NetBeans ###
 /nbproject/private/

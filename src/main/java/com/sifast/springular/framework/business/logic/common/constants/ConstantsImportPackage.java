@@ -134,4 +134,6 @@ public class ConstantsImportPackage {
 
     public static final String IMPORT_SAWAGGER_AUTHORIZATION_SCOPE = "import io.swagger.annotations.AuthorizationScope;\n";
 
+    public static final String IMPORT_VERSION_DTO = "import com.sifast.service.dto.VersionDTO;\n";
+
 }

@@ -52,7 +52,7 @@ public class ConstantsImportPackage {
 
     public static final String IMPORT_COMPONENT = "import org.springframework.stereotype.Component;\n";
 
-    public static final String IMPORT_CONFIGURE_MODEL_MAPPER = "import com.sifast.web.config.ConfiguredModelMapper;\n";
+    public static final String IMPORT_CONFIGURE_MODEL_MAPPER = "import com.sifast.service.config.ConfiguredModelMapper;\n";
 
     public static final String IMPORT_DTO = "import com.sifast.dto.";
 
@@ -135,5 +135,11 @@ public class ConstantsImportPackage {
     public static final String IMPORT_SAWAGGER_AUTHORIZATION_SCOPE = "import io.swagger.annotations.AuthorizationScope;\n";
 
     public static final String IMPORT_VERSION_DTO = "import com.sifast.service.dto.VersionDTO;\n";
+
+    public static final String PACKAGE_SERVICE_AUDIT = "package com.sifast.service.audit;\n";
+
+    public static final String IMPORT_COMPARATOR = "import java.util.Comparator;\n";
+
+    public static final String IMPORT_VERSION_DIFF_DTO = "import com.sifast.service.dto.VersionsDiffDTO;\n";
 
 }

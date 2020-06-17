@@ -50,6 +50,7 @@ public class MapperFileWriter {
                 FileWriter myWriter = writeImportsAndStructureOfClassInMappers(project, ent, entitiesMaster, entitiesSlave);
                 injectServicesAndCongigMapper(ent, myWriter, entitiesMaster, entitiesSlave);
                 writeCreateMapper(ent, myWriter, entitiesMaster, entitiesSlave);
+                writeViewCreateMapper(ent, myWriter, entitiesMaster, entitiesSlave);
                 writeViewMapper(ent, myWriter);
                 writeMapToVersionDtoMapper(ent, myWriter);
                 closeAccoladeAndFile(myWriter);
@@ -58,6 +59,111 @@ public class MapperFileWriter {
                 e.printStackTrace();
             }
         });
+    }
+
+    private void writeViewCreateMapper(BuisnessLogicEntity ent, FileWriter myWriter, List<BuisnessLogicEntity> masterEntities, List<BuisnessLogicEntity> slaveEntities)
+            throws IOException {
+        String fileDto = ent.getNameEntity().toLowerCase().concat("Dto");
+        String viewFileDto = "View".concat(ent.getNameEntity()).concat("Dto");
+        retourLigneAndTabulation(myWriter);
+        myWriter.write(Constants.PUBLIC.concat(ent.getNameEntity()).concat(" ").concat("mapView").concat(ent.getNameEntity()).concat("DtoTo").concat(ent.getNameEntity())
+                .concat(Constants.PARENTHESE_OUVRANTE).concat(viewFileDto).concat(" ").concat(fileDto).concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.THROWS)
+                .concat(Constants.CUSTOM).concat(Constants.EXCEPTION).concat(" ").concat(Constants.ACCOLADE_OUVRANT));
+        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+        myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(ent.getNameEntity()).concat(" mapped").concat(ent.getNameEntity())
+                .concat(Constants.EGALE).concat(Constants.METHODE_MAP).concat(Constants.PARENTHESE_OUVRANTE).concat(fileDto).concat(Constants.VIRGULE).concat(ent.getNameEntity())
+                .concat(".class").concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+
+        slaveEntities.stream().forEach(entity -> {
+            try {
+                if (entity.getCreateListIdsIfSlave()) {
+                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(AttributesTypeEnum.Set.toString()).concat(Constants.INFERIEUR)
+                            .concat(entity.getNameEntity()).concat(Constants.SUPERIEUR).concat(" ").concat(entity.getNameEntity().toLowerCase()).concat("s").concat(Constants.EGALE)
+                            .concat(Constants.HASHSET_DECLARATION).concat(Constants.PARENTHESE_OUVRANTE).concat(entity.getNameEntity().toLowerCase()).concat("Service")
+                            .concat(Constants.POINT).concat(Constants.FIND_BY_IN).concat(Constants.PARENTHESE_OUVRANTE).concat(ent.getNameEntity().toLowerCase()).concat("Dto")
+                            .concat(Constants.POINT).concat("get").concat(entity.getNameEntity()).concat("Ids").concat(Constants.PARENTHESE_OUVRANTE)
+                            .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE)
+                            .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION));
+
+                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.IF).concat(Constants.PARENTHESE_OUVRANTE).concat(entity.getNameEntity().toLowerCase()).concat("s")
+                            .concat(Constants.POINT).concat(Constants.IS_EMPTY).concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
+                            .concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION).concat(Constants.PATTERN_TABULATION).concat(Constants.THROW_NEW)
+                            .concat("Custom").concat(Constants.EXCEPTION).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.API_MESSAGE_STRING).concat(Constants.POINT)
+                            .concat(entity.getNameEntity().toUpperCase()).concat(Constants._NOT_FOUND).concat(Constants.PARENTHESE_FERMANTE)
+                            .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION).concat(Constants.PATTERN_TABULATION)
+                            .concat(Constants.ACCOLADE_FERMANTE).concat(Constants.PATTERN_RETOUR_LIGNE)
+
+                    );
+                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat("mapped").concat(ent.getNameEntity()).concat(Constants.POINT)
+                            .concat(Constants.SET_METHOD).concat(entity.getNameEntity()).concat("s").concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.HASHSET_DECLARATION)
+                            .concat(Constants.PARENTHESE_OUVRANTE).concat(entity.getNameEntity().toLowerCase()).concat("s").concat(Constants.PARENTHESE_FERMANTE)
+                            .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
+
+                    );
+                }
+
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        });
+
+        ent.getRelationshipsSlave().forEach(slaveEntity -> {
+            if (!slaveEntity.getTypeRelationship().equals(RelationshipTypeEnum.ManyToMany)) {
+                checkManySlave = true;
+                checkMasterEntityOfSlaveRelationShips = slaveEntity.getMasterEntity().getNameEntity();
+                checkSlaveEntityOfSlaveRelaionShips = slaveEntity.getSlaveEntity().getNameEntity();
+
+            }
+
+        });
+
+        ent.getRelationshipsMaster().forEach(masterEntity -> {
+            if (!masterEntity.getTypeRelationship().equals(RelationshipTypeEnum.ManyToMany)) {
+                checkManyMaster = true;
+                checkMasterEntityOfMasterRelationShips = masterEntity.getMasterEntity().getNameEntity();
+                checkSlaveEntityOfMasterRelationShips = masterEntity.getSlaveEntity().getNameEntity();
+
+            }
+
+        });
+        if (checkManyMaster == true && checkManySlave == true
+                && (ent.getNameEntity().equals(checkMasterEntityOfSlaveRelationShips) || ent.getNameEntity().equals(checkSlaveEntityOfSlaveRelaionShips)
+                        || ent.getNameEntity().equals(checkMasterEntityOfMasterRelationShips) || ent.getNameEntity().equals(checkSlaveEntityOfMasterRelationShips))) {
+            masterEntities.forEach(entity -> {
+
+                try {
+                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.OPTIONAL).concat(Constants.INFERIEUR)
+                            .concat(entity.getNameEntity()).concat(Constants.SUPERIEUR).concat(" ").concat(entity.getNameEntity().toLowerCase()).concat(Constants.EGALE)
+                            .concat(entity.getNameEntity().toLowerCase()).concat("Service").concat(Constants.POINT).concat(Constants.FIND_BY_ID)
+                            .concat(Constants.PARENTHESE_OUVRANTE).concat(ent.getNameEntity().toLowerCase()).concat("Dto").concat(Constants.POINT).concat("get")
+                            .concat(entity.getNameEntity()).concat("Id").concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE)
+                            .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION));
+
+                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.IF).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.NOT)
+                            .concat(entity.getNameEntity().toLowerCase()).concat(Constants.POINT).concat(Constants.IS_PRESENT_METHOD).concat(Constants.PARENTHESE_FERMANTE)
+                            .concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION)
+                            .concat(Constants.PATTERN_TABULATION).concat(Constants.THROW_NEW).concat("Custom").concat(Constants.EXCEPTION).concat(Constants.PARENTHESE_OUVRANTE)
+                            .concat(Constants.API_MESSAGE_STRING).concat(Constants.POINT).concat(entity.getNameEntity().toUpperCase()).concat(Constants._NOT_FOUND)
+                            .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION)
+                            .concat(Constants.PATTERN_TABULATION).concat(Constants.ACCOLADE_FERMANTE).concat(Constants.PATTERN_RETOUR_LIGNE)
+
+                    );
+
+                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat("mapped").concat(ent.getNameEntity()).concat(Constants.POINT)
+                            .concat(Constants.SET_METHOD).concat(entity.getNameEntity()).concat(Constants.PARENTHESE_OUVRANTE).concat(entity.getNameEntity().toLowerCase())
+                            .concat(Constants.POINT).concat(Constants.GET_METHOD).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            });
+        }
+
+        myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.RETURN).concat(" mapped").concat(ent.getNameEntity())
+                .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION).concat(Constants.ACCOLADE_FERMANTE));
+
     }
 
     private void writeMapToVersionDtoMapper(BuisnessLogicEntity ent, FileWriter myWriter) throws IOException {

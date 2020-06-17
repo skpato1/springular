@@ -18,125 +18,129 @@ import javax.persistence.Table;
 @Table(name = "T_entity")
 public class BuisnessLogicEntity extends TimestampEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	@Column(name = "name_entity")
-	private String nameEntity;
-	
-	@Column(name = "create_list_ids_if_slave")
-	private Boolean createListIdsIfSlave;
-	
-	@Column(name = "create_list_dtos_if_slave")
-	private Boolean createListDtosIfSlave;
-	
-	@OneToMany(cascade=CascadeType.ALL , mappedBy="buisnessLogicEntity" ,fetch=FetchType.LAZY)
-	private List<Attribute> attributes;
-	
-	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private Project project;
-	
-	@OneToMany(cascade=CascadeType.ALL , mappedBy="masterEntity" ,fetch=FetchType.LAZY)
-	private List<Relationship> relationshipsMaster;
-	
-	@OneToMany(cascade=CascadeType.ALL , mappedBy="slaveEntity" ,fetch=FetchType.LAZY)
-	private List<Relationship> relationshipsSlave;
-	
-	
+    @Column(name = "name_entity")
+    private String nameEntity;
 
-	public Boolean getCreateListIdsIfSlave() {
-		return createListIdsIfSlave;
-	}
+    @Column(name = "create_list_ids_if_slave")
+    private Boolean createListIdsIfSlave;
 
-	public void setCreateListIdsIfSlave(Boolean createListIdsIfSlave) {
-		this.createListIdsIfSlave = createListIdsIfSlave;
-	}
+    @Column(name = "create_list_dtos_if_slave")
+    private Boolean createListDtosIfSlave;
 
-	public Boolean getCreateListDtosIfSlave() {
-		return createListDtosIfSlave;
-	}
+    @Column(name = "is_trackable")
+    private Boolean isTrackable;
 
-	
+    public Boolean getIsTrackable() {
+        return isTrackable;
+    }
 
-	public void setCreateListDtosIfSlave(Boolean createListDtosIfSlave) {
-		this.createListDtosIfSlave = createListDtosIfSlave;
-	}
+    public void setIsTrackable(Boolean isTrackable) {
+        this.isTrackable = isTrackable;
+    }
 
-	
-	
-	public List<Attribute> getAttributes() {
-		return attributes;
-	}
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buisnessLogicEntity", fetch = FetchType.LAZY)
+    private List<Attribute> attributes;
 
-	public void setAttributes(List<Attribute> attributes) {
-		this.attributes = attributes;
-	}
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Project project;
 
-	public Project getProject() {
-		return project;
-	}
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "masterEntity", fetch = FetchType.LAZY)
+    private List<Relationship> relationshipsMaster;
 
-	public void setProject(Project project) {
-		this.project = project;
-	}
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "slaveEntity", fetch = FetchType.LAZY)
+    private List<Relationship> relationshipsSlave;
 
-	public int getId() {
-		return id;
-	}
+    public Boolean getCreateListIdsIfSlave() {
+        return createListIdsIfSlave;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setCreateListIdsIfSlave(Boolean createListIdsIfSlave) {
+        this.createListIdsIfSlave = createListIdsIfSlave;
+    }
 
-	public List<Relationship> getRelationshipsMaster() {
-		return relationshipsMaster;
-	}
+    public Boolean getCreateListDtosIfSlave() {
+        return createListDtosIfSlave;
+    }
 
-	public void setRelationshipsMaster(List<Relationship> relationshipsMaster) {
-		this.relationshipsMaster = relationshipsMaster;
-	}
+    public void setCreateListDtosIfSlave(Boolean createListDtosIfSlave) {
+        this.createListDtosIfSlave = createListDtosIfSlave;
+    }
 
-	public List<Relationship> getRelationshipsSlave() {
-		return relationshipsSlave;
-	}
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
 
-	public void setRelationshipsSlave(List<Relationship> relationshipsSlave) {
-		this.relationshipsSlave = relationshipsSlave;
-	}
+    public void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
+    }
 
-	public String getNameEntity() {
-		return nameEntity;
-	}
+    public Project getProject() {
+        return project;
+    }
 
-	public void setNameEntity(String nameEntity) {
-		this.nameEntity = nameEntity;
-	}
+    public void setProject(Project project) {
+        this.project = project;
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("BuisnessLogicEntity [id=");
-		builder.append(id);
-		builder.append(", nameEntity=");
-		builder.append(nameEntity);
-		builder.append(", createListIdsIfSlave=");
-		builder.append(createListIdsIfSlave);
-		builder.append(", createListDtosIfSlave=");
-		builder.append(createListDtosIfSlave);
-		builder.append(", attributes=");
-		builder.append(attributes);
-		builder.append(", project=");
-		builder.append(project);
-		builder.append(", relationshipsMaster=");
-		builder.append(relationshipsMaster);
-		builder.append(", relationshipsSlave=");
-		builder.append(relationshipsSlave);
-		builder.append("]");
-		return builder.toString();
-	}
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public List<Relationship> getRelationshipsMaster() {
+        return relationshipsMaster;
+    }
+
+    public void setRelationshipsMaster(List<Relationship> relationshipsMaster) {
+        this.relationshipsMaster = relationshipsMaster;
+    }
+
+    public List<Relationship> getRelationshipsSlave() {
+        return relationshipsSlave;
+    }
+
+    public void setRelationshipsSlave(List<Relationship> relationshipsSlave) {
+        this.relationshipsSlave = relationshipsSlave;
+    }
+
+    public String getNameEntity() {
+        return nameEntity;
+    }
+
+    public void setNameEntity(String nameEntity) {
+        this.nameEntity = nameEntity;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("BuisnessLogicEntity [id=");
+        builder.append(id);
+        builder.append(", nameEntity=");
+        builder.append(nameEntity);
+        builder.append(", createListIdsIfSlave=");
+        builder.append(createListIdsIfSlave);
+        builder.append(", createListDtosIfSlave=");
+        builder.append(createListDtosIfSlave);
+        builder.append(", attributes=");
+        builder.append(attributes);
+        builder.append(", project=");
+        builder.append(project);
+        builder.append(", relationshipsMaster=");
+        builder.append(relationshipsMaster);
+        builder.append(", relationshipsSlave=");
+        builder.append(relationshipsSlave);
+        builder.append("]");
+        return builder.toString();
+    }
 
 }

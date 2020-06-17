@@ -200,7 +200,7 @@ public class Constants {
 
     public static final String NOT = "!";
 
-    public static final String POINT_INTERROGATION = " ? ";
+    public static final String POINT_INTERROGATION = "?";
 
     public static final String IS_EMPTY = "isEmpty()";
 
@@ -304,5 +304,59 @@ public class Constants {
             + "                    @AuthorizationScope(scope = \"read\", description = \"\") }) }";
 
     public static final String CUSTOM = "Custom";
+
+    public static final String VERSION_DTO = "VersionDTO";
+
+    public static final String VERSION_DTO_GENERIC = "VersionDTO<?>";
+
+    public static final String MAP_TO_VERSION_DTO = "maptoVersionDto";
+
+    public static final String NEW = "new ";
+
+    public static final String NOT_EGALE = "!=";
+
+    public static final String NULL = "null";
+
+    public static final String METHOD_GET_ENTITY = "getEntity";
+
+    public static final String MODELMAPPER_MAP_METHOD = "modelMapper.map";
+
+    public static final String MAP_VERSION_WITHOUT_ENTITY_METHOD = "mapVersionWithoutEntity";
+
+    public static final String IS_INSTANCE_OF = "instanceof";
+
+    public static final String SET_ENTITY_METHOD = "setEntity";
+
+    public static final String PEEK_METHOD = "peek";
+
+    public static final String ELEMENT_PREDICATE = "element->element";
+
+    public static final String GET_LOWERCASE = "get";
+
+    public static final String COLLECTORS_SET = "Collectors.toSet()";
+
+    public static final String SET_AUTHOR = "setAuthor";
+
+    public static final String SET_CREATEDAT = "setCreatedAt";
+
+    public static final String SET_CURRENT_VERSION = "setCurrentVersion";
+
+    public static final String SET_VERSION = "setVersion";
+
+    public static final String SET_UPDATEDAT = "setUpdatedAt";
+
+    public static final String GET_AUTHOR = "getAuthor()";
+
+    public static final String GET_CREATEDAT = "getCreatedAt()";
+
+    public static final String GET_CURRENT_VERSION = "isCurrentVersion()";
+
+    public static final String GET_VERSION = "getVersion()";
+
+    public static final String GET_UPDATEDAT = "getUpdatedAt()";
+
+    public static final String TRACK_CHILDREN_METHOD = "trackChildren";
+
+    public static final String GET_ENTITY_METHOD = "getEntity()";
 
 }

@@ -172,6 +172,8 @@ public class Constants {
 
     public static final String RESPONSE_ENTITY = "ResponseEntity<Object> ";
 
+    public static final String RESPONSE_ENTITY_RESULT = "ResponseEntity";
+
     public static final String BINDING_RESULT = "BindingResult";
 
     public static final String GET = "GET";
@@ -241,6 +243,8 @@ public class Constants {
     public static final String GET_METHOD = "get()";
 
     public static final String HTTP_STATUS_NOT_FOUND = "httpStatus = HttpStatus.NOT_FOUND;\n";
+
+    public static final String HTTP_STATUS_NOT_FOUND_RESPONSE_ENTITY = "HttpStatus.NOT_FOUND";
 
     public static final String ELSE = "else ";
 
@@ -347,7 +351,11 @@ public class Constants {
 
     public static final String GET_AUTHOR = "getAuthor()";
 
+    public static final String GET_AUTHOR_FILTER = "getAuthor";
+
     public static final String GET_CREATEDAT = "getCreatedAt()";
+
+    public static final String GET_CREATEDAT_FILTER = "getCreatedAt";
 
     public static final String GET_CURRENT_VERSION = "isCurrentVersion()";
 
@@ -358,5 +366,55 @@ public class Constants {
     public static final String TRACK_CHILDREN_METHOD = "trackChildren";
 
     public static final String GET_ENTITY_METHOD = "getEntity()";
+
+    public static final String VERSION_DIFF_DTO = "VersionsDiffDTO";
+
+    public static final String METHOD_COMPARE_TWO_OBJECTS = "compareTwoVersionsOfTheSameObject";
+
+    public static final String LONG_LOWERCASE = "long";
+
+    public static final String METHOD_GET_SORTED_VERSIONS = "getSortedVersions";
+
+    public static final String FOR_EACH = "forEach";
+
+    public static final String METHOD_GET_VERSION_FROM_ALL_VERSIONS = "getVersionFromAllVersions";
+
+    public static final String CLOSE_FOREACH = "});";
+
+    public static final String AUDIT_SERVICE_POINT_COMPARE_TWO_OBJECTS = "auditService.compareTwoObjectsOftheSameType";
+
+    public static final String ARRAY_LIST = "ArrayList";
+
+    public static final String ADD_ALL_METHOD = "addAll";
+
+    public static final String EGALE_CONDITION = " == ";
+
+    public static final String OBJECT = "Object";
+
+    public static final String METHOD_GET_VERSIONS_WITH_DEEP_PLUS = "getVersionsWithDeepPlus";
+
+    public static final String ADD = "add";
+
+    public static final String CATCH_EXCEPTION = "catch (Exception e) {\n" + "                    e.printStackTrace();\n" + "                }";
+
+    public static final String FILTER = "filter";
+
+    public static final String GET_ID_METHOD = "getId()";
+
+    public static final String COLLECTORS_TO_MAP = "Collectors.toMap";
+
+    public static final String QUATRE_POINTS = "::";
+
+    public static final String FILTER_BY_DATE = "p -> p, (p, q) -> p)";
+
+    public static final String VALUES_METHOD = "values()";
+
+    public static final String SORTED = "sorted";
+
+    public static final String COMPARATOR_COMPARING = "Comparator.comparing";
+
+    public static final String SET_LOWERCASE = "set";
+
+    public static final String CREATE_AND_SET_CHILD_TO_THE_ENTITY_PARENT_METHOD = "createAndSetChildToTheEntityParent";
 
 }

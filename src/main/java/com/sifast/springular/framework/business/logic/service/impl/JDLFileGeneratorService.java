@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.sifast.springular.framework.business.logic.Executor.AuditServiceFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.DaoFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.DtoFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.FileWrite;
@@ -51,6 +52,9 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
 
     @Autowired
     ValidatorWriter validatorWriter;
+
+    @Autowired
+    AuditServiceFileWriter auditServiceFileWriter;
 
     @Override
     public void generateProjectWithJdl(Project project) throws IOException {
@@ -175,6 +179,16 @@ public class JDLFileGeneratorService implements IJDLFileGeneratorService {
     @Override
     public void writeValidators(Project project) throws IOException {
         validatorWriter.generateValidators(project);
+    }
+
+    @Override
+    public void writeEntityAuditService(Project project) throws IOException {
+        project.getEntities().forEach(entity -> {
+            if (entity.getIsTrackable()) {
+                auditServiceFileWriter.generateAuditServiceFiles(entity, project);
+            }
+        });
+
     }
 
 }

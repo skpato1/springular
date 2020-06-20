@@ -34,7 +34,7 @@ public class ConstantsImportPackage {
 
     public static final String PACKAGE_SPRINGULAR_SERVICE_IMPL = "package com.sifast.service.impl;";
 
-    public static final String IMPORT_ANNOTATION_SERVICE = "import org.springframework.stereotype.Service;";
+    public static final String IMPORT_ANNOTATION_SERVICE = "import org.springframework.stereotype.Service;\n";
 
     public static final String IMPORT_INTERFACE_SERVICE = "import com.sifast.service.";
 

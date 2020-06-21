@@ -14,7 +14,7 @@ public class ConstantsAnnotations {
 
     public static final String SUPRESS_WARNINGS = "@SuppressWarnings";
 
-    public static final String ANNOTATION_SERVICE = "@Service";
+    public static final String ANNOTATION_SERVICE = "@Service\n";
 
     public static final String ANNOTATION_TRANSACTIONAL = "@Transactional";
 

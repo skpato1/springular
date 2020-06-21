@@ -33,4 +33,6 @@ public interface IJDLFileGeneratorService {
 
     public void writeValidators(Project project) throws IOException;
 
+    public void writeEntityAuditService(Project project) throws IOException;
+
 }

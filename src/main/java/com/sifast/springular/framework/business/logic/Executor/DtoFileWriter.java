@@ -418,9 +418,7 @@ public class DtoFileWriter {
             String fileContext = FileUtils.readFileToString(file);
             fileContext = fileContext.replaceAll(ConstantsImportPackage.IMPORT_DTO_IWebServicesValidators,
                     ConstantsImportPackage.IMPORT_DTO_IWebServicesValidators.concat(ConstantsImportPackage.IMPORT_DTO.concat(slave.toLowerCase()).concat(Constants.POINT)
-                            .concat(viewSlaveDto).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE))
-
-            );
+                            .concat(viewSlaveDto).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)));
             FileUtils.write(file, fileContext);
         }
 
@@ -497,24 +495,8 @@ public class DtoFileWriter {
                     String slave = existEntityInMasterTableOneToMany(ent.getNameEntity(), ent.getRelationshipsMaster());
                     String viewSlaveDto = "View".concat(slave).concat("Dto");
                     String getterAttribute = firstLetterUpperCase(attributeForGetterAndSetter);
-                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(AttributesTypeEnum.Set.toString()).concat(Constants.INFERIEUR).concat(viewSlaveDto)
-                            .concat(Constants.SUPERIEUR).concat(" ").concat("get").concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE)
-                            .concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE)
-                            .concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.RETURN))
-                            .concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
-                            .concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
-                    myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-                    myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
-
-                    myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(Constants.VOID).concat("set").concat(getterAttribute)
-                            .concat(Constants.PARENTHESE_OUVRANTE).concat(AttributesTypeEnum.Set.toString()).concat(Constants.INFERIEUR).concat(viewSlaveDto)
-                            .concat(Constants.SUPERIEUR).concat(" ").concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.PARENTHESE_FERMANTE).concat(" ")
-                            .concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE)
-                            .concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.THIS).concat(attributeForGetterAndSetter.getNameAttribute())
-                                    .concat(Constants.EGALE).concat(attributeForGetterAndSetter.getNameAttribute()))
-                            .concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE)
-                            .concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
-
+                    getterNewRelationShipAttributeForViewDto(myWriter, attributeForGetterAndSetter, viewSlaveDto, getterAttribute);
+                    setterNewRelationShipAttributeForViewDto(myWriter, attributeForGetterAndSetter, viewSlaveDto, getterAttribute);
                     myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
                     myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
                 }
@@ -525,6 +507,28 @@ public class DtoFileWriter {
             }
         });
 
+    }
+
+    private void setterNewRelationShipAttributeForViewDto(FileWriter myWriter, Attribute attributeForGetterAndSetter, String viewSlaveDto, String getterAttribute)
+            throws IOException {
+        myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(Constants.VOID).concat("set").concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE)
+                .concat(AttributesTypeEnum.Set.toString()).concat(Constants.INFERIEUR).concat(viewSlaveDto).concat(Constants.SUPERIEUR).concat(" ")
+                .concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
+                .concat(Constants.PATTERN_RETOUR_LIGNE)
+                .concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.THIS).concat(attributeForGetterAndSetter.getNameAttribute())
+                        .concat(Constants.EGALE).concat(attributeForGetterAndSetter.getNameAttribute()))
+                .concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+    }
+
+    private void getterNewRelationShipAttributeForViewDto(FileWriter myWriter, Attribute attributeForGetterAndSetter, String viewSlaveDto, String getterAttribute)
+            throws IOException {
+        myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(AttributesTypeEnum.Set.toString()).concat(Constants.INFERIEUR).concat(viewSlaveDto)
+                .concat(Constants.SUPERIEUR).concat(" ").concat("get").concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE)
+                .concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE)
+                .concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.RETURN)).concat(attributeForGetterAndSetter.getNameAttribute())
+                .concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
+        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
+        myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
     }
 
     private String firstLetterUpperCase(Attribute attributeForGetterAndSetter) {

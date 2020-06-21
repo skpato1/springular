@@ -22,9 +22,9 @@ public class ConstantsPath {
 
     public static final String PATH_TO_PROJECT_IWEBSERVICEAPI = "/sifast-spring-web/src/main/java/com/sifast/web/service/api/";
 
-    public static final String PATH_TO_PROJECT_MAPPER = "/sifast-spring-web/src/main/java/com/sifast/common/mapper/";
+    public static final String PATH_TO_PROJECT_MAPPER = "/sifast-spring-service/src/main/java/com/sifast/common/mapper/";
 
-    public static final String PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES = "/sifast-spring-web/src/main/java/com/sifast/dto/";
+    public static final String PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES = "/sifast-spring-service/src/main/java/com/sifast/dto/";
 
     public static final String PATTERN_PROJECT_PATH_APPLICATION_PROPERTIES = "/sifast-spring-web/src/main/resources/application.properties";
 
@@ -47,4 +47,6 @@ public class ConstantsPath {
     public static final String PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE = "/sifast-spring-persistence/src/main/java/com/sifast/model/ ";
 
     public static final String PATH_TO_PROJECT_VALIDATOR = "/sifast-spring-web/src/main/java/com/sifast/validator/";
+
+    public static final String PATH_TO_PROJECT_AUDIT_SERVICE = "/sifast-spring-service/src/main/java/com/sifast/service/audit/";
 }

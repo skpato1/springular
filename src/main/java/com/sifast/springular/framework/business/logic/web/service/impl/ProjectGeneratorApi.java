@@ -90,6 +90,8 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 
             jdlFileGeneratorService.writeFilesMappers(project.get());
 
+            jdlFileGeneratorService.writeEntityAuditService(project.get());
+
             jdlFileGeneratorService.writeFilesInterfacesWebServicesApi(project.get());
 
             jdlFileGeneratorService.writeFilesWebServicesApiImpl(project.get());

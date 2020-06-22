@@ -142,4 +142,8 @@ public class ConstantsImportPackage {
 
     public static final String IMPORT_VERSION_DIFF_DTO = "import com.sifast.service.dto.VersionsDiffDTO;\n";
 
+    public static final String IMPORT_GET_MAPPING = "import org.springframework.web.bind.annotation.GetMapping;\n";
+
+    public static final String IMPORT_ENTITY_AUDIT_SERVICE = "import com.sifast.service.audit.";
+
 }

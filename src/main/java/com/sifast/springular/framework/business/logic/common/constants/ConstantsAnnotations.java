@@ -47,4 +47,6 @@ public class ConstantsAnnotations {
     public static final String ANNOTATION_REQUEST_BODY = "@RequestBody";
 
     public static final String ANNOTATION_VALIDATED = "@Validated";
+
+    public static final String GET_MAPPING = "@GetMapping";
 }

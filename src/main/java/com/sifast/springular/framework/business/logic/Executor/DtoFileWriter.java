@@ -209,7 +209,10 @@ public class DtoFileWriter {
     }
 
     private void writeAttributesWithValidationAnnotationInDto(BuisnessLogicEntity ent, FileWriter myWriter, List<Attribute> attributes) {
-
+        Attribute attributeId = new Attribute();
+        attributeId.setNameAttribute("id");
+        attributeId.setTypeAttribute(AttributesTypeEnum.Long);
+        attributes.add(attributeId);
         attributes.stream().forEach(attribute -> {
             try {
                 if (!attribute.getTypeAttribute().name().equals(AttributesTypeEnum.Set.name()) && !attribute.getTypeAttribute().name().contains(AttributesTypeEnum.List.name())) {

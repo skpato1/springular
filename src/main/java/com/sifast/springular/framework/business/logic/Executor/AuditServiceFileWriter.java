@@ -46,6 +46,8 @@ public class AuditServiceFileWriter {
                 List<String> variables = declareUsefulVariables(ent, myWriter);
                 writeMethodCompareTwoVersionsOfTheSameObject(ent, myWriter, variables, viewFileDto);
                 writeMethodGetSortedVersions(ent, myWriter, viewFileDto, viewFileDtoVariable, serviceVariable, auditServiceVariable, entityMapper, variableEntityMapper);
+                writeMethodGetVersionsWithoutRelationships(entity, myWriter, viewFileDto, viewFileDtoVariable, serviceVariable, auditServiceVariable, entityMapper,
+                        variableEntityMapper);
                 writeMethodGetVersionFromAllVersions(myWriter, viewFileDto);
                 writeMethodGetEntityFromAllVersions(myWriter, ent, viewFileDto, project);
                 closeAccoladeAndFile(myWriter);
@@ -246,6 +248,26 @@ public class AuditServiceFileWriter {
         closeConditionAccolade(myWriter);
     }
 
+    private void writeMethodGetVersionsWithoutRelationships(BuisnessLogicEntity ent, FileWriter myWriter, String viewFileDto, String viewFileDtoVariable, String serviceVariable,
+            String auditServiceVariable, String entityMapper, String variableEntityMapper) throws IOException {
+        writeSignatureGetVersionsWithoutRelationshipsMethod(myWriter, viewFileDto);
+        tabulation(myWriter);
+        tabulation(myWriter);
+        String viewDtoVariable = declareVariableToretrieveListOfAllVersionsOfEntity(myWriter, viewFileDto, viewFileDtoVariable);
+        tabulation(myWriter);
+        String retrievedEntity = retrieveOptionalEntityFromMethodFindById(myWriter, ent, serviceVariable);
+        tabulation(myWriter);
+        conditionIfretrievedOptionalEntityIsPresentWithoutRelationships(myWriter, retrievedEntity, auditServiceVariable, viewFileDto, entityMapper, viewDtoVariable,
+                variableEntityMapper);
+        tabulation(myWriter);
+        returnResult(myWriter, viewFileDtoVariable);
+        closeConditionAccolade(myWriter);
+        tabulation(myWriter);
+        elseCondition(myWriter);
+        returnResult(myWriter, Constants.NULL);
+        closeConditionAccolade(myWriter);
+    }
+
     private void elseCondition(FileWriter myWriter) throws IOException {
         myWriter.write(Constants.ELSE.concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
         tabulation(myWriter);
@@ -311,6 +333,38 @@ public class AuditServiceFileWriter {
         closeForEach(myWriter);
     }
 
+    private void conditionIfretrievedOptionalEntityIsPresentWithoutRelationships(FileWriter myWriter, String retrievedEntity, String auditService, String viewFileDto,
+            String entityMapper, String viewDtoVariable, String variableEntityMapper) throws IOException {
+        String listOfretrievedVersions = "listOfretrievedVersions";
+        myWriter.write(Constants.IF.concat(Constants.PARENTHESE_OUVRANTE).concat(retrievedEntity).concat(Constants.POINT).concat(Constants.IS_PRESENT_METHOD)
+                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
+        tabulation(myWriter);
+        myWriter.write(AttributesTypeEnum.List.toString().concat(Constants.INFERIEUR).concat(Constants.VERSION_DTO).concat(Constants.INFERIEUR).concat(Constants.OBJECT)
+                .concat(Constants.SUPERIEUR).concat(Constants.SUPERIEUR).concat(" ").concat(listOfretrievedVersions).concat(Constants.EGALE).concat(auditService)
+                .concat(Constants.POINT).concat(Constants.METHOD_GET_VERSIONS_WITHOUT_RELATIONSHIPS).concat(Constants.PARENTHESE_OUVRANTE).concat(retrievedEntity)
+                .concat(Constants.POINT).concat(Constants.GET_METHOD).concat(Constants.VIRGULE).concat(Constants.ID_MINUS).concat(Constants.PARENTHESE_FERMANTE)
+                .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+        tabulation(myWriter);
+        String element_forEach = "element";
+        myWriter.write(listOfretrievedVersions.concat(Constants.POINT).concat(Constants.FOR_EACH).concat(Constants.PARENTHESE_OUVRANTE).concat(element_forEach)
+                .concat(Constants.FLECHE).concat(Constants.ACCOLADE_OUVRANT));
+        tabulation(myWriter);
+        myWriter.write(Constants.TRY.concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
+        tabulation(myWriter);
+        tabulation(myWriter);
+        String mapToVersionDto = "mapToVersionDto";
+        myWriter.write(Constants.VERSION_DTO.concat(Constants.INFERIEUR).concat(viewFileDto).concat(Constants.SUPERIEUR).concat(" ").concat(mapToVersionDto).concat(Constants.EGALE)
+                .concat(variableEntityMapper).concat(Constants.POINT).concat(Constants.MAP_TO_VERSION_DTO).concat(Constants.PARENTHESE_OUVRANTE).concat(element_forEach)
+                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+        tabulation(myWriter);
+        myWriter.write(viewDtoVariable.concat(Constants.POINT).concat(Constants.ADD).concat(Constants.PARENTHESE_OUVRANTE).concat(mapToVersionDto)
+                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+        closeConditionAccolade(myWriter);
+        myWriter.write(Constants.CATCH_EXCEPTION);
+        retourAlaLigneAndTabulation(myWriter);
+        closeForEach(myWriter);
+    }
+
     private String retrieveOptionalEntityFromMethodFindById(FileWriter myWriter, BuisnessLogicEntity ent, String serviceVariable) throws IOException {
         String retrievedEntity = ent.getNameEntity().toLowerCase();
         myWriter.write(Constants.OPTIONAL.concat(Constants.INFERIEUR).concat(ent.getNameEntity()).concat(Constants.SUPERIEUR).concat(" ").concat(retrievedEntity)
@@ -337,6 +391,14 @@ public class AuditServiceFileWriter {
         retourAlaLigneAndTabulation(myWriter);
         myWriter.write(Constants.PUBLIC.concat(AttributesTypeEnum.List.toString()).concat(Constants.INFERIEUR).concat(Constants.VERSION_DTO).concat(Constants.INFERIEUR)
                 .concat(viewFileDto).concat(Constants.SUPERIEUR).concat(Constants.SUPERIEUR).concat(" ").concat(Constants.METHOD_GET_SORTED_VERSIONS)
+                .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.LONG_LOWERCASE).concat(" ").concat(Constants.ID_MINUS).concat(Constants.PARENTHESE_FERMANTE)
+                .concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
+    }
+
+    private void writeSignatureGetVersionsWithoutRelationshipsMethod(FileWriter myWriter, String viewFileDto) throws IOException {
+        retourAlaLigneAndTabulation(myWriter);
+        myWriter.write(Constants.PUBLIC.concat(AttributesTypeEnum.List.toString()).concat(Constants.INFERIEUR).concat(Constants.VERSION_DTO).concat(Constants.INFERIEUR)
+                .concat(viewFileDto).concat(Constants.SUPERIEUR).concat(Constants.SUPERIEUR).concat(" ").concat(Constants.METHOD_GET_VERSIONS_WITHOUT_RELATIONSHIPS)
                 .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.LONG_LOWERCASE).concat(" ").concat(Constants.ID_MINUS).concat(Constants.PARENTHESE_FERMANTE)
                 .concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
     }

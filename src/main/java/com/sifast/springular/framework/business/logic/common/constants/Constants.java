@@ -172,6 +172,8 @@ public class Constants {
 
     public static final String RESPONSE_ENTITY = "ResponseEntity<Object> ";
 
+    public static final String RESPONSE_ENTITY_EMPTY = "ResponseEntity<>";
+
     public static final String RESPONSE_ENTITY_RESULT = "ResponseEntity";
 
     public static final String BINDING_RESULT = "BindingResult";
@@ -197,6 +199,8 @@ public class Constants {
     public static final String FINDALL = "findAll";
 
     public static final String HTTP_STATUS_OK = "httpStatus = HttpStatus.OK;\n";
+
+    public static final String HTTP_STATUS_OK_WITHOUT_DECLARATION = "HttpStatus.OK";
 
     public static final String HTTP_RESPONSE_BODY = "httpResponseBody ";
 
@@ -416,5 +420,11 @@ public class Constants {
     public static final String SET_LOWERCASE = "set";
 
     public static final String CREATE_AND_SET_CHILD_TO_THE_ENTITY_PARENT_METHOD = "createAndSetChildToTheEntityParent";
+
+    public static final String RESPONSE_ENTITY_LIST_INTERROGATION = "ResponseEntity<List<?>>";
+
+    public static final String METHOD_GET_VERSIONS_WITHOUT_RELATIONSHIPS = "getVersionsWithoutRelationships";
+
+    public static final String METHOD_GET_DIFFERENCES_BETWEEN_TWO_VERSIONS = "compareTwoVersionsOfTheSameObject";
 
 }

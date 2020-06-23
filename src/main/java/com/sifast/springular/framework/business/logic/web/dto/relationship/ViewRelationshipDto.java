@@ -7,25 +7,25 @@ public class ViewRelationshipDto extends RelationshipDto {
 	
 	private int id;
 	
-	private ViewBuisnessLogicEntityDto masterEntity;
+	private ViewBuisnessLogicEntityDto parentEntity;
 	
-	private ViewBuisnessLogicEntityDto slaveEntity;
+	private ViewBuisnessLogicEntityDto childEntity;
 
 
-	public ViewBuisnessLogicEntityDto getMasterEntity() {
-		return masterEntity;
+	public ViewBuisnessLogicEntityDto getParentEntity() {
+		return parentEntity;
 	}
 
-	public void setMasterEntity(ViewBuisnessLogicEntityDto masterEntity) {
-		this.masterEntity = masterEntity;
+	public void setParentEntity(ViewBuisnessLogicEntityDto parentEntity) {
+		this.parentEntity = parentEntity;
 	}
 
-	public ViewBuisnessLogicEntityDto getSlaveEntity() {
-		return slaveEntity;
+	public ViewBuisnessLogicEntityDto getChildEntity() {
+		return childEntity;
 	}
 
-	public void setSlaveEntity(ViewBuisnessLogicEntityDto slaveEntity) {
-		this.slaveEntity = slaveEntity;
+	public void setChildEntity(ViewBuisnessLogicEntityDto childEntity) {
+		this.childEntity = childEntity;
 	}
 
 	public int getId() {
@@ -41,10 +41,10 @@ public class ViewRelationshipDto extends RelationshipDto {
 		StringBuilder builder = new StringBuilder();
 		builder.append("ViewRelationshipDto [id=");
 		builder.append(id);
-		builder.append(", masterEntity=");
-		builder.append(masterEntity);
-		builder.append(", slaveEntity=");
-		builder.append(slaveEntity);
+		builder.append(", parentEntity=");
+		builder.append(parentEntity);
+		builder.append(", childEntity=");
+		builder.append(childEntity);
 		builder.append("]");
 		return builder.toString();
 	}

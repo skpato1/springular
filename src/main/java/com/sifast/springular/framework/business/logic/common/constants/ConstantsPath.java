@@ -28,8 +28,6 @@ public class ConstantsPath {
 
     public static final String PATTERN_PROJECT_PATH_APPLICATION_PROPERTIES = "/sifast-spring-web/src/main/resources/application.properties";
 
-    public static final String PATTERN_PROJECT_PATH_TO_PACKAGE_MODEL = "/sifast-spring-persistence/src/main/java/com/sifast/model";
-
     public static final String PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES = "/sifast-spring-persistence/src/main/java/com/sifast/model/";
 
     public static final String PATH_TO_PROJECT_FRAMEWORK_SOCLE_SERVICE_IMPL_PACKAGE_FILES = "/sifast-spring-service/src/main/java/com/sifast/service/impl/";

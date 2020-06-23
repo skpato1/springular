@@ -69,7 +69,7 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
 		LOGGER.info("Web service saveBuisnessLogicEntity invoked with buisnessLogicEntityDto {}",
 				buisnessLogicEntityDto);
 		try {
-			if (buisnessLogicEntityDto.getCreateListDtosIfSlave().equals(buisnessLogicEntityDto.getCreateListIdsIfSlave()))
+			if (buisnessLogicEntityDto.getCreateListDtosIfChild().equals(buisnessLogicEntityDto.getCreateListIdsIfChild()))
 					{
 						throw new BuisnessLogicException(ApiMessage.CHOICES_MUST_BE_DIFFERENT);
 					}

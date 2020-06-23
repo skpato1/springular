@@ -10,8 +10,8 @@ import com.sifast.springular.framework.business.logic.entities.Relationship;
 @Repository
 public interface RelationshipDao extends IGenericDao<Relationship, Integer> {
 
-    List<Relationship> findByMasterEntity(BuisnessLogicEntity masterEntity);
+    List<Relationship> findByParentEntity(BuisnessLogicEntity parentEntity);
 
-    List<Relationship> findBySlaveEntity(BuisnessLogicEntity slaveEntity);
+    List<Relationship> findByChildEntity(BuisnessLogicEntity childEntity);
 
 }

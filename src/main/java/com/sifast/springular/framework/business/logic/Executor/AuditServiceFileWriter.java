@@ -74,26 +74,26 @@ public class AuditServiceFileWriter {
         tabulation(myWriter);
         tabulation(myWriter);
         setAttributesOfEntityFromEntryVariable(myWriter, ent, entryVariable, variableToInstance);
-        if (isThisMasterEntityAndOneToManyRelationship(ent.getNameEntity(), ent.getRelationshipsMaster())) {
+        if (isThisParentEntityAndOneToManyRelationship(ent.getNameEntity(), ent.getRelationshipsParent())) {
             tabulation(myWriter);
             tabulation(myWriter);
             callMethodCreateAndSetChildToTheEntityParent(myWriter, entryVariable, variableToInstance);
         }
         returnResult(myWriter, variableToInstance);
         closeConditionAccolade(myWriter);
-        if (isThisMasterEntityAndOneToManyRelationship(ent.getNameEntity(), ent.getRelationshipsMaster())) {
+        if (isThisParentEntityAndOneToManyRelationship(ent.getNameEntity(), ent.getRelationshipsParent())) {
             retourAlaLigneAndTabulation(myWriter);
             writeSignatureOfMethodWithTwoEntryVariable(myWriter, Constants.CREATE_AND_SET_CHILD_TO_THE_ENTITY_PARENT_METHOD, Constants.VOID, entryTypeVariable, entryVariable,
                     ent.getNameEntity(), variableToInstance);
-            if (existEntityInMasterTableOneToMany(ent.getNameEntity(), ent.getRelationshipsMaster()) != null) {
-                String nameSlaveEntity = existEntityInMasterTableOneToMany(ent.getNameEntity(), ent.getRelationshipsMaster());
-                String firstLetterView = nameSlaveEntity.charAt(0) + "";
-                String attributeToLowerCase = firstLetterView.toLowerCase() + nameSlaveEntity.substring(1, nameSlaveEntity.length()).toLowerCase();
+            if (existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent()) != null) {
+                String nameChildEntity = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
+                String firstLetterView = nameChildEntity.charAt(0) + "";
+                String attributeToLowerCase = firstLetterView.toLowerCase() + nameChildEntity.substring(1, nameChildEntity.length()).toLowerCase();
                 String attributeSelaveEntityName = attributeToLowerCase + "s";
                 String firstLetter = attributeSelaveEntityName.charAt(0) + "";
                 String getterAttribute = firstLetter.toUpperCase().concat(attributeSelaveEntityName.substring(1));
                 tabulation(myWriter);
-                instanciateSetOfClassWithEmptyConstructor(myWriter, nameSlaveEntity, attributeSelaveEntityName);
+                instanciateSetOfClassWithEmptyConstructor(myWriter, nameChildEntity, attributeSelaveEntityName);
                 tabulation(myWriter);
                 String element_forEach = "element";
                 myWriter.write(entryVariable.concat(Constants.POINT).concat(Constants.GET_ENTITY_METHOD).concat(Constants.POINT).concat(Constants.GET_LOWERCASE)
@@ -106,8 +106,8 @@ public class AuditServiceFileWriter {
                 tabulation(myWriter);
                 tabulation(myWriter);
                 retourAlaLigneAndTabulation(myWriter);
-                String childPostCommentMapper = nameSlaveEntity.toLowerCase().concat("Mapper");
-                String methodToMapViewChildEntityDtoToChildEntity = "mapView".concat(nameSlaveEntity).concat("DtoTo").concat(nameSlaveEntity);
+                String childPostCommentMapper = nameChildEntity.toLowerCase().concat("Mapper");
+                String methodToMapViewChildEntityDtoToChildEntity = "mapView".concat(nameChildEntity).concat("DtoTo").concat(nameChildEntity);
                 myWriter.write(attributeSelaveEntityName.concat(Constants.POINT).concat(Constants.ADD).concat(Constants.PARENTHESE_OUVRANTE).concat(childPostCommentMapper)
                         .concat(Constants.POINT).concat(methodToMapViewChildEntityDtoToChildEntity).concat(Constants.PARENTHESE_OUVRANTE).concat(element_forEach)
                         .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
@@ -530,10 +530,10 @@ public class AuditServiceFileWriter {
         return getterAttribute;
     }
 
-    private boolean isThisMasterEntityAndOneToManyRelationship(String nameEntity, List<Relationship> relations) {
+    private boolean isThisParentEntityAndOneToManyRelationship(String nameEntity, List<Relationship> relations) {
         Boolean b = false;
         for (Relationship relationship : relations) {
-            if (relationship.getMasterEntity().getNameEntity().equals(nameEntity) && relationship.getTypeRelationship().equals(RelationshipTypeEnum.OneToMany)) {
+            if (relationship.getParentEntity().getNameEntity().equals(nameEntity) && relationship.getTypeRelationship().equals(RelationshipTypeEnum.OneToMany)) {
                 b = true;
             }
         }
@@ -541,17 +541,17 @@ public class AuditServiceFileWriter {
 
     }
 
-    private String existEntityInMasterTableOneToMany(String nameEntity, List<Relationship> relations) {
-        String slaverEntityName = null;
+    private String existEntityInParentTableOneToMany(String nameEntity, List<Relationship> relations) {
+        String childrEntityName = null;
         for (Relationship relationship : relations) {
-            if (relationship.getMasterEntity().getNameEntity().equals(nameEntity) && relationship.getTypeRelationship().equals(RelationshipTypeEnum.OneToMany)) {
-                if (relationship.getSlaveEntity().getNameEntity() != null) {
-                    slaverEntityName = relationship.getSlaveEntity().getNameEntity();
-                    System.out.println(slaverEntityName);
+            if (relationship.getParentEntity().getNameEntity().equals(nameEntity) && relationship.getTypeRelationship().equals(RelationshipTypeEnum.OneToMany)) {
+                if (relationship.getChildEntity().getNameEntity() != null) {
+                    childrEntityName = relationship.getChildEntity().getNameEntity();
+                    System.out.println(childrEntityName);
                 }
             }
         }
-        return slaverEntityName;
+        return childrEntityName;
 
     }
 
@@ -580,10 +580,10 @@ public class AuditServiceFileWriter {
     }
 
     private void writeViewImportsAfterAddRelationshipsAttribute(BuisnessLogicEntity ent, Project project) throws IOException {
-        String slave = existEntityInMasterTableOneToMany(ent.getNameEntity(), ent.getRelationshipsMaster());
+        String child = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
         String namefileToWriteIn = ent.getNameEntity().concat("Audit").concat("Service");
-        if (slave != null) {
-            String childModel = slave;
+        if (child != null) {
+            String childModel = child;
             File file = new File(
                     ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(namefileToWriteIn).concat(".java"));
             String fileContext = FileUtils.readFileToString(file);
@@ -690,11 +690,11 @@ public class AuditServiceFileWriter {
     }
 
     private void injectChildMapper(BuisnessLogicEntity ent, Project project, String entityMapper, String variableEntityMapper) throws IOException {
-        String slave = existEntityInMasterTableOneToMany(ent.getNameEntity(), ent.getRelationshipsMaster());
+        String child = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
         String namefileToWriteIn = ent.getNameEntity().concat("Audit").concat("Service");
-        if (slave != null) {
-            String childMapper = slave.concat("Mapper");
-            String childMapperVariable = slave.toLowerCase().concat("Mapper");
+        if (child != null) {
+            String childMapper = child.concat("Mapper");
+            String childMapperVariable = child.toLowerCase().concat("Mapper");
             File file = new File(
                     ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(namefileToWriteIn).concat(".java"));
             String fileContext = FileUtils.readFileToString(file);
@@ -707,11 +707,11 @@ public class AuditServiceFileWriter {
     }
 
     private void importInjectedChildMapper(BuisnessLogicEntity ent, Project project, String entityMapper, String variableEntityMapper) throws IOException {
-        String slave = existEntityInMasterTableOneToMany(ent.getNameEntity(), ent.getRelationshipsMaster());
+        String child = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
         String namefileToWriteIn = ent.getNameEntity().concat("Audit").concat("Service");
-        if (slave != null) {
-            String childModel = slave;
-            String childMapperImport = slave.concat("Mapper");
+        if (child != null) {
+            String childModel = child;
+            String childMapperImport = child.concat("Mapper");
             String modelChildImport = ConstantsImportPackage.IMPORT_ENTITY_MODEL.concat(childModel).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE);
             String mapperChildImport = ConstantsImportPackage.IMPORT_MAPPER.concat(childMapperImport).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE);
             File file = new File(

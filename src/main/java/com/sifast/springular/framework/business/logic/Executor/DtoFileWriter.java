@@ -41,37 +41,71 @@ public class DtoFileWriter {
     }
 
     private List<Attribute> writeRelationshipsAttributesInDto(BuisnessLogicEntity entity) {
-
-        List<String> relationshipsNamesOneToMany = entity.getRelationshipsSlave().stream()
-                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.OneToMany.name()))
-                .map(relationship -> relationship.getMasterEntity().getNameEntity()).collect(Collectors.toList());
-
-        List<String> relationshipsNamesOneToOne = entity.getRelationshipsMaster().stream()
-                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.OneToOne.name()))
-                .map(relationship -> relationship.getSlaveEntity().getNameEntity()).collect(Collectors.toList());
-
-        List<String> relationshipsNamesManyToMany = entity.getRelationshipsMaster().stream()
-                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.ManyToMany.name()))
-                .map(relationship -> relationship.getSlaveEntity().getNameEntity()).collect(Collectors.toList());
-
-        List<String> relationshipsNamesOneToManyMaster = entity.getRelationshipsMaster().stream()
-                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.OneToMany.name()))
-                .map(relationship -> relationship.getSlaveEntity().getNameEntity()).collect(Collectors.toList());
-
         List<Attribute> attributes = new ArrayList<>();
         for (int i = 0; i < entity.getAttributes().size(); i++) {
             attributes.add(entity.getAttributes().get(i));
         }
 
-        for (int i = 0; i < relationshipsNamesOneToManyMaster.size(); i++) {
-            if (entity.getCreateListIdsIfSlave()) {
-                Attribute attOneToManyMaster = new Attribute();
-                attOneToManyMaster.setNameAttribute(relationshipsNamesOneToManyMaster.get(i).toLowerCase().concat("Ids"));
-                attOneToManyMaster.setTypeAttribute(AttributesTypeEnum.Set);
-                attributes.add(attOneToManyMaster);
-            }
+        writeOneToManyRelationships(entity, attributes);
 
+        writeOneToOneRelationships(entity, attributes);
+
+        writeManyToManyRelationships(entity, attributes);
+
+        writeOneToManyParentRelationsShips(entity, attributes);
+
+        return attributes;
+    }
+
+    private void writeOneToManyParentRelationsShips(BuisnessLogicEntity entity, List<Attribute> attributes) {
+        List<String> relationshipsNamesOneToManyParent = entity.getRelationshipsParent().stream()
+                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.OneToMany.name()))
+                .map(relationship -> relationship.getChildEntity().getNameEntity()).collect(Collectors.toList());
+
+        for (int i = 0; i < relationshipsNamesOneToManyParent.size(); i++) {
+            if (entity.getCreateListIdsIfChild()) {
+                Attribute attOneToManyParent = new Attribute();
+                attOneToManyParent.setNameAttribute(relationshipsNamesOneToManyParent.get(i).toLowerCase().concat("Ids"));
+                attOneToManyParent.setTypeAttribute(AttributesTypeEnum.Set);
+                attributes.add(attOneToManyParent);
+            }
         }
+    }
+
+    private void writeManyToManyRelationships(BuisnessLogicEntity entity, List<Attribute> attributes) {
+        List<String> relationshipsNamesManyToMany = entity.getRelationshipsParent().stream()
+                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.ManyToMany.name()))
+                .map(relationship -> relationship.getChildEntity().getNameEntity()).collect(Collectors.toList());
+        for (int z = 0; z < relationshipsNamesManyToMany.size(); z++) {
+
+            Attribute attManyToMany = new Attribute();
+            if (entity.getCreateListDtosIfChild()) {
+                attManyToMany.setNameAttribute(relationshipsNamesManyToMany.get(z).toLowerCase().concat("s"));
+            } else {
+                attManyToMany.setNameAttribute(relationshipsNamesManyToMany.get(z).toLowerCase().concat("Ids"));
+            }
+            attManyToMany.setTypeAttribute(AttributesTypeEnum.Set);
+            attributes.add(attManyToMany);
+        }
+    }
+
+    private void writeOneToOneRelationships(BuisnessLogicEntity entity, List<Attribute> attributes) {
+        List<String> relationshipsNamesOneToOne = entity.getRelationshipsParent().stream()
+                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.OneToOne.name()))
+                .map(relationship -> relationship.getChildEntity().getNameEntity()).collect(Collectors.toList());
+
+        for (int j = 0; j < relationshipsNamesOneToOne.size(); j++) {
+            Attribute attOneToOne = new Attribute();
+            attOneToOne.setNameAttribute(relationshipsNamesOneToOne.get(j).toLowerCase().concat("Id"));
+            attOneToOne.setTypeAttribute(AttributesTypeEnum.Long);
+            attributes.add(attOneToOne);
+        }
+    }
+
+    private void writeOneToManyRelationships(BuisnessLogicEntity entity, List<Attribute> attributes) {
+        List<String> relationshipsNamesOneToMany = entity.getRelationshipsChild().stream()
+                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.OneToMany.name()))
+                .map(relationship -> relationship.getParentEntity().getNameEntity()).collect(Collectors.toList());
 
         for (int i = 0; i < relationshipsNamesOneToMany.size(); i++) {
 
@@ -81,26 +115,6 @@ public class DtoFileWriter {
             attributes.add(attOneToMany);
 
         }
-        for (int j = 0; j < relationshipsNamesOneToOne.size(); j++) {
-
-            Attribute attOneToOne = new Attribute();
-            attOneToOne.setNameAttribute(relationshipsNamesOneToOne.get(j).toLowerCase().concat("Id"));
-            attOneToOne.setTypeAttribute(AttributesTypeEnum.Long);
-            attributes.add(attOneToOne);
-        }
-
-        for (int z = 0; z < relationshipsNamesManyToMany.size(); z++) {
-
-            Attribute attManyToMany = new Attribute();
-            if (entity.getCreateListDtosIfSlave()) {
-                attManyToMany.setNameAttribute(relationshipsNamesManyToMany.get(z).toLowerCase().concat("s"));
-            } else {
-                attManyToMany.setNameAttribute(relationshipsNamesManyToMany.get(z).toLowerCase().concat("Ids"));
-            }
-            attManyToMany.setTypeAttribute(AttributesTypeEnum.Set);
-            attributes.add(attManyToMany);
-        }
-        return attributes;
     }
 
     private void writeToStringMethodInDto(BuisnessLogicEntity ent, String fileDto, FileWriter myWriter) throws IOException {
@@ -140,8 +154,8 @@ public class DtoFileWriter {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         });
+
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(Constants.BUILDER_APPEND.concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.DOUBLE_COTE).concat(Constants.CROCHEE_FERMANTE).concat(Constants.DOUBLE_COTE)
@@ -175,13 +189,12 @@ public class DtoFileWriter {
                 try {
                     myWriter.write(ConstantsImportPackage.IMPORT_LOCAL_DATE);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
         });
         attributes.stream().forEach(attribute -> {
-            if (ent.getCreateListDtosIfSlave() && attribute.getTypeAttribute().name().equals(AttributesTypeEnum.Set.name())) {
+            if (ent.getCreateListDtosIfChild() && attribute.getTypeAttribute().name().equals(AttributesTypeEnum.Set.name())) {
                 try {
                     String first = firstLetterUpperCase(attribute);
                     first = first.substring(0, first.length() - 1);
@@ -230,12 +243,12 @@ public class DtoFileWriter {
                     String attributeDto = firstLetter.toUpperCase() + attribute.getNameAttribute().substring(1, attribute.getNameAttribute().length() - 1);
                     String attributeDtoEndsWithDto = firstLetter.toUpperCase() + attribute.getNameAttribute().substring(1, attribute.getNameAttribute().length() - 4);
 
-                    if (ent.getCreateListDtosIfSlave() && attribute.getNameAttribute().endsWith("Dto")) {
+                    if (ent.getCreateListDtosIfChild() && attribute.getNameAttribute().endsWith("Dto")) {
                         myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE).concat(attribute.getTypeAttribute().name()).concat(Constants.INFERIEUR)
                                 .concat(attributeDtoEndsWithDto).concat("Dto").concat(Constants.SUPERIEUR).concat(" ").concat(attribute.getNameAttribute())
                                 .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
                     }
-                    if (ent.getCreateListDtosIfSlave()) {
+                    if (ent.getCreateListDtosIfChild()) {
                         if (!attribute.getNameAttribute().endsWith("Dto")) {
                             myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PRIVATE).concat(attribute.getTypeAttribute().name()).concat(Constants.INFERIEUR)
                                     .concat(attributeDto).concat("Dto").concat(Constants.SUPERIEUR).concat(" ").concat(attribute.getNameAttribute())
@@ -289,7 +302,7 @@ public class DtoFileWriter {
                             .concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
                 } else {
 
-                    if (ent.getCreateListDtosIfSlave() && attributeForGetterAndSetter.getNameAttribute().endsWith("Dto")) {
+                    if (ent.getCreateListDtosIfChild() && attributeForGetterAndSetter.getNameAttribute().endsWith("Dto")) {
                         String attributeDtoEndsWithDto = firstLetter.toUpperCase()
                                 + attributeForGetterAndSetter.getNameAttribute().substring(1, attributeForGetterAndSetter.getNameAttribute().length() - 4).concat("Dto");
 
@@ -320,7 +333,7 @@ public class DtoFileWriter {
 
                     }
 
-                    if (ent.getCreateListDtosIfSlave() && !attributeForGetterAndSetter.getNameAttribute().endsWith("Dto")) {
+                    if (ent.getCreateListDtosIfChild() && !attributeForGetterAndSetter.getNameAttribute().endsWith("Dto")) {
                         String typeSetDto = viewFileDto(attributeForGetterAndSetter);
                         typeSetDto = typeSetDto.substring(4);
                         String getterrAttribute = firstLetterUpperCase(attributeForGetterAndSetter);
@@ -347,7 +360,7 @@ public class DtoFileWriter {
                         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
 
                     }
-                    if (ent.getCreateListIdsIfSlave()) {
+                    if (ent.getCreateListIdsIfChild()) {
 
                         myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(attributeForGetterAndSetter.getTypeAttribute().name())
                                 .concat(Constants.INFERIEUR).concat(Constants.LONG).concat(" ").concat("get").concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE)
@@ -411,17 +424,17 @@ public class DtoFileWriter {
     }
 
     private void writeViewImportsAfterAddRelationshipsAttribute(BuisnessLogicEntity ent, List<Attribute> attributesView, Project project) throws IOException {
-        String slave = existEntityInMasterTableOneToMany(ent.getNameEntity(), ent.getRelationshipsMaster());
+        String child = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
         String nameFolderToWriteIn = ent.getNameEntity().toLowerCase();
         String namefileToWriteIn = "View".concat(ent.getNameEntity()).concat("Dto");
-        if (slave != null) {
-            String viewSlaveDto = "View".concat(slave).concat("Dto");
+        if (child != null) {
+            String viewChildDto = "View".concat(child).concat("Dto");
             File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
                     .concat(nameFolderToWriteIn).concat(Constants.PATTERN_SLASH).concat(namefileToWriteIn).concat(".java"));
             String fileContext = FileUtils.readFileToString(file);
             fileContext = fileContext.replaceAll(ConstantsImportPackage.IMPORT_DTO_IWebServicesValidators,
-                    ConstantsImportPackage.IMPORT_DTO_IWebServicesValidators.concat(ConstantsImportPackage.IMPORT_DTO.concat(slave.toLowerCase()).concat(Constants.POINT)
-                            .concat(viewSlaveDto).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)));
+                    ConstantsImportPackage.IMPORT_DTO_IWebServicesValidators.concat(ConstantsImportPackage.IMPORT_DTO.concat(child.toLowerCase()).concat(Constants.POINT)
+                            .concat(viewChildDto).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)));
             FileUtils.write(file, fileContext);
         }
 
@@ -495,27 +508,26 @@ public class DtoFileWriter {
                         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
                     }
                 } else {
-                    String slave = existEntityInMasterTableOneToMany(ent.getNameEntity(), ent.getRelationshipsMaster());
-                    String viewSlaveDto = "View".concat(slave).concat("Dto");
+                    String child = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
+                    String viewChildDto = "View".concat(child).concat("Dto");
                     String getterAttribute = firstLetterUpperCase(attributeForGetterAndSetter);
-                    getterNewRelationShipAttributeForViewDto(myWriter, attributeForGetterAndSetter, viewSlaveDto, getterAttribute);
-                    setterNewRelationShipAttributeForViewDto(myWriter, attributeForGetterAndSetter, viewSlaveDto, getterAttribute);
+                    getterNewRelationShipAttributeForViewDto(myWriter, attributeForGetterAndSetter, viewChildDto, getterAttribute);
+                    setterNewRelationShipAttributeForViewDto(myWriter, attributeForGetterAndSetter, viewChildDto, getterAttribute);
                     myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
                     myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
                 }
 
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         });
 
     }
 
-    private void setterNewRelationShipAttributeForViewDto(FileWriter myWriter, Attribute attributeForGetterAndSetter, String viewSlaveDto, String getterAttribute)
+    private void setterNewRelationShipAttributeForViewDto(FileWriter myWriter, Attribute attributeForGetterAndSetter, String viewChildDto, String getterAttribute)
             throws IOException {
         myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(Constants.VOID).concat("set").concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE)
-                .concat(AttributesTypeEnum.Set.toString()).concat(Constants.INFERIEUR).concat(viewSlaveDto).concat(Constants.SUPERIEUR).concat(" ")
+                .concat(AttributesTypeEnum.Set.toString()).concat(Constants.INFERIEUR).concat(viewChildDto).concat(Constants.SUPERIEUR).concat(" ")
                 .concat(attributeForGetterAndSetter.getNameAttribute()).concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
                 .concat(Constants.PATTERN_RETOUR_LIGNE)
                 .concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.THIS).concat(attributeForGetterAndSetter.getNameAttribute())
@@ -523,9 +535,9 @@ public class DtoFileWriter {
                 .concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE)));
     }
 
-    private void getterNewRelationShipAttributeForViewDto(FileWriter myWriter, Attribute attributeForGetterAndSetter, String viewSlaveDto, String getterAttribute)
+    private void getterNewRelationShipAttributeForViewDto(FileWriter myWriter, Attribute attributeForGetterAndSetter, String viewChildDto, String getterAttribute)
             throws IOException {
-        myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(AttributesTypeEnum.Set.toString()).concat(Constants.INFERIEUR).concat(viewSlaveDto)
+        myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(AttributesTypeEnum.Set.toString()).concat(Constants.INFERIEUR).concat(viewChildDto)
                 .concat(Constants.SUPERIEUR).concat(" ").concat("get").concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE)
                 .concat(" ").concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE)
                 .concat(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.RETURN)).concat(attributeForGetterAndSetter.getNameAttribute())
@@ -573,13 +585,13 @@ public class DtoFileWriter {
 
         });
 
-        if (existEntityInMasterTableOneToMany(ent.getNameEntity(), ent.getRelationshipsMaster()) != null) {
-            String nameSlaveEntity = existEntityInMasterTableOneToMany(ent.getNameEntity(), ent.getRelationshipsMaster());
-            String firstLetterView = nameSlaveEntity.charAt(0) + "";
-            String attributeToLowerCase = firstLetterView.toLowerCase() + nameSlaveEntity.substring(1, nameSlaveEntity.length()).toLowerCase();
+        if (existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent()) != null) {
+            String nameChildEntity = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
+            String firstLetterView = nameChildEntity.charAt(0) + "";
+            String attributeToLowerCase = firstLetterView.toLowerCase() + nameChildEntity.substring(1, nameChildEntity.length()).toLowerCase();
             String attributeSelaveEntityName = attributeToLowerCase + "s";
             myWriter.write(
-                    Constants.PATTERN_TABULATION.concat(Constants.PRIVATE).concat(AttributesTypeEnum.Set.name()).concat(Constants.INFERIEUR).concat("View").concat(nameSlaveEntity)
+                    Constants.PATTERN_TABULATION.concat(Constants.PRIVATE).concat(AttributesTypeEnum.Set.name()).concat(Constants.INFERIEUR).concat("View").concat(nameChildEntity)
                             .concat("Dto").concat(Constants.SUPERIEUR).concat(" ").concat(attributeSelaveEntityName).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
             Attribute attribute = new Attribute();
             attribute.setNameAttribute(attributeSelaveEntityName);
@@ -590,55 +602,38 @@ public class DtoFileWriter {
         }
     }
 
-    private String existEntityInMasterTableOneToMany(String nameEntity, List<Relationship> relations) {
-        String slaverEntityName = null;
+    private String existEntityInParentTableOneToMany(String nameEntity, List<Relationship> relations) {
+        String childrEntityName = null;
         for (Relationship relationship : relations) {
-            if (relationship.getMasterEntity().getNameEntity().equals(nameEntity) && relationship.getTypeRelationship().equals(RelationshipTypeEnum.OneToMany)) {
-                if (relationship.getSlaveEntity().getNameEntity() != null) {
-                    slaverEntityName = relationship.getSlaveEntity().getNameEntity();
-                    System.out.println(slaverEntityName);
+            if (relationship.getParentEntity().getNameEntity().equals(nameEntity) && relationship.getTypeRelationship().equals(RelationshipTypeEnum.OneToMany)) {
+                if (relationship.getChildEntity().getNameEntity() != null) {
+                    childrEntityName = relationship.getChildEntity().getNameEntity();
+                    System.out.println(childrEntityName);
                 }
             }
         }
-        return slaverEntityName;
+        return childrEntityName;
 
     }
 
     private List<Attribute> writeViewRelationshipsAttributesInDto(BuisnessLogicEntity entity) {
 
-        List<String> relationshipsNamesOneToMany = entity.getRelationshipsSlave().stream()
-                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.OneToMany.name()))
-                .map(relationship -> relationship.getMasterEntity().getNameEntity()).collect(Collectors.toList());
-
-        List<String> relationshipsNamesOneToOne = entity.getRelationshipsMaster().stream()
-                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.OneToOne.name()))
-                .map(relationship -> relationship.getSlaveEntity().getNameEntity()).collect(Collectors.toList());
-
-        List<String> relationshipsNamesManyToMany = entity.getRelationshipsMaster().stream()
-                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.ManyToMany.name()))
-                .map(relationship -> relationship.getSlaveEntity().getNameEntity()).collect(Collectors.toList());
-
         List<Attribute> attributes = new ArrayList<>();
         for (int i = 0; i < entity.getAttributes().size(); i++) {
             attributes.add(entity.getAttributes().get(i));
         }
-        for (int i = 0; i < relationshipsNamesOneToMany.size(); i++) {
 
-            Attribute attOneToMany = new Attribute();
-            attOneToMany.setNameAttribute(relationshipsNamesOneToMany.get(i).toLowerCase());
-            attOneToMany.setTypeAttribute(AttributesTypeEnum.List);
-            attributes.add(attOneToMany);
+        writeViewDtoOneToManyRelations(entity, attributes);
+        writeViewDtoOneToOneRelations(entity, attributes);
+        writeViewDtoManyToManyRelations(entity, attributes);
 
-        }
+        return attributes;
+    }
 
-        for (int i = 0; i < relationshipsNamesOneToOne.size(); i++) {
-
-            Attribute attOneToOne = new Attribute();
-            attOneToOne.setNameAttribute(relationshipsNamesOneToOne.get(i).toLowerCase());
-            attOneToOne.setTypeAttribute(AttributesTypeEnum.List);
-            attributes.add(attOneToOne);
-
-        }
+    private void writeViewDtoManyToManyRelations(BuisnessLogicEntity entity, List<Attribute> attributes) {
+        List<String> relationshipsNamesManyToMany = entity.getRelationshipsParent().stream()
+                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.ManyToMany.name()))
+                .map(relationship -> relationship.getChildEntity().getNameEntity()).collect(Collectors.toList());
 
         for (int z = 0; z < relationshipsNamesManyToMany.size(); z++) {
             Attribute attManyToMany = new Attribute();
@@ -655,8 +650,35 @@ public class DtoFileWriter {
                 attributes.add(attManyToMany);
             }
         }
+    }
 
-        return attributes;
+    private void writeViewDtoOneToOneRelations(BuisnessLogicEntity entity, List<Attribute> attributes) {
+        List<String> relationshipsNamesOneToOne = entity.getRelationshipsParent().stream()
+                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.OneToOne.name()))
+                .map(relationship -> relationship.getChildEntity().getNameEntity()).collect(Collectors.toList());
+
+        for (int i = 0; i < relationshipsNamesOneToOne.size(); i++) {
+
+            Attribute attOneToOne = new Attribute();
+            attOneToOne.setNameAttribute(relationshipsNamesOneToOne.get(i).toLowerCase());
+            attOneToOne.setTypeAttribute(AttributesTypeEnum.List);
+            attributes.add(attOneToOne);
+
+        }
+    }
+
+    private void writeViewDtoOneToManyRelations(BuisnessLogicEntity entity, List<Attribute> attributes) {
+        List<String> relationshipsNamesOneToMany = entity.getRelationshipsChild().stream()
+                .filter(relationship -> relationship.getTypeRelationship().name().equals(RelationshipTypeEnum.OneToMany.name()))
+                .map(relationship -> relationship.getParentEntity().getNameEntity()).collect(Collectors.toList());
+        for (int i = 0; i < relationshipsNamesOneToMany.size(); i++) {
+
+            Attribute attOneToMany = new Attribute();
+            attOneToMany.setNameAttribute(relationshipsNamesOneToMany.get(i).toLowerCase());
+            attOneToMany.setTypeAttribute(AttributesTypeEnum.List);
+            attributes.add(attOneToMany);
+
+        }
     }
 
     private void writeViewToStringMethodInDto(BuisnessLogicEntity ent, String fileDto, FileWriter myWriter) throws IOException {
@@ -788,7 +810,7 @@ public class DtoFileWriter {
 
         });
         attributes.stream().forEach(attribute -> {
-            if (ent.getCreateListDtosIfSlave() && attribute.getTypeAttribute().name().equals(AttributesTypeEnum.Set.name())) {
+            if (ent.getCreateListDtosIfChild() && attribute.getTypeAttribute().name().equals(AttributesTypeEnum.Set.name())) {
                 try {
                     String first = firstLetterUpperCase(attribute);
                     first = first.substring(0, first.length() - 1);

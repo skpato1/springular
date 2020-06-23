@@ -22,11 +22,11 @@ public class FileWrite {
     public void writeRelationshipsInJdlFile(Project project, FileWriter myWriter) {
         List<Integer> usedRelationshipsIds = new ArrayList<>();
         project.getEntities().stream().forEach(entity -> {
-            entity.getRelationshipsMaster().stream().forEach(masterRelationship -> {
-                addRelationshipToJdlFile(usedRelationshipsIds, masterRelationship, myWriter);
+            entity.getRelationshipsParent().stream().forEach(parentRelationship -> {
+                addRelationshipToJdlFile(usedRelationshipsIds, parentRelationship, myWriter);
             });
-            entity.getRelationshipsSlave().stream().forEach(slaveRelationship -> {
-                addRelationshipToJdlFile(usedRelationshipsIds, slaveRelationship, myWriter);
+            entity.getRelationshipsChild().stream().forEach(childRelationship -> {
+                addRelationshipToJdlFile(usedRelationshipsIds, childRelationship, myWriter);
             });
         });
     }
@@ -87,15 +87,15 @@ public class FileWrite {
         try {
             if (!relationship.getTypeRelationship().equals(RelationshipTypeEnum.ManyToMany)) {
                 myWriter.write("relationship ".concat(relationship.getTypeRelationship().name()).concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
-                myWriter.write(Constants.PATTERN_TABULATION.concat(relationship.getMasterEntity().getNameEntity()).concat(Constants.ACCOLADE_OUVRANT)
-                        .concat(relationship.getSlaveEntity().getNameEntity().toLowerCase()).concat(Constants.ACCOLADE_FERMANTE).concat(" ").concat("to ")
-                        .concat(relationship.getSlaveEntity().getNameEntity()).concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.ACCOLADE_FERMANTE));
+                myWriter.write(Constants.PATTERN_TABULATION.concat(relationship.getParentEntity().getNameEntity()).concat(Constants.ACCOLADE_OUVRANT)
+                        .concat(relationship.getChildEntity().getNameEntity().toLowerCase()).concat(Constants.ACCOLADE_FERMANTE).concat(" ").concat("to ")
+                        .concat(relationship.getChildEntity().getNameEntity()).concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.ACCOLADE_FERMANTE));
             } else {
                 myWriter.write("relationship ".concat(relationship.getTypeRelationship().name()).concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
-                myWriter.write(Constants.PATTERN_TABULATION.concat(relationship.getMasterEntity().getNameEntity()).concat(Constants.ACCOLADE_OUVRANT)
-                        .concat(relationship.getSlaveEntity().getNameEntity().toLowerCase()).concat(Constants.ACCOLADE_FERMANTE).concat("to ")
-                        .concat(relationship.getSlaveEntity().getNameEntity()).concat(Constants.ACCOLADE_OUVRANT)
-                        .concat(relationship.getMasterEntity().getNameEntity().toLowerCase()).concat(Constants.ACCOLADE_FERMANTE).concat(Constants.PATTERN_RETOUR_LIGNE)
+                myWriter.write(Constants.PATTERN_TABULATION.concat(relationship.getParentEntity().getNameEntity()).concat(Constants.ACCOLADE_OUVRANT)
+                        .concat(relationship.getChildEntity().getNameEntity().toLowerCase()).concat(Constants.ACCOLADE_FERMANTE).concat("to ")
+                        .concat(relationship.getChildEntity().getNameEntity()).concat(Constants.ACCOLADE_OUVRANT)
+                        .concat(relationship.getParentEntity().getNameEntity().toLowerCase()).concat(Constants.ACCOLADE_FERMANTE).concat(Constants.PATTERN_RETOUR_LIGNE)
                         .concat(Constants.ACCOLADE_FERMANTE));
             }
 

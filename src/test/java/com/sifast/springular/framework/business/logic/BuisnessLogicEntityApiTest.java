@@ -3,10 +3,15 @@ package com.sifast.springular.framework.business.logic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import com.sifast.springular.framework.business.logic.common.ApiMessage;
+import com.sifast.springular.framework.business.logic.common.CustomMatcher;
+import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
+import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.BuisnessLogicEntityDto;
+import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.CreateBuisnessLogicEntityDto;
+import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.ViewBuisnessLogicEntityDto;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
@@ -14,13 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import com.sifast.springular.framework.business.logic.common.ApiMessage;
-import com.sifast.springular.framework.business.logic.common.CustomMatcher;
-import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
-import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.BuisnessLogicEntityDto;
-import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.CreateBuisnessLogicEntityDto;
-import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.ViewBuisnessLogicEntityDto;
 
 public class BuisnessLogicEntityApiTest extends SpringularFrameworkBusinessLogicApplicationTests {
 	

@@ -118,15 +118,17 @@ public class ProjectApi implements IProjectApi {
     @Override
     public ResponseEntity<Object> updateProject(
             @ApiParam(value = "ID of Project that needs to be updated", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id,
-            @ApiParam(required = true, value = "projectDto", name = "projectDto") @RequestBody ProjectDto projectDto, BindingResult bindingResult) {
+            @ApiParam(required = true, value = "projectDto", name = "projectDto") @RequestBody ProjectDto projectDto, BindingResult bindingResult) throws Exception {
         LOGGER.info("Web service updateProject invoked with id {}", id);
         if (!bindingResult.hasFieldErrors()) {
             Optional<Project> Project = projectService.findById(id);
             if (Project.isPresent()) {
-                Project preUpdateProject = Project.get();
-                Project updatedProject = projectService.save(preUpdateProject);
+                findProjectById(id);
+                Project mappedProject = projectMapper.mapDatabaseDtoToModelDatabase(projectDto);
+                mappedProject.setId(id);
+                Project updatedProject = projectService.save(mappedProject);
+                httpResponseBody = projectMapper.mapProjectToViewProjectDto(updatedProject);
                 httpStatus = HttpStatus.OK;
-                httpResponseBody = modelMapper.map(Project, Project.class);
                 LOGGER.info("INFO level message: Project updated {}", updatedProject);
 
             } else {
@@ -166,6 +168,14 @@ public class ProjectApi implements IProjectApi {
         }
         return new ResponseEntity<>(httpResponseBody, httpStatus);
 
+    }
+
+    private Project findProjectById(int id) throws Exception {
+        Optional<Project> project = projectService.findById(id);
+        if (!project.isPresent()) {
+            throw new Exception();
+        }
+        return project.get();
     }
 
 }

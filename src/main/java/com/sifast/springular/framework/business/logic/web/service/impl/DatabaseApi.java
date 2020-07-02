@@ -39,135 +39,137 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping(value = "/api/")
 public class DatabaseApi implements IDatabaseApi {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseApi.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseApi.class);
 
-	private HttpErrorResponse httpErrorResponse = new HttpErrorResponse();
+    private HttpErrorResponse httpErrorResponse = new HttpErrorResponse();
 
-	private Object httpResponseBody;
+    private Object httpResponseBody;
 
-	private HttpStatus httpStatus;
+    private HttpStatus httpStatus;
 
-	@Autowired
-	private ConfiguredModelMapper modelMapper;
+    @Autowired
+    private ConfiguredModelMapper modelMapper;
 
-	@Autowired
-	private DatabaseMapper databaseMapper;
+    @Autowired
+    private DatabaseMapper databaseMapper;
 
-	@Autowired
-	private IDatabaseService databaseService;
+    @Autowired
+    private IDatabaseService databaseService;
 
-	@Autowired
-	private IProjectService projectService;
-	
-	@Autowired
-	ICommandExecutorService commandExecutorService;
+    @Autowired
+    private IProjectService projectService;
 
-	@Override
-	public ResponseEntity<Object> saveDatabase(
-			@ApiParam(required = true, value = "databaseDto", name = "databaseDto") @RequestBody CreateDatabaseDto databaseDto,
-			BindingResult bindingResult) {
-		LOGGER.info("Web service saveDatabase invoked with databaseDto {}", databaseDto);
-		try {
-			Optional<Project> project = projectService.findById(databaseDto.getProject_id());
-			if (project.isPresent()) {
-				Database databaseToBeSaved = databaseMapper.mapCreateDatabase(databaseDto);
-				project.get().setDatabase(databaseToBeSaved);
-				databaseToBeSaved.setProject(project.get());
-				Database saveddatabase = databaseService.save(databaseToBeSaved);
-				commandExecutorService.createDataBase(databaseDto.getNameDatabase());
-				commandExecutorService.generateApplicationPropertiesFromAngular(project.get(),databaseDto.getTypeDatabase(), databaseDto.getNameDatabase(), databaseDto.getUsernameDatabase(), databaseDto.getPasswordDatabase());
-				httpStatus = HttpStatus.OK;
-				httpResponseBody = modelMapper.map(saveddatabase, ViewDatabaseDto.class);
-			} else {
-				httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(),
-				ApiMessage.PROJECT_NOT_FOUND);
-				httpStatus = HttpStatus.NOT_FOUND;
-				httpResponseBody = httpErrorResponse;
-			}
+    @Autowired
+    ICommandExecutorService commandExecutorService;
 
-		} catch (Exception e) {
-			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.SERVER_ERROR.getValue(), ApiMessage.ERR_SAVE);
-			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-			httpResponseBody = httpErrorResponse;
+    @Override
+    public ResponseEntity<Object> saveDatabase(@ApiParam(required = true, value = "databaseDto", name = "databaseDto") @RequestBody CreateDatabaseDto databaseDto,
+            BindingResult bindingResult) {
+        LOGGER.info("Web service saveDatabase invoked with databaseDto {}", databaseDto);
+        try {
+            Optional<Project> project = projectService.findById(databaseDto.getProject_id());
+            if (project.isPresent()) {
+                Database databaseToBeSaved = databaseMapper.mapCreateDatabase(databaseDto);
+                project.get().setDatabase(databaseToBeSaved);
+                databaseToBeSaved.setProject(project.get());
+                Database saveddatabase = databaseService.save(databaseToBeSaved);
+                // commandExecutorService.createDataBase(databaseDto.getNameDatabase());
+                // commandExecutorService.generateApplicationPropertiesFromAngular(project.get(),databaseDto.getTypeDatabase(), databaseDto.getNameDatabase(),
+                // databaseDto.getUsernameDatabase(), databaseDto.getPasswordDatabase());
+                httpStatus = HttpStatus.OK;
+                httpResponseBody = modelMapper.map(saveddatabase, ViewDatabaseDto.class);
+            } else {
+                httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.PROJECT_NOT_FOUND);
+                httpStatus = HttpStatus.NOT_FOUND;
+                httpResponseBody = httpErrorResponse;
+            }
 
-		}
+        } catch (Exception e) {
+            httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.SERVER_ERROR.getValue(), ApiMessage.ERR_SAVE);
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            httpResponseBody = httpErrorResponse;
 
-		return new ResponseEntity<>(httpResponseBody, httpStatus);
-	}
+        }
 
-	@Override
-	public ResponseEntity<Object> getDatabase(
-			@ApiParam(value = "ID of Database that needs to be fetched", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
-		LOGGER.info("Web service getDatabase invoked with id {}", id);
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
 
-		Optional<Database> database = databaseService.findById(id);
-		if (database.isPresent()) {
-			httpStatus = HttpStatus.OK;
-			httpResponseBody = databaseMapper.mapDatabaseToViewDatabaseDto(database.get());
-		} else {
-			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
-			httpStatus = HttpStatus.NOT_FOUND;
-			httpResponseBody = httpErrorResponse;
-		}
-		return new ResponseEntity<>(httpResponseBody, httpStatus);
-	}
+    @Override
+    public ResponseEntity<Object> getDatabase(
+            @ApiParam(value = "ID of Database that needs to be fetched", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
+        LOGGER.info("Web service getDatabase invoked with id {}", id);
 
-	@Override
-	public ResponseEntity<Object> getAllDatabases() {
-		List<Database> databases = databaseService.findAll();
-		httpStatus = HttpStatus.OK;
-		httpResponseBody = !databases.isEmpty()
-				? databases.stream()
-				.map(database -> modelMapper.map(database, ViewDatabaseDto.class)).collect(Collectors.toList())
-				: Collections.emptyList();
-		return new ResponseEntity<>(httpResponseBody, httpStatus);
-	}
+        Optional<Database> database = databaseService.findById(id);
+        if (database.isPresent()) {
+            httpStatus = HttpStatus.OK;
+            httpResponseBody = databaseMapper.mapDatabaseToViewDatabaseDto(database.get());
+        } else {
+            httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
+            httpStatus = HttpStatus.NOT_FOUND;
+            httpResponseBody = httpErrorResponse;
+        }
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
 
-	@Override
-	public ResponseEntity<Object> deleteDatabase(
-			@ApiParam(value = "ID of Database that needs to be deleted", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
-		LOGGER.info("Web service deleteDatabase invoked with id {}", id);
-		Optional<Database> preDeletedatabase = databaseService.findById(id);
-		if (preDeletedatabase.isPresent()) {
-			databaseService.delete(preDeletedatabase.get());
-			httpStatus = HttpStatus.OK;
-			LOGGER.info("INFO level message: database with id = {} deleted ", id);
-		} else {
+    @Override
+    public ResponseEntity<Object> getAllDatabases() {
+        List<Database> databases = databaseService.findAll();
+        httpStatus = HttpStatus.OK;
+        httpResponseBody = !databases.isEmpty() ? databases.stream().map(database -> modelMapper.map(database, ViewDatabaseDto.class)).collect(Collectors.toList())
+                : Collections.emptyList();
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
 
-			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
-			httpStatus = HttpStatus.NOT_FOUND;
-			httpResponseBody = httpErrorResponse;
-		}
-		return new ResponseEntity<>(httpResponseBody, httpStatus);
-	}
+    @Override
+    public ResponseEntity<Object> deleteDatabase(
+            @ApiParam(value = "ID of Database that needs to be deleted", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
+        LOGGER.info("Web service deleteDatabase invoked with id {}", id);
+        Optional<Database> preDeletedatabase = databaseService.findById(id);
+        if (preDeletedatabase.isPresent()) {
+            databaseService.delete(preDeletedatabase.get());
+            httpStatus = HttpStatus.OK;
+            LOGGER.info("INFO level message: database with id = {} deleted ", id);
+        } else {
 
-	@Override
-	public ResponseEntity<Object> updateDatabase(
-			@ApiParam(value = "ID of Database that needs to be updated", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id,
-			@ApiParam(required = true, value = "databaseDto", name = "databaseDto") @RequestBody DatabaseDto databaseDto,
-			BindingResult bindingResult) {
-			LOGGER.info("Web service updateDatabase invoked with id {}", id);
-		if (!bindingResult.hasFieldErrors()) {
-			Optional<Database> database = databaseService.findById(id);
-			if (database.isPresent()) {
-				Database mapDtoToDatabase= modelMapper.map(databaseDto, Database.class);
-				mapDtoToDatabase.setId(id);
-				//Database preUpdatedatabase = database.get();
-				Database updateddatabase = databaseService.save(mapDtoToDatabase);
-				httpStatus = HttpStatus.OK;
-				httpResponseBody = modelMapper.map(database, Database.class);
-				LOGGER.info("INFO level message: database updated {}", updateddatabase);
+            httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
+            httpStatus = HttpStatus.NOT_FOUND;
+            httpResponseBody = httpErrorResponse;
+        }
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
 
-			} else {
-				httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(),
-						ApiMessage.DATABASE_NOT_FOUND);
-				httpStatus = HttpStatus.NOT_FOUND;
-				httpResponseBody = httpErrorResponse;
-			}
-		} else {
-			httpStatus = HttpStatus.BAD_REQUEST;
-		}
-		return new ResponseEntity<>(httpResponseBody, httpStatus);
-	}
+    @Override
+    public ResponseEntity<Object> updateDatabase(
+            @ApiParam(value = "ID of Database that needs to be updated", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id,
+            @ApiParam(required = true, value = "databaseDto", name = "databaseDto") @RequestBody DatabaseDto databaseDto, BindingResult bindingResult) throws Exception {
+        LOGGER.info("Web service updateDatabase invoked with id {}", id);
+        if (!bindingResult.hasFieldErrors()) {
+            Optional<Database> database = databaseService.findById(id);
+            if (database.isPresent()) {
+                findDatabaseById(id);
+                Database mappedDatabase = databaseMapper.mapDatabaseDtoToModelDatabase(databaseDto);
+                mappedDatabase.setId(id);
+                Database updatedDatabase = databaseService.save(mappedDatabase);
+                httpResponseBody = databaseMapper.mapDatabaseToViewDatabaseDto(updatedDatabase);
+                httpStatus = HttpStatus.OK;
+                LOGGER.info("INFO level message: database updated {}", updatedDatabase);
 
+            } else {
+                httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
+                httpStatus = HttpStatus.NOT_FOUND;
+                httpResponseBody = httpErrorResponse;
+            }
+        } else {
+            httpStatus = HttpStatus.BAD_REQUEST;
+        }
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
+
+    private Database findDatabaseById(int id) throws Exception {
+        Optional<Database> database = databaseService.findById(id);
+        if (!database.isPresent()) {
+            throw new Exception();
+        }
+        return database.get();
+    }
 }

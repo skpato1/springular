@@ -27,11 +27,11 @@ public class BuisnessLogicEntity extends TimestampEntity implements Serializable
     @Column(name = "name_entity")
     private String nameEntity;
 
-    @Column(name = "create_list_ids_if_slave")
-    private Boolean createListIdsIfSlave;
+    @Column(name = "create_list_ids_if_child")
+    private Boolean createListIdsIfChild;
 
-    @Column(name = "create_list_dtos_if_slave")
-    private Boolean createListDtosIfSlave;
+    @Column(name = "create_list_dtos_if_child")
+    private Boolean createListDtosIfChild;
 
     @Column(name = "is_trackable")
     private Boolean isTrackable;
@@ -50,26 +50,26 @@ public class BuisnessLogicEntity extends TimestampEntity implements Serializable
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Project project;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "masterEntity", fetch = FetchType.LAZY)
-    private List<Relationship> relationshipsMaster;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentEntity", fetch = FetchType.LAZY)
+    private List<Relationship> relationshipsParent;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "slaveEntity", fetch = FetchType.LAZY)
-    private List<Relationship> relationshipsSlave;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "childEntity", fetch = FetchType.LAZY)
+    private List<Relationship> relationshipsChild;
 
-    public Boolean getCreateListIdsIfSlave() {
-        return createListIdsIfSlave;
+    public Boolean getCreateListIdsIfChild() {
+        return createListIdsIfChild;
     }
 
-    public void setCreateListIdsIfSlave(Boolean createListIdsIfSlave) {
-        this.createListIdsIfSlave = createListIdsIfSlave;
+    public void setCreateListIdsIfChild(Boolean createListIdsIfChild) {
+        this.createListIdsIfChild = createListIdsIfChild;
     }
 
-    public Boolean getCreateListDtosIfSlave() {
-        return createListDtosIfSlave;
+    public Boolean getCreateListDtosIfChild() {
+        return createListDtosIfChild;
     }
 
-    public void setCreateListDtosIfSlave(Boolean createListDtosIfSlave) {
-        this.createListDtosIfSlave = createListDtosIfSlave;
+    public void setCreateListDtosIfChild(Boolean createListDtosIfChild) {
+        this.createListDtosIfChild = createListDtosIfChild;
     }
 
     public List<Attribute> getAttributes() {
@@ -96,20 +96,20 @@ public class BuisnessLogicEntity extends TimestampEntity implements Serializable
         this.id = id;
     }
 
-    public List<Relationship> getRelationshipsMaster() {
-        return relationshipsMaster;
+    public List<Relationship> getRelationshipsParent() {
+        return relationshipsParent;
     }
 
-    public void setRelationshipsMaster(List<Relationship> relationshipsMaster) {
-        this.relationshipsMaster = relationshipsMaster;
+    public void setRelationshipsParent(List<Relationship> relationshipsParent) {
+        this.relationshipsParent = relationshipsParent;
     }
 
-    public List<Relationship> getRelationshipsSlave() {
-        return relationshipsSlave;
+    public List<Relationship> getRelationshipsChild() {
+        return relationshipsChild;
     }
 
-    public void setRelationshipsSlave(List<Relationship> relationshipsSlave) {
-        this.relationshipsSlave = relationshipsSlave;
+    public void setRelationshipsChild(List<Relationship> relationshipsChild) {
+        this.relationshipsChild = relationshipsChild;
     }
 
     public String getNameEntity() {
@@ -127,18 +127,18 @@ public class BuisnessLogicEntity extends TimestampEntity implements Serializable
         builder.append(id);
         builder.append(", nameEntity=");
         builder.append(nameEntity);
-        builder.append(", createListIdsIfSlave=");
-        builder.append(createListIdsIfSlave);
-        builder.append(", createListDtosIfSlave=");
-        builder.append(createListDtosIfSlave);
+        builder.append(", createListIdsIfChild=");
+        builder.append(createListIdsIfChild);
+        builder.append(", createListDtosIfChild=");
+        builder.append(createListDtosIfChild);
         builder.append(", attributes=");
         builder.append(attributes);
         builder.append(", project=");
         builder.append(project);
-        builder.append(", relationshipsMaster=");
-        builder.append(relationshipsMaster);
-        builder.append(", relationshipsSlave=");
-        builder.append(relationshipsSlave);
+        builder.append(", relationshipsParent=");
+        builder.append(relationshipsParent);
+        builder.append(", relationshipsChild=");
+        builder.append(relationshipsChild);
         builder.append("]");
         return builder.toString();
     }

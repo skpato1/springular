@@ -62,16 +62,16 @@ public class RelationshipApi implements IRelationshipApi {
 			@ApiParam(required = true, value = "relationshipDto", name = "relationshipDto") @RequestBody CreateRelationshipDto relationshipDto,
 			BindingResult bindingResult) {
 		LOGGER.info("Web service saveRelationship invoked with projectDto {}", relationshipDto);
-		int masterEntity_id = relationshipDto.getMasterEntity_id();
-		int slaveEntity_id = relationshipDto.getSlaveEntity_id();
+		int parentEntity_id = relationshipDto.getParentEntity_id();
+		int childEntity_id = relationshipDto.getChildEntity_id();
 
 		try {
-			Optional<BuisnessLogicEntity> masterEntity = entityService.findById(masterEntity_id);
-			Optional<BuisnessLogicEntity> slaveEntity = entityService.findById(slaveEntity_id);
-			if (masterEntity.isPresent() && slaveEntity.isPresent()) {
+			Optional<BuisnessLogicEntity> parentEntity = entityService.findById(parentEntity_id);
+			Optional<BuisnessLogicEntity> childEntity = entityService.findById(childEntity_id);
+			if (parentEntity.isPresent() && childEntity.isPresent()) {
 				Relationship relationshipToBeSaved = relationshipMapper.mapCreateRelationship(relationshipDto);
-				relationshipToBeSaved.setMasterEntity(masterEntity.get());
-				relationshipToBeSaved.setSlaveEntity(slaveEntity.get());
+				relationshipToBeSaved.setParentEntity(parentEntity.get());
+				relationshipToBeSaved.setChildEntity(childEntity.get());
 				Relationship savedRelationship = relationshipService.save(relationshipToBeSaved);
 				httpStatus = HttpStatus.OK;
 				ViewRelationshipDto relationshipToBeReturned = modelMapper.map(savedRelationship, ViewRelationshipDto.class);

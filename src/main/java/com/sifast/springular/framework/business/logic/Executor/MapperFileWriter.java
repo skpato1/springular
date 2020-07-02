@@ -24,17 +24,17 @@ import com.sifast.springular.framework.business.logic.service.impl.RelationshipS
 @Component
 public class MapperFileWriter {
 
-    Boolean checkManyMaster = false;
+    Boolean checkManyParent = false;
 
-    Boolean checkManySlave = false;
+    Boolean checkManyChild = false;
 
-    String checkMasterEntityOfSlaveRelationShips = null;
+    String checkParentEntityOfChildRelationShips = null;
 
-    String checkSlaveEntityOfSlaveRelaionShips = null;
+    String checkChildEntityOfChildRelaionShips = null;
 
-    String checkMasterEntityOfMasterRelationShips = null;
+    String checkParentEntityOfParentRelationShips = null;
 
-    String checkSlaveEntityOfMasterRelationShips = null;
+    String checkChildEntityOfParentRelationShips = null;
 
     @Autowired
     RelationshipService relationshipService;
@@ -43,14 +43,14 @@ public class MapperFileWriter {
 
         project.getEntities().stream().forEach(ent -> {
             try {
-                List<Relationship> relationsMaster = relationshipService.findByMasterEntity(ent);
-                List<Relationship> relationsSlave = relationshipService.findBySlaveEntity(ent);
-                List<BuisnessLogicEntity> entitiesMaster = relationsSlave.stream().map(Relationship::getMasterEntity).collect(Collectors.toList());
-                List<BuisnessLogicEntity> entitiesSlave = relationsMaster.stream().map(Relationship::getSlaveEntity).collect(Collectors.toList());
-                FileWriter myWriter = writeImportsAndStructureOfClassInMappers(project, ent, entitiesMaster, entitiesSlave);
-                injectServicesAndCongigMapper(ent, myWriter, entitiesMaster, entitiesSlave);
-                writeCreateMapper(ent, myWriter, entitiesMaster, entitiesSlave);
-                writeViewCreateMapper(ent, myWriter, entitiesMaster, entitiesSlave);
+                List<Relationship> relationsParent = relationshipService.findByParentEntity(ent);
+                List<Relationship> relationsChild = relationshipService.findByChildEntity(ent);
+                List<BuisnessLogicEntity> entitiesParent = relationsChild.stream().map(Relationship::getParentEntity).collect(Collectors.toList());
+                List<BuisnessLogicEntity> entitiesChild = relationsParent.stream().map(Relationship::getChildEntity).collect(Collectors.toList());
+                FileWriter myWriter = writeImportsAndStructureOfClassInMappers(project, ent, entitiesParent, entitiesChild);
+                injectServicesAndCongigMapper(ent, myWriter, entitiesParent, entitiesChild);
+                writeCreateMapper(ent, myWriter, entitiesParent, entitiesChild);
+                writeViewCreateMapper(ent, myWriter, entitiesParent, entitiesChild);
                 writeViewMapper(ent, myWriter);
                 writeMapToVersionDtoMapper(ent, myWriter);
                 closeAccoladeAndFile(myWriter);
@@ -61,7 +61,7 @@ public class MapperFileWriter {
         });
     }
 
-    private void writeViewCreateMapper(BuisnessLogicEntity ent, FileWriter myWriter, List<BuisnessLogicEntity> masterEntities, List<BuisnessLogicEntity> slaveEntities)
+    private void writeViewCreateMapper(BuisnessLogicEntity ent, FileWriter myWriter, List<BuisnessLogicEntity> parentEntities, List<BuisnessLogicEntity> childEntities)
             throws IOException {
         String fileDto = ent.getNameEntity().toLowerCase().concat("Dto");
         String viewFileDto = "View".concat(ent.getNameEntity()).concat("Dto");
@@ -74,9 +74,9 @@ public class MapperFileWriter {
                 .concat(Constants.EGALE).concat(Constants.METHODE_MAP).concat(Constants.PARENTHESE_OUVRANTE).concat(fileDto).concat(Constants.VIRGULE).concat(ent.getNameEntity())
                 .concat(".class").concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
 
-        slaveEntities.stream().forEach(entity -> {
+        childEntities.stream().forEach(entity -> {
             try {
-                if (entity.getCreateListIdsIfSlave()) {
+                if (entity.getCreateListIdsIfChild()) {
                     myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(AttributesTypeEnum.Set.toString()).concat(Constants.INFERIEUR)
                             .concat(entity.getNameEntity()).concat(Constants.SUPERIEUR).concat(" ").concat(entity.getNameEntity().toLowerCase()).concat("s").concat(Constants.EGALE)
                             .concat(Constants.HASHSET_DECLARATION).concat(Constants.PARENTHESE_OUVRANTE).concat(entity.getNameEntity().toLowerCase()).concat("Service")
@@ -108,29 +108,29 @@ public class MapperFileWriter {
             }
         });
 
-        ent.getRelationshipsSlave().forEach(slaveEntity -> {
-            if (!slaveEntity.getTypeRelationship().equals(RelationshipTypeEnum.ManyToMany)) {
-                checkManySlave = true;
-                checkMasterEntityOfSlaveRelationShips = slaveEntity.getMasterEntity().getNameEntity();
-                checkSlaveEntityOfSlaveRelaionShips = slaveEntity.getSlaveEntity().getNameEntity();
+        ent.getRelationshipsChild().forEach(childEntity -> {
+            if (!childEntity.getTypeRelationship().equals(RelationshipTypeEnum.ManyToMany)) {
+                checkManyChild = true;
+                checkParentEntityOfChildRelationShips = childEntity.getParentEntity().getNameEntity();
+                checkChildEntityOfChildRelaionShips = childEntity.getChildEntity().getNameEntity();
 
             }
 
         });
 
-        ent.getRelationshipsMaster().forEach(masterEntity -> {
-            if (!masterEntity.getTypeRelationship().equals(RelationshipTypeEnum.ManyToMany)) {
-                checkManyMaster = true;
-                checkMasterEntityOfMasterRelationShips = masterEntity.getMasterEntity().getNameEntity();
-                checkSlaveEntityOfMasterRelationShips = masterEntity.getSlaveEntity().getNameEntity();
+        ent.getRelationshipsParent().forEach(parentEntity -> {
+            if (!parentEntity.getTypeRelationship().equals(RelationshipTypeEnum.ManyToMany)) {
+                checkManyParent = true;
+                checkParentEntityOfParentRelationShips = parentEntity.getParentEntity().getNameEntity();
+                checkChildEntityOfParentRelationShips = parentEntity.getChildEntity().getNameEntity();
 
             }
 
         });
-        if (checkManyMaster == true && checkManySlave == true
-                && (ent.getNameEntity().equals(checkMasterEntityOfSlaveRelationShips) || ent.getNameEntity().equals(checkSlaveEntityOfSlaveRelaionShips)
-                        || ent.getNameEntity().equals(checkMasterEntityOfMasterRelationShips) || ent.getNameEntity().equals(checkSlaveEntityOfMasterRelationShips))) {
-            masterEntities.forEach(entity -> {
+        if (checkManyParent == true && checkManyChild == true
+                && (ent.getNameEntity().equals(checkParentEntityOfChildRelationShips) || ent.getNameEntity().equals(checkChildEntityOfChildRelaionShips)
+                        || ent.getNameEntity().equals(checkParentEntityOfParentRelationShips) || ent.getNameEntity().equals(checkChildEntityOfParentRelationShips))) {
+            parentEntities.forEach(entity -> {
 
                 try {
                     myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.OPTIONAL).concat(Constants.INFERIEUR)
@@ -172,16 +172,16 @@ public class MapperFileWriter {
         String variableToSet = ent.getNameEntity().toLowerCase().concat("Dto");
         String entityToRetrieve = "entity";
         String result = "dto";
-        String existEntityInMasterTableOneToMany = existEntityInMasterTableOneToMany(ent.getNameEntity(), ent.getRelationshipsMaster());
-        if (existEntityInMasterTableOneToMany != null) {
-            generateParentMapper(ent, myWriter, fileDto, entryVariable, variableToSet, entityToRetrieve, result, existEntityInMasterTableOneToMany);
+        String existEntityInParentTableOneToMany = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
+        if (existEntityInParentTableOneToMany != null) {
+            generateParentMapper(ent, myWriter, fileDto, entryVariable, variableToSet, entityToRetrieve, result, existEntityInParentTableOneToMany);
         } else {
             generateChildMapper(ent, myWriter, fileDto, entryVariable, variableToSet, entityToRetrieve, result);
         }
     }
 
     private void generateParentMapper(BuisnessLogicEntity ent, FileWriter myWriter, String fileDto, String entryVariable, String variableToSet, String entityToRetrieve,
-            String result, String existEntityInMasterTableOneToMany) throws IOException {
+            String result, String existEntityInParentTableOneToMany) throws IOException {
         retourLigneAndTabulation(myWriter);
         signatureMapToVersionDto(ent, myWriter, fileDto, entryVariable);
         instanceObjectToReturn(ent, myWriter, fileDto, entryVariable, variableToSet, result);
@@ -228,7 +228,7 @@ public class MapperFileWriter {
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(Constants.IF.concat(Constants.PARENTHESE_OUVRANTE).concat(entityToRetrieve).concat(Constants.POINT).concat(Constants.GET)
-                .concat(ent.getRelationshipsSlave().get(0).getMasterEntity().getNameEntity()).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE)
+                .concat(ent.getRelationshipsChild().get(0).getParentEntity().getNameEntity()).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE)
                 .concat(Constants.NOT_EGALE).concat(Constants.NULL).concat(Constants.PARENTHESE_FERMANTE));
 
     }
@@ -242,10 +242,10 @@ public class MapperFileWriter {
     }
 
     private void retrieveParentEntityFromEntryVariable(BuisnessLogicEntity ent, FileWriter myWriter, String entryVariable, String entityToRetrieve) {
-        ent.getRelationshipsSlave().forEach(masterEntity -> {
-            String parentEntityToRetrieve = entityToRetrieve.concat(masterEntity.getMasterEntity().getNameEntity());
+        ent.getRelationshipsChild().forEach(parentEntity -> {
+            String parentEntityToRetrieve = entityToRetrieve.concat(parentEntity.getParentEntity().getNameEntity());
             try {
-                retrieveEntityFromEntryVariable(masterEntity.getMasterEntity(), myWriter, entryVariable, parentEntityToRetrieve);
+                retrieveEntityFromEntryVariable(parentEntity.getParentEntity(), myWriter, entryVariable, parentEntityToRetrieve);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -255,11 +255,11 @@ public class MapperFileWriter {
     }
 
     private void trackChildrenImplementation(FileWriter myWriter, String fileDto, String entryVariable, String result, String variableToSet,
-            String existEntityInMasterTableOneToMany, BuisnessLogicEntity ent, String entityToRetrieve) throws IOException {
+            String existEntityInParentTableOneToMany, BuisnessLogicEntity ent, String entityToRetrieve) throws IOException {
         retourLigneAndTabulation(myWriter);
         signatureTrackChildren(myWriter, fileDto, entryVariable, variableToSet);
-        conditionOfInstanceOfChildren(myWriter, entryVariable, existEntityInMasterTableOneToMany);
-        castEntryVariableToChildrenEntity(myWriter, ent, existEntityInMasterTableOneToMany, entryVariable, entityToRetrieve);
+        conditionOfInstanceOfChildren(myWriter, entryVariable, existEntityInParentTableOneToMany);
+        castEntryVariableToChildrenEntity(myWriter, ent, existEntityInParentTableOneToMany, entryVariable, entityToRetrieve);
         mappingRetrievedEntityToDto(ent, myWriter, fileDto, variableToSet, entityToRetrieve);
         setChildAttributes(myWriter, variableToSet, entityToRetrieve, ent);
         closeCondition(myWriter);
@@ -267,12 +267,12 @@ public class MapperFileWriter {
         closeCondition(myWriter);
     }
 
-    private void castEntryVariableToChildrenEntity(FileWriter myWriter, BuisnessLogicEntity ent, String existEntityInMasterTableOneToMany, String entryVariable,
+    private void castEntryVariableToChildrenEntity(FileWriter myWriter, BuisnessLogicEntity ent, String existEntityInParentTableOneToMany, String entryVariable,
             String entityToRetrieve) throws IOException {
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(ent.getNameEntity().concat(" ").concat(entityToRetrieve).concat(" ").concat(Constants.EGALE).concat(Constants.PARENTHESE_OUVRANTE)
-                .concat(Constants.PARENTHESE_OUVRANTE).concat(existEntityInMasterTableOneToMany).concat(Constants.PARENTHESE_FERMANTE).concat(entryVariable).concat(Constants.POINT)
+                .concat(Constants.PARENTHESE_OUVRANTE).concat(existEntityInParentTableOneToMany).concat(Constants.PARENTHESE_FERMANTE).concat(entryVariable).concat(Constants.POINT)
                 .concat(Constants.METHOD_GET_ENTITY).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE)
                 .concat(Constants.POINT).concat(Constants.GET_LOWERCASE).concat(ent.getNameEntity()).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE)
                 .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)
@@ -281,11 +281,11 @@ public class MapperFileWriter {
 
     }
 
-    private void conditionOfInstanceOfChildren(FileWriter myWriter, String entryVariable, String existEntityInMasterTableOneToMany) throws IOException {
+    private void conditionOfInstanceOfChildren(FileWriter myWriter, String entryVariable, String existEntityInParentTableOneToMany) throws IOException {
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(Constants.IF.concat(Constants.PARENTHESE_OUVRANTE).concat(entryVariable).concat(Constants.POINT).concat(Constants.GET_ENTITY_METHOD).concat(" ")
-                .concat(Constants.IS_INSTANCE_OF).concat(" ").concat(existEntityInMasterTableOneToMany).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.ACCOLADE_OUVRANT)
+                .concat(Constants.IS_INSTANCE_OF).concat(" ").concat(existEntityInParentTableOneToMany).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.ACCOLADE_OUVRANT)
                 .concat(Constants.PATTERN_RETOUR_LIGNE));
     }
 
@@ -348,7 +348,7 @@ public class MapperFileWriter {
     }
 
     private void setChildAttributes(FileWriter myWriter, String variableToSet, String entityToRetrieve, BuisnessLogicEntity ent) throws IOException {
-        String childClass = existEntityInMasterTableOneToMany(ent.getNameEntity(), ent.getRelationshipsMaster());
+        String childClass = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
         String streamVariable = "peek";
         myWriter.write(Constants.PATTERN_TABULATION);
         myWriter.write(Constants.PATTERN_TABULATION);
@@ -477,7 +477,7 @@ public class MapperFileWriter {
                 .concat(Constants.PATTERN_TABULATION).concat(Constants.ACCOLADE_FERMANTE));
     }
 
-    private void writeCreateMapper(BuisnessLogicEntity ent, FileWriter myWriter, List<BuisnessLogicEntity> masterEntities, List<BuisnessLogicEntity> slaveEntities)
+    private void writeCreateMapper(BuisnessLogicEntity ent, FileWriter myWriter, List<BuisnessLogicEntity> parentEntities, List<BuisnessLogicEntity> childEntities)
             throws IOException {
         String fileDto = ent.getNameEntity().toLowerCase().concat("Dto");
 
@@ -491,9 +491,9 @@ public class MapperFileWriter {
                 .concat(Constants.EGALE).concat(Constants.METHODE_MAP).concat(Constants.PARENTHESE_OUVRANTE).concat(fileDto).concat(Constants.VIRGULE).concat(ent.getNameEntity())
                 .concat(".class").concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
 
-        slaveEntities.stream().forEach(entity -> {
+        childEntities.stream().forEach(entity -> {
             try {
-                if (entity.getCreateListIdsIfSlave()) {
+                if (entity.getCreateListIdsIfChild()) {
                     myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(AttributesTypeEnum.Set.toString()).concat(Constants.INFERIEUR)
                             .concat(entity.getNameEntity()).concat(Constants.SUPERIEUR).concat(" ").concat(entity.getNameEntity().toLowerCase()).concat("s").concat(Constants.EGALE)
                             .concat(Constants.HASHSET_DECLARATION).concat(Constants.PARENTHESE_OUVRANTE).concat(entity.getNameEntity().toLowerCase()).concat("Service")
@@ -525,29 +525,29 @@ public class MapperFileWriter {
             }
         });
 
-        ent.getRelationshipsSlave().forEach(slaveEntity -> {
-            if (!slaveEntity.getTypeRelationship().equals(RelationshipTypeEnum.ManyToMany)) {
-                checkManySlave = true;
-                checkMasterEntityOfSlaveRelationShips = slaveEntity.getMasterEntity().getNameEntity();
-                checkSlaveEntityOfSlaveRelaionShips = slaveEntity.getSlaveEntity().getNameEntity();
+        ent.getRelationshipsChild().forEach(childEntity -> {
+            if (!childEntity.getTypeRelationship().equals(RelationshipTypeEnum.ManyToMany)) {
+                checkManyChild = true;
+                checkParentEntityOfChildRelationShips = childEntity.getParentEntity().getNameEntity();
+                checkChildEntityOfChildRelaionShips = childEntity.getChildEntity().getNameEntity();
 
             }
 
         });
 
-        ent.getRelationshipsMaster().forEach(masterEntity -> {
-            if (!masterEntity.getTypeRelationship().equals(RelationshipTypeEnum.ManyToMany)) {
-                checkManyMaster = true;
-                checkMasterEntityOfMasterRelationShips = masterEntity.getMasterEntity().getNameEntity();
-                checkSlaveEntityOfMasterRelationShips = masterEntity.getSlaveEntity().getNameEntity();
+        ent.getRelationshipsParent().forEach(parentEntity -> {
+            if (!parentEntity.getTypeRelationship().equals(RelationshipTypeEnum.ManyToMany)) {
+                checkManyParent = true;
+                checkParentEntityOfParentRelationShips = parentEntity.getParentEntity().getNameEntity();
+                checkChildEntityOfParentRelationShips = parentEntity.getChildEntity().getNameEntity();
 
             }
 
         });
-        if (checkManyMaster == true && checkManySlave == true
-                && (ent.getNameEntity().equals(checkMasterEntityOfSlaveRelationShips) || ent.getNameEntity().equals(checkSlaveEntityOfSlaveRelaionShips)
-                        || ent.getNameEntity().equals(checkMasterEntityOfMasterRelationShips) || ent.getNameEntity().equals(checkSlaveEntityOfMasterRelationShips))) {
-            masterEntities.forEach(entity -> {
+        if (checkManyParent == true && checkManyChild == true
+                && (ent.getNameEntity().equals(checkParentEntityOfChildRelationShips) || ent.getNameEntity().equals(checkChildEntityOfChildRelaionShips)
+                        || ent.getNameEntity().equals(checkParentEntityOfParentRelationShips) || ent.getNameEntity().equals(checkChildEntityOfParentRelationShips))) {
+            parentEntities.forEach(entity -> {
 
                 try {
                     myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PATTERN_TABULATION).concat(Constants.OPTIONAL).concat(Constants.INFERIEUR)
@@ -583,7 +583,7 @@ public class MapperFileWriter {
 
     }
 
-    private void injectServicesAndCongigMapper(BuisnessLogicEntity ent, FileWriter myWriter, List<BuisnessLogicEntity> masterEntities, List<BuisnessLogicEntity> slaveEntities)
+    private void injectServicesAndCongigMapper(BuisnessLogicEntity ent, FileWriter myWriter, List<BuisnessLogicEntity> parentEntities, List<BuisnessLogicEntity> childEntities)
             throws IOException {
 
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
@@ -593,7 +593,7 @@ public class MapperFileWriter {
         myWriter.write(ConstantsAnnotations.INJECT_MODEL_MAPPER);
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
 
-        masterEntities.stream().forEach(entity -> {
+        parentEntities.stream().forEach(entity -> {
 
             try {
                 myWriter.write(Constants.PATTERN_TABULATION);
@@ -610,7 +610,7 @@ public class MapperFileWriter {
 
         });
 
-        slaveEntities.stream().forEach(entity -> {
+        childEntities.stream().forEach(entity -> {
 
             try {
                 myWriter.write(Constants.PATTERN_TABULATION);
@@ -636,8 +636,8 @@ public class MapperFileWriter {
 
     }
 
-    private FileWriter writeImportsAndStructureOfClassInMappers(Project project, BuisnessLogicEntity ent, List<BuisnessLogicEntity> masterEntities,
-            List<BuisnessLogicEntity> slaveEntities) throws IOException {
+    private FileWriter writeImportsAndStructureOfClassInMappers(Project project, BuisnessLogicEntity ent, List<BuisnessLogicEntity> parentEntities,
+            List<BuisnessLogicEntity> childEntities) throws IOException {
         File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_MAPPER).concat(ent.getNameEntity()).concat("Mapper.java"));
         String fileMapper = ent.getNameEntity().concat("Mapper");
         String fileCreateDto = ent.getNameEntity().concat("Dto");
@@ -663,7 +663,7 @@ public class MapperFileWriter {
         myWriter.write(ConstantsImportPackage.IMPORT_DTO.concat(ent.getNameEntity().toLowerCase()).concat(Constants.POINT).concat(fileDto)
                 .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
 
-        masterEntities.stream().forEach(entity -> {
+        parentEntities.stream().forEach(entity -> {
             try {
                 myWriter.write(ConstantsImportPackage.IMPORT_ISERVICE.concat("I").concat(entity.getNameEntity()).concat("Service")
                         .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
@@ -675,7 +675,7 @@ public class MapperFileWriter {
             }
         });
 
-        slaveEntities.stream().forEach(entity -> {
+        childEntities.stream().forEach(entity -> {
             try {
                 myWriter.write(ConstantsImportPackage.IMPORT_ISERVICE.concat("I").concat(entity.getNameEntity()).concat("Service")
                         .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
@@ -706,29 +706,29 @@ public class MapperFileWriter {
 
     }
 
-    private String existEntityInMasterTableOneToMany(String nameEntity, List<Relationship> relations) {
-        String slaverEntityName = null;
+    private String existEntityInParentTableOneToMany(String nameEntity, List<Relationship> relations) {
+        String childrEntityName = null;
         for (Relationship relationship : relations) {
-            if (relationship.getMasterEntity().getNameEntity().equals(nameEntity) && relationship.getTypeRelationship().equals(RelationshipTypeEnum.OneToMany)) {
-                if (relationship.getSlaveEntity().getNameEntity() != null) {
-                    slaverEntityName = relationship.getSlaveEntity().getNameEntity();
-                    System.out.println(slaverEntityName);
+            if (relationship.getParentEntity().getNameEntity().equals(nameEntity) && relationship.getTypeRelationship().equals(RelationshipTypeEnum.OneToMany)) {
+                if (relationship.getChildEntity().getNameEntity() != null) {
+                    childrEntityName = relationship.getChildEntity().getNameEntity();
+                    System.out.println(childrEntityName);
                 }
             }
         }
-        return slaverEntityName;
+        return childrEntityName;
 
     }
 
     private void checkImportsViewDtoInMappers(BuisnessLogicEntity ent, Project project) throws IOException {
-        String slave = existEntityInMasterTableOneToMany(ent.getNameEntity(), ent.getRelationshipsMaster());
-        if (slave != null) {
-            String viewSlaveDto = "View".concat(slave).concat("Dto");
+        String child = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
+        if (child != null) {
+            String viewChildDto = "View".concat(child).concat("Dto");
             File file = new File(
                     ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_MAPPER.concat(ent.getNameEntity()).concat("Mapper.java")));
             String fileContext = FileUtils.readFileToString(file);
             fileContext = fileContext.replaceAll(ConstantsImportPackage.IMPORT_VERSION_DTO, ConstantsImportPackage.IMPORT_VERSION_DTO.concat(ConstantsImportPackage.IMPORT_DTO
-                    .concat(slave.toLowerCase()).concat(Constants.POINT).concat(viewSlaveDto).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)));
+                    .concat(child.toLowerCase()).concat(Constants.POINT).concat(viewChildDto).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)));
             FileUtils.write(file, fileContext);
         }
     }

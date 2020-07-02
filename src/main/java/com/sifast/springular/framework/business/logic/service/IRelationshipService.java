@@ -10,8 +10,8 @@ import com.sifast.springular.framework.business.logic.entities.Relationship;
 @Transactional
 public interface IRelationshipService extends IGenericService<Relationship, Integer> {
 
-    List<Relationship> findByMasterEntity(BuisnessLogicEntity masterEntity);
+    List<Relationship> findByParentEntity(BuisnessLogicEntity parentEntity);
 
-    List<Relationship> findBySlaveEntity(BuisnessLogicEntity slaveEntity);
+    List<Relationship> findByChildEntity(BuisnessLogicEntity childEntity);
 
 }

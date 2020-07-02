@@ -17,12 +17,12 @@ public class RelationshipDto {
 	
 	@NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
-	private int masterEntity_id;
+	private int parentEntity_id;
 	
 	
 	@NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
 	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
-	private int slaveEntity_id;
+	private int childEntity_id;
 
 
 	public RelationshipTypeEnum getTypeRelationship() {
@@ -35,30 +35,30 @@ public class RelationshipDto {
 	}
 
 
-	public int getMasterEntity_id() {
-		return masterEntity_id;
+	public int getParentEntity_id() {
+		return parentEntity_id;
 	}
 
 
-	public void setMasterEntity_id(int masterEntity_id) {
-		this.masterEntity_id = masterEntity_id;
+	public void setParentEntity_id(int parentEntity_id) {
+		this.parentEntity_id = parentEntity_id;
 	}
 
 
-	public int getSlaveEntity_id() {
-		return slaveEntity_id;
+	public int getChildEntity_id() {
+		return childEntity_id;
 	}
 
 
-	public void setSlaveEntity_id(int slaveEntity_id) {
-		this.slaveEntity_id = slaveEntity_id;
+	public void setChildEntity_id(int childEntity_id) {
+		this.childEntity_id = childEntity_id;
 	}
 
 
 	@Override
 	public String toString() {
-		return "RelationshipDto [typeRelationship=" + typeRelationship + ", masterEntity_id=" + masterEntity_id
-				+ ", slaveEntity_id=" + slaveEntity_id + "]";
+		return "RelationshipDto [typeRelationship=" + typeRelationship + ", parentEntity_id=" + parentEntity_id
+				+ ", childEntity_id=" + childEntity_id + "]";
 	}
 	
 	

@@ -28,10 +28,10 @@ public class Relationship extends TimestampEntity implements Serializable {
 	private RelationshipTypeEnum typeRelationship;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private BuisnessLogicEntity masterEntity;
+	private BuisnessLogicEntity parentEntity;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private BuisnessLogicEntity slaveEntity;
+	private BuisnessLogicEntity childEntity;
 	
 	
 	
@@ -51,20 +51,20 @@ public class Relationship extends TimestampEntity implements Serializable {
 		this.typeRelationship = typeRelationship;
 	}
 
-	public BuisnessLogicEntity getMasterEntity() {
-		return masterEntity;
+	public BuisnessLogicEntity getParentEntity() {
+		return parentEntity;
 	}
 
-	public void setMasterEntity(BuisnessLogicEntity masterEntity) {
-		this.masterEntity = masterEntity;
+	public void setParentEntity(BuisnessLogicEntity parentEntity) {
+		this.parentEntity = parentEntity;
 	}
 
-	public BuisnessLogicEntity getSlaveEntity() {
-		return slaveEntity;
+	public BuisnessLogicEntity getChildEntity() {
+		return childEntity;
 	}
 
-	public void setSlaveEntity(BuisnessLogicEntity slaveEntity) {
-		this.slaveEntity = slaveEntity;
+	public void setChildEntity(BuisnessLogicEntity childEntity) {
+		this.childEntity = childEntity;
 	}
 
 	@Override
@@ -74,10 +74,10 @@ public class Relationship extends TimestampEntity implements Serializable {
 		builder.append(id);
 		builder.append(", typeRelationship=");
 		builder.append(typeRelationship);
-		builder.append(", masterEntity=");
-		builder.append(masterEntity);
-		builder.append(", slaveEntity=");
-		builder.append(slaveEntity);
+		builder.append(", parentEntity=");
+		builder.append(parentEntity);
+		builder.append(", childEntity=");
+		builder.append(childEntity);
 		builder.append("]");
 		return builder.toString();
 	}

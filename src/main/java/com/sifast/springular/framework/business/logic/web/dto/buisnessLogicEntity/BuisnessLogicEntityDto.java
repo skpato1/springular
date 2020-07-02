@@ -23,9 +23,9 @@ public class BuisnessLogicEntityDto {
     @NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
     private int project_id;
 
-    private Boolean createListIdsIfSlave;
+    private Boolean createListIdsIfChild;
 
-    private Boolean createListDtosIfSlave;
+    private Boolean createListDtosIfChild;
 
     private Boolean isTrackable;
 
@@ -37,20 +37,20 @@ public class BuisnessLogicEntityDto {
         this.isTrackable = isTrackable;
     }
 
-    public Boolean getCreateListIdsIfSlave() {
-        return createListIdsIfSlave;
+    public Boolean getCreateListIdsIfChild() {
+        return createListIdsIfChild;
     }
 
-    public void setCreateListIdsIfSlave(Boolean createListIdsIfSlave) {
-        this.createListIdsIfSlave = createListIdsIfSlave;
+    public void setCreateListIdsIfChild(Boolean createListIdsIfChild) {
+        this.createListIdsIfChild = createListIdsIfChild;
     }
 
-    public Boolean getCreateListDtosIfSlave() {
-        return createListDtosIfSlave;
+    public Boolean getCreateListDtosIfChild() {
+        return createListDtosIfChild;
     }
 
-    public void setCreateListDtosIfSlave(Boolean createListDtosIfSlave) {
-        this.createListDtosIfSlave = createListDtosIfSlave;
+    public void setCreateListDtosIfChild(Boolean createListDtosIfChild) {
+        this.createListDtosIfChild = createListDtosIfChild;
     }
 
     public String getNameEntity() {

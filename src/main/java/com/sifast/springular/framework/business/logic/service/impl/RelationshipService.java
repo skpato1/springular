@@ -17,13 +17,13 @@ public class RelationshipService extends GenericService<Relationship, Integer> i
     RelationshipDao relationshipDao;
 
     @Override
-    public List<Relationship> findByMasterEntity(BuisnessLogicEntity masterEntity) {
-        return relationshipDao.findByMasterEntity(masterEntity);
+    public List<Relationship> findByParentEntity(BuisnessLogicEntity parentEntity) {
+        return relationshipDao.findByParentEntity(parentEntity);
     }
 
     @Override
-    public List<Relationship> findBySlaveEntity(BuisnessLogicEntity slaveEntity) {
-        return relationshipDao.findBySlaveEntity(slaveEntity);
+    public List<Relationship> findByChildEntity(BuisnessLogicEntity childEntity) {
+        return relationshipDao.findByChildEntity(childEntity);
     }
 
 }

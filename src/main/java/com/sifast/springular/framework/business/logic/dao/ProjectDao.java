@@ -11,7 +11,6 @@ import com.sifast.springular.framework.business.logic.entities.Project;
 @Repository
 public interface ProjectDao extends IGenericDao<Project, Integer> {
 	
-	
 	List<Project> findByStatusProject(ProjectStatus projectStatus);
 
 }

@@ -1,5 +1,6 @@
 package com.sifast.springular.framework.business.logic.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,12 @@ public class BuisnessLogicEntityService extends GenericService<BuisnessLogicEnti
 
     @Override
     public Optional<BuisnessLogicEntity> findbyNameEntityAndProject(String name, Project project) {
-
         return entityDao.findByNameEntityAndProject(name, project);
+    }
+
+    @Override
+    public Optional<List<BuisnessLogicEntity>> findbyProject(Project project) {
+        return entityDao.findByProject(project);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.sifast.springular.framework.business.logic.web.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -40,156 +41,160 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping(value = "/api/")
 public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BuisnessLogicEntityApi.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BuisnessLogicEntityApi.class);
 
-	private HttpErrorResponse httpErrorResponse = new HttpErrorResponse();
+    private HttpErrorResponse httpErrorResponse = new HttpErrorResponse();
 
-	private Object httpResponseBody;
+    private Object httpResponseBody;
 
-	private HttpStatus httpStatus;
+    private HttpStatus httpStatus;
 
-	@Autowired
-	private ConfiguredModelMapper modelMapper;
+    @Autowired
+    private ConfiguredModelMapper modelMapper;
 
-	@Autowired
-	private BuisnessLogicEntityMapper buisnessLogicEntityMapper;
+    @Autowired
+    private BuisnessLogicEntityMapper buisnessLogicEntityMapper;
 
-	@Autowired
-	private IBuisnessLogicEntityService buisnessLogicEntityService;
+    @Autowired
+    private IBuisnessLogicEntityService buisnessLogicEntityService;
 
-	@Autowired
-	private IProjectService projectService;
+    @Autowired
+    private IProjectService projectService;
 
-	
+    @Override
+    public ResponseEntity<?> saveBuisnessLogicEntity(
+            @ApiParam(required = true, value = "buisnessLogicEntityDto", name = "buisnessLogicEntityDto") @RequestBody CreateBuisnessLogicEntityDto buisnessLogicEntityDto,
+            BindingResult bindingResult) {
+        LOGGER.info("Web service saveBuisnessLogicEntity invoked with buisnessLogicEntityDto {}", buisnessLogicEntityDto);
+        try {
+            if (buisnessLogicEntityDto.getCreateListDtosIfChild().equals(buisnessLogicEntityDto.getCreateListIdsIfChild())) {
+                throw new BuisnessLogicException(ApiMessage.CHOICES_MUST_BE_DIFFERENT);
+            }
+            Optional<Project> project = projectService.findById(buisnessLogicEntityDto.getProject_id());
+            if (project.isPresent()) {
+                BuisnessLogicEntity entityToBeSaved = buisnessLogicEntityMapper.mapCreateBuisnessLogicEntity(buisnessLogicEntityDto);
+                entityToBeSaved.setProject(project.get());
+                if (entityToBeSaved.getAttributes() != null) {
+                    List<Attribute> attributesSetId = entityToBeSaved.getAttributes();
+                    for (int i = 0; i < attributesSetId.size(); i++) {
+                        attributesSetId.get(i).setBuisness(entityToBeSaved);
+                    }
+                    entityToBeSaved.setAttributes(attributesSetId);
+                }
+                BuisnessLogicEntity savedBuisnessLogicEntity = buisnessLogicEntityService.save(entityToBeSaved);
 
-	@Override
-	public ResponseEntity<Object> saveBuisnessLogicEntity(
-			@ApiParam(required = true, value = "buisnessLogicEntityDto", name = "buisnessLogicEntityDto") @RequestBody CreateBuisnessLogicEntityDto buisnessLogicEntityDto,
-			BindingResult bindingResult) {
-		LOGGER.info("Web service saveBuisnessLogicEntity invoked with buisnessLogicEntityDto {}",
-				buisnessLogicEntityDto);
-		try {
-			if (buisnessLogicEntityDto.getCreateListDtosIfChild().equals(buisnessLogicEntityDto.getCreateListIdsIfChild()))
-					{
-						throw new BuisnessLogicException(ApiMessage.CHOICES_MUST_BE_DIFFERENT);
-					}
-			Optional<Project> project = projectService.findById(buisnessLogicEntityDto.getProject_id());
-			if (project.isPresent()) {
-				BuisnessLogicEntity entityToBeSaved = buisnessLogicEntityMapper.mapCreateBuisnessLogicEntity(buisnessLogicEntityDto);
-				entityToBeSaved.setProject(project.get());
-				if(entityToBeSaved.getAttributes()!=null)
-				{
-					List<Attribute> attributesSetId =entityToBeSaved.getAttributes();
-					for (int i = 0; i < attributesSetId.size(); i++) {
-						attributesSetId.get(i).setBuisness(entityToBeSaved);
-					}
-					entityToBeSaved.setAttributes(attributesSetId);
-				}
-				BuisnessLogicEntity savedBuisnessLogicEntity = buisnessLogicEntityService.save(entityToBeSaved);
-				
-				httpStatus = HttpStatus.OK;
-				httpResponseBody = modelMapper.map(savedBuisnessLogicEntity, ViewBuisnessLogicEntityDto.class);
-			} 
-			else {
-				httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(),
-						ApiMessage.PROJECT_NOT_FOUND);
-				httpStatus = HttpStatus.NOT_FOUND;
-				httpResponseBody = httpErrorResponse;
-			}
-		} 
-		
-		catch (BuisnessLogicException e) {
-			httpStatus = HttpStatus.BAD_REQUEST;
-			httpResponseBody = new HttpErrorResponse(HttpCostumCode.BAD_REQUEST.getValue(), e.getMessage());
-		}
-		catch (Exception e) {
-			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.SERVER_ERROR.getValue(), ApiMessage.ERR_SAVE);
-			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-			httpResponseBody = httpErrorResponse;
-		}
+                httpStatus = HttpStatus.OK;
+                httpResponseBody = modelMapper.map(savedBuisnessLogicEntity, ViewBuisnessLogicEntityDto.class);
+            } else {
+                httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.PROJECT_NOT_FOUND);
+                httpStatus = HttpStatus.NOT_FOUND;
+                httpResponseBody = httpErrorResponse;
+            }
+        }
 
-		return new ResponseEntity<>(httpResponseBody, httpStatus);
-	}
+        catch (BuisnessLogicException e) {
+            httpStatus = HttpStatus.BAD_REQUEST;
+            httpResponseBody = new HttpErrorResponse(HttpCostumCode.BAD_REQUEST.getValue(), e.getMessage());
+        } catch (Exception e) {
+            httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.SERVER_ERROR.getValue(), ApiMessage.ERR_SAVE);
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            httpResponseBody = httpErrorResponse;
+        }
 
-	@Override
-	public ResponseEntity<Object> getBuisnessLogicEntity(
-			@ApiParam(value = "ID of Entity that needs to be fetched", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
-		LOGGER.info("Web service getBuisnessLogicEntity invoked with id {}", id);
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
 
-		Optional<BuisnessLogicEntity> buisnessLogicEntity = buisnessLogicEntityService.findById(id);
-		if (buisnessLogicEntity.isPresent()) {
-			httpStatus = HttpStatus.OK;
-			httpResponseBody = buisnessLogicEntityMapper
-					.mapBuisnessLogicEntityToViewBuisnessLogicEntityDto(buisnessLogicEntity.get());
-		} else {
-			httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(),
-					ApiMessage.BUISNESS_LOGIC_ENTITY_NOT_FOUND);
-			httpStatus = HttpStatus.NOT_FOUND;
-			httpResponseBody = httpErrorResponse;
-		}
-		return new ResponseEntity<>(httpResponseBody, httpStatus);
-	}
+    @Override
+    public ResponseEntity<?> getBuisnessLogicEntity(
+            @ApiParam(value = "ID of Entity that needs to be fetched", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
+        LOGGER.info("Web service getBuisnessLogicEntity invoked with id {}", id);
 
-	@Override
-	public ResponseEntity<Object> getAllBuisnessLogicEntitys() {
-		List<BuisnessLogicEntity> buisnessLogicEntitys = buisnessLogicEntityService.findAll();
-		httpStatus = HttpStatus.OK;
-		httpResponseBody = !buisnessLogicEntitys.isEmpty()
-				? buisnessLogicEntitys.stream()
-						.map(BuisnessLogicEntity -> modelMapper.map(BuisnessLogicEntity,
-								ViewBuisnessLogicEntityDto.class))
-						.collect(Collectors.toList())
-				: Collections.emptyList();
-		return new ResponseEntity<>(httpResponseBody, httpStatus);
-	}
+        Optional<BuisnessLogicEntity> buisnessLogicEntity = buisnessLogicEntityService.findById(id);
+        if (buisnessLogicEntity.isPresent()) {
+            httpStatus = HttpStatus.OK;
+            httpResponseBody = buisnessLogicEntityMapper.mapBuisnessLogicEntityToViewBuisnessLogicEntityDto(buisnessLogicEntity.get());
+        } else {
+            httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.BUISNESS_LOGIC_ENTITY_NOT_FOUND);
+            httpStatus = HttpStatus.NOT_FOUND;
+            httpResponseBody = httpErrorResponse;
+        }
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
 
-	@Override
-	public ResponseEntity<Object> deleteBuisnessLogicEntity(
-			@ApiParam(value = "ID of Entity that needs to be deleted", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
-		LOGGER.info("Web service deleteBuisnessLogicEntity invoked with id {}", id);
-		Optional<BuisnessLogicEntity> preDeleteBuisnessLogicEntity = buisnessLogicEntityService.findById(id);
-		if (!preDeleteBuisnessLogicEntity.isPresent()) {
-			httpStatus = HttpStatus.NOT_FOUND;
-		} else {
+    @Override
+    public ResponseEntity<?> getAllBuisnessLogicEntitys() {
+        List<BuisnessLogicEntity> buisnessLogicEntitys = buisnessLogicEntityService.findAll();
+        httpStatus = HttpStatus.OK;
+        httpResponseBody = !buisnessLogicEntitys.isEmpty()
+                ? buisnessLogicEntitys.stream().map(BuisnessLogicEntity -> modelMapper.map(BuisnessLogicEntity, ViewBuisnessLogicEntityDto.class)).collect(Collectors.toList())
+                : Collections.emptyList();
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
 
-			buisnessLogicEntityService.delete(preDeleteBuisnessLogicEntity.get());
-			httpStatus = HttpStatus.OK;
-			LOGGER.info("INFO level message: BuisnessLogicEntity with id = {} deleted ", id);
+    @Override
+    public ResponseEntity<?> deleteBuisnessLogicEntity(
+            @ApiParam(value = "ID of Entity that needs to be deleted", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
+        LOGGER.info("Web service deleteBuisnessLogicEntity invoked with id {}", id);
+        Optional<BuisnessLogicEntity> preDeleteBuisnessLogicEntity = buisnessLogicEntityService.findById(id);
+        if (!preDeleteBuisnessLogicEntity.isPresent()) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } else {
 
-		}
-		return new ResponseEntity<>(httpResponseBody, httpStatus);
-	}
+            buisnessLogicEntityService.delete(preDeleteBuisnessLogicEntity.get());
+            httpStatus = HttpStatus.OK;
+            LOGGER.info("INFO level message: BuisnessLogicEntity with id = {} deleted ", id);
 
-	@Override
-	public ResponseEntity<Object> updateBuisnessLogicEntity(
-			@ApiParam(value = "ID of Entity that needs to be updated", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id,
-			@ApiParam(required = true, value = "BuisnessLogicEntityDto", name = "BuisnessLogicEntityDto") @RequestBody BuisnessLogicEntityDto buisnessLogicEntityDto,
-			BindingResult bindingResult) {
-		LOGGER.info("Web service updateBuisnessLogicEntity invoked with id {}", id);
-		if (!bindingResult.hasFieldErrors()) {
-			Optional<BuisnessLogicEntity> buisnessLogicEntity = buisnessLogicEntityService.findById(id);
-			if (buisnessLogicEntity.isPresent()) {
-				BuisnessLogicEntity preUpdateBuisnessLogicEntity = buisnessLogicEntity.get();
-				BuisnessLogicEntity updatedBuisnessLogicEntity = buisnessLogicEntityService
-						.save(preUpdateBuisnessLogicEntity);
-				httpStatus = HttpStatus.OK;
-				httpResponseBody = modelMapper.map(buisnessLogicEntity, BuisnessLogicEntity.class);
-				LOGGER.info("INFO level message: BuisnessLogicEntity updated {}", updatedBuisnessLogicEntity);
+        }
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
 
-			} else {
-				httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(),
-						ApiMessage.BUISNESS_LOGIC_ENTITY_NOT_FOUND);
-				httpStatus = HttpStatus.NOT_FOUND;
-				httpResponseBody = httpErrorResponse;
-			}
-		} else {
-			httpStatus = HttpStatus.BAD_REQUEST;
-		}
-		return new ResponseEntity<>(httpResponseBody, httpStatus);
-	}
-	
-	
-	
-	
+    @Override
+    public ResponseEntity<?> updateBuisnessLogicEntity(
+            @ApiParam(value = "ID of Entity that needs to be updated", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id,
+            @ApiParam(required = true, value = "BuisnessLogicEntityDto", name = "BuisnessLogicEntityDto") @RequestBody BuisnessLogicEntityDto buisnessLogicEntityDto,
+            BindingResult bindingResult) {
+        LOGGER.info("Web service updateBuisnessLogicEntity invoked with id {}", id);
+        if (!bindingResult.hasFieldErrors()) {
+            Optional<BuisnessLogicEntity> buisnessLogicEntity = buisnessLogicEntityService.findById(id);
+            if (buisnessLogicEntity.isPresent()) {
+                BuisnessLogicEntity preUpdateBuisnessLogicEntity = buisnessLogicEntity.get();
+                BuisnessLogicEntity updatedBuisnessLogicEntity = buisnessLogicEntityService.save(preUpdateBuisnessLogicEntity);
+                httpStatus = HttpStatus.OK;
+                httpResponseBody = modelMapper.map(buisnessLogicEntity, BuisnessLogicEntity.class);
+                LOGGER.info("INFO level message: BuisnessLogicEntity updated {}", updatedBuisnessLogicEntity);
+
+            } else {
+                httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.BUISNESS_LOGIC_ENTITY_NOT_FOUND);
+                httpStatus = HttpStatus.NOT_FOUND;
+                httpResponseBody = httpErrorResponse;
+            }
+        } else {
+            httpStatus = HttpStatus.BAD_REQUEST;
+        }
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
+
+    @Override
+    public ResponseEntity<?> getBuisnessLogicEntityByProject(
+            @ApiParam(value = "ID of Project that needs to be fetched", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
+        LOGGER.info("Web service getBuisnessLogicEntityByProject invoked with id {}", id);
+        List<ViewBuisnessLogicEntityDto> entitiesToReturn = new ArrayList<ViewBuisnessLogicEntityDto>();
+        Optional<Project> project = projectService.findById(id);
+        if (project.isPresent()) {
+            httpStatus = HttpStatus.OK;
+            Optional<List<BuisnessLogicEntity>> fetchedEntitiesByProject = buisnessLogicEntityService.findbyProject(project.get());
+            fetchedEntitiesByProject.get().forEach(buisnessLogicEntity -> {
+                ViewBuisnessLogicEntityDto mapBuisnessLogicEntityToViewBuisnessLogicEntityDto = buisnessLogicEntityMapper
+                        .mapBuisnessLogicEntityToViewBuisnessLogicEntityDto(buisnessLogicEntity);
+                entitiesToReturn.add(mapBuisnessLogicEntityToViewBuisnessLogicEntityDto);
+            });
+            httpResponseBody = entitiesToReturn;
+        } else {
+            httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.PROJECT_NOT_FOUND);
+            httpStatus = HttpStatus.NOT_FOUND;
+            httpResponseBody = httpErrorResponse;
+        }
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
 
 }

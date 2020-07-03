@@ -17,27 +17,28 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-
-
 public interface IBuisnessLogicEntityApi {
-	
-	@ApiResponses(value = {
-			@ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.BUISNESS_LOGIC_ENTITY__CREATED_SUCCESSFULLY, response = ViewBuisnessLogicEntityDto.class),
-			@ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class) })
-			@ApiOperation(value = "create an entity ", response = ViewProjectDto.class)
-	@RequestMapping(value = "/buisnessLogicEntity", method = RequestMethod.POST)
-	ResponseEntity<Object> saveBuisnessLogicEntity(CreateBuisnessLogicEntityDto buisnessLogicEntityDto, BindingResult bindingResult);
 
-	@RequestMapping(value = "/buisnessLogicEntity/{id}", method = RequestMethod.GET)
-	ResponseEntity<Object> getBuisnessLogicEntity(int id);
+    @ApiResponses(value = {
+            @ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.BUISNESS_LOGIC_ENTITY__CREATED_SUCCESSFULLY, response = ViewBuisnessLogicEntityDto.class),
+            @ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class) })
+    @ApiOperation(value = "create an entity ", response = ViewProjectDto.class)
+    @RequestMapping(value = "/buisnessLogicEntity", method = RequestMethod.POST)
+    ResponseEntity<?> saveBuisnessLogicEntity(CreateBuisnessLogicEntityDto buisnessLogicEntityDto, BindingResult bindingResult);
 
-	@RequestMapping(value = "/buisnessLogicEntitys", method = RequestMethod.GET)
-	ResponseEntity<Object> getAllBuisnessLogicEntitys();
-	
-	@RequestMapping(value = "/buisnessLogicEntity/{id}", method = RequestMethod.DELETE)
-	ResponseEntity<Object> deleteBuisnessLogicEntity(int id);
-	
-	@RequestMapping(value = "/buisnessLogicEntity/{id}", method = RequestMethod.PUT)
-	ResponseEntity<Object> updateBuisnessLogicEntity(int id,BuisnessLogicEntityDto buisnessLogicEntityDto, BindingResult bindingResult);
+    @RequestMapping(value = "/buisnessLogicEntity/{id}", method = RequestMethod.GET)
+    ResponseEntity<?> getBuisnessLogicEntity(int id);
+
+    @RequestMapping(value = "/buisnessLogicEntitys", method = RequestMethod.GET)
+    ResponseEntity<?> getAllBuisnessLogicEntitys();
+
+    @RequestMapping(value = "/buisnessLogicEntity/project/{id}", method = RequestMethod.GET)
+    ResponseEntity<?> getBuisnessLogicEntityByProject(int id);
+
+    @RequestMapping(value = "/buisnessLogicEntity/{id}", method = RequestMethod.DELETE)
+    ResponseEntity<?> deleteBuisnessLogicEntity(int id);
+
+    @RequestMapping(value = "/buisnessLogicEntity/{id}", method = RequestMethod.PUT)
+    ResponseEntity<?> updateBuisnessLogicEntity(int id, BuisnessLogicEntityDto buisnessLogicEntityDto, BindingResult bindingResult);
 
 }

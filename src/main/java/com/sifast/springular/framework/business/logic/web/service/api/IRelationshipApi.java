@@ -28,7 +28,7 @@ public interface IRelationshipApi {
 			@RequestMapping(value = "/relationship/{id}", method = RequestMethod.GET)
 			ResponseEntity<Object> getRelationship(int id);
 
-			@RequestMapping(value = "/relationship", method = RequestMethod.GET)
-			ResponseEntity<Object> getAllRelationships();
+			@RequestMapping(value = "/relationship/project/{projectId}", method = RequestMethod.GET)
+			ResponseEntity<?> getAllRelationshipsByProject(int projectId);
 	
 }

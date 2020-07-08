@@ -13,6 +13,6 @@ public interface EntityDao extends IGenericDao<BuisnessLogicEntity, Integer> {
 
     Optional<BuisnessLogicEntity> findByNameEntityAndProject(String name, Project project);
 
-    Optional<List<BuisnessLogicEntity>> findByProject(Project project);
+    List<BuisnessLogicEntity> findByProject(Project project);
 
 }

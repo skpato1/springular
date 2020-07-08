@@ -182,8 +182,8 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
         Optional<Project> project = projectService.findById(id);
         if (project.isPresent()) {
             httpStatus = HttpStatus.OK;
-            Optional<List<BuisnessLogicEntity>> fetchedEntitiesByProject = buisnessLogicEntityService.findbyProject(project.get());
-            fetchedEntitiesByProject.get().forEach(buisnessLogicEntity -> {
+            List<BuisnessLogicEntity> fetchedEntitiesByProject = buisnessLogicEntityService.findbyProject(project.get());
+            fetchedEntitiesByProject.forEach(buisnessLogicEntity -> {
                 ViewBuisnessLogicEntityDto mapBuisnessLogicEntityToViewBuisnessLogicEntityDto = buisnessLogicEntityMapper
                         .mapBuisnessLogicEntityToViewBuisnessLogicEntityDto(buisnessLogicEntity);
                 entitiesToReturn.add(mapBuisnessLogicEntityToViewBuisnessLogicEntityDto);

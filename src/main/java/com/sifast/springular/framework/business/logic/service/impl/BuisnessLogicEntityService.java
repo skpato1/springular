@@ -25,7 +25,7 @@ public class BuisnessLogicEntityService extends GenericService<BuisnessLogicEnti
     }
 
     @Override
-    public Optional<List<BuisnessLogicEntity>> findbyProject(Project project) {
+    public List<BuisnessLogicEntity>findbyProject(Project project) {
         return entityDao.findByProject(project);
     }
 

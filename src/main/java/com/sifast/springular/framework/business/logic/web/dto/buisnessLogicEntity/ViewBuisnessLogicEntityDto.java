@@ -1,9 +1,10 @@
 package com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity;
 
+import com.sifast.springular.framework.business.logic.web.dto.project.ViewProject;
+
 public class ViewBuisnessLogicEntityDto extends BuisnessLogicEntityDto {
 	
 	private int id;
-	
 
 	public int getId() {
 		return id;
@@ -12,6 +13,7 @@ public class ViewBuisnessLogicEntityDto extends BuisnessLogicEntityDto {
 	public void setId(int id) {
 		this.id = id;
 	}
+
 
 	@Override
 	public String toString() {

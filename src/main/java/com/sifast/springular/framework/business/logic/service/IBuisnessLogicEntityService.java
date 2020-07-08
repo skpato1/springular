@@ -13,6 +13,6 @@ public interface IBuisnessLogicEntityService extends IGenericService<BuisnessLog
 
     Optional<BuisnessLogicEntity> findbyNameEntityAndProject(String name, Project project);
 
-    Optional<List<BuisnessLogicEntity>> findbyProject(Project project);
+    List<BuisnessLogicEntity> findbyProject(Project project);
 
 }

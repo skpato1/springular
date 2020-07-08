@@ -1,5 +1,6 @@
 package com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity;
 
+import com.sifast.springular.framework.business.logic.web.dto.project.ViewProjectDto;
 import java.util.List;
 
 import javax.validation.constraints.NotEmpty;
@@ -19,13 +20,13 @@ public class BuisnessLogicEntityDto {
 
     private List<AttributeDto> attributes;
 
-    @NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
-    @NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
-    private int project_id;
-
     private Boolean createListIdsIfChild;
 
     private Boolean createListDtosIfChild;
+
+    @NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
+    @NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
+    private int project_id;
 
     private Boolean isTrackable;
 
@@ -79,7 +80,14 @@ public class BuisnessLogicEntityDto {
 
     @Override
     public String toString() {
-        return "BuisnessLogicEntityDto [nameEntity=" + nameEntity + "]";
+        final StringBuilder sb = new StringBuilder("BuisnessLogicEntityDto{");
+        sb.append("nameEntity='").append(nameEntity).append('\'');
+        sb.append(", attributes=").append(attributes);
+        sb.append(", createListIdsIfChild=").append(createListIdsIfChild);
+        sb.append(", createListDtosIfChild=").append(createListDtosIfChild);
+        sb.append(", project_id=").append(project_id);
+        sb.append(", isTrackable=").append(isTrackable);
+        sb.append('}');
+        return sb.toString();
     }
-
 }

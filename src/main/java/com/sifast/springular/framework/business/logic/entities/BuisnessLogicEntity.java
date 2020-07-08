@@ -47,7 +47,7 @@ public class BuisnessLogicEntity extends TimestampEntity implements Serializable
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "buisnessLogicEntity", fetch = FetchType.LAZY)
     private List<Attribute> attributes;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Project project;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentEntity", fetch = FetchType.LAZY)

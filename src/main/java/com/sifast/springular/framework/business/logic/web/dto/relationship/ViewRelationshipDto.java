@@ -1,30 +1,30 @@
 package com.sifast.springular.framework.business.logic.web.dto.relationship;
 
-import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.ViewBuisnessLogicEntityDto;
+import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.ViewBuisnessLogicEntity;
 
 public class ViewRelationshipDto extends RelationshipDto {
 	
 	
 	private int id;
 	
-	private ViewBuisnessLogicEntityDto parentEntity;
+	private ViewBuisnessLogicEntity parentEntity;
 	
-	private ViewBuisnessLogicEntityDto childEntity;
+	private ViewBuisnessLogicEntity childEntity;
 
 
-	public ViewBuisnessLogicEntityDto getParentEntity() {
+	public ViewBuisnessLogicEntity getParentEntity() {
 		return parentEntity;
 	}
 
-	public void setParentEntity(ViewBuisnessLogicEntityDto parentEntity) {
+	public void setParentEntity(ViewBuisnessLogicEntity parentEntity) {
 		this.parentEntity = parentEntity;
 	}
 
-	public ViewBuisnessLogicEntityDto getChildEntity() {
+	public ViewBuisnessLogicEntity getChildEntity() {
 		return childEntity;
 	}
 
-	public void setChildEntity(ViewBuisnessLogicEntityDto childEntity) {
+	public void setChildEntity(ViewBuisnessLogicEntity childEntity) {
 		this.childEntity = childEntity;
 	}
 
@@ -38,14 +38,11 @@ public class ViewRelationshipDto extends RelationshipDto {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("ViewRelationshipDto [id=");
-		builder.append(id);
-		builder.append(", parentEntity=");
-		builder.append(parentEntity);
-		builder.append(", childEntity=");
-		builder.append(childEntity);
-		builder.append("]");
-		return builder.toString();
+		final StringBuilder sb = new StringBuilder("ViewRelationshipDto{");
+		sb.append("id=").append(id);
+		sb.append(", parentEntity=").append(parentEntity);
+		sb.append(", childEntity=").append(childEntity);
+		sb.append('}');
+		return sb.toString();
 	}
 }

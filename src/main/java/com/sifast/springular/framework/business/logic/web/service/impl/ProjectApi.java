@@ -21,12 +21,16 @@ import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
 import com.sifast.springular.framework.business.logic.common.ProjectStatus;
+import com.sifast.springular.framework.business.logic.entities.Database;
 import com.sifast.springular.framework.business.logic.entities.Project;
+import com.sifast.springular.framework.business.logic.service.IDatabaseService;
 import com.sifast.springular.framework.business.logic.service.IProjectService;
 import com.sifast.springular.framework.business.logic.web.config.ConfiguredModelMapper;
 import com.sifast.springular.framework.business.logic.web.dto.project.CreateProjectDto;
+import com.sifast.springular.framework.business.logic.web.dto.project.ProjectDatabaseDto;
 import com.sifast.springular.framework.business.logic.web.dto.project.ProjectDto;
 import com.sifast.springular.framework.business.logic.web.dto.project.ViewProjectDto;
+import com.sifast.springular.framework.business.logic.web.mapper.DatabaseMapper;
 import com.sifast.springular.framework.business.logic.web.mapper.ProjectMapper;
 import com.sifast.springular.framework.business.logic.web.service.api.IProjectApi;
 
@@ -52,10 +56,16 @@ public class ProjectApi implements IProjectApi {
     private ProjectMapper projectMapper;
 
     @Autowired
+    private DatabaseMapper databaseMapper;
+
+    @Autowired
     private IProjectService projectService;
 
+    @Autowired
+    private IDatabaseService databaseService;
+
     @Override
-    public ResponseEntity<Object> saveProject(@ApiParam(required = true, value = "projectDto", name = "projectDto") @RequestBody CreateProjectDto projectDto,
+    public ResponseEntity<?> saveProject(@ApiParam(required = true, value = "projectDto", name = "projectDto") @RequestBody CreateProjectDto projectDto,
             BindingResult bindingResult) {
         LOGGER.info("Web service saveProject invoked with projectDto {}", projectDto);
         try {
@@ -72,7 +82,33 @@ public class ProjectApi implements IProjectApi {
     }
 
     @Override
-    public ResponseEntity<Object> getProject(
+    public ResponseEntity<?> saveProjectAndDatabase(
+            @ApiParam(required = true, value = "ProjectDatabaseDto", name = "ProjectDatabaseDto") @RequestBody ProjectDatabaseDto projectDatabaseDto, BindingResult bindingResult) {
+        LOGGER.info("Web service saveProject invoked with projectDto {}", projectDatabaseDto);
+        try {
+            Project savedProject = null;
+            if (projectDatabaseDto.getProject() != null) {
+                savedProject = projectService.save(projectMapper.mapCreateProject(projectDatabaseDto.getProject()));
+                if (projectDatabaseDto.getDatabase() != null) {
+                    Database databaseToBeSaved = databaseMapper.mapCreateDatabase(projectDatabaseDto.getDatabase());
+                    savedProject.setDatabase(databaseToBeSaved);
+                    databaseToBeSaved.setProject(savedProject);
+                    databaseService.save(databaseToBeSaved);
+                }
+            }
+            httpStatus = HttpStatus.OK;
+            httpResponseBody = modelMapper.map(savedProject, ViewProjectDto.class);
+        } catch (Exception e) {
+            httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.SERVER_ERROR.getValue(), ApiMessage.ERR_SAVE);
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            httpResponseBody = httpErrorResponse;
+        }
+
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
+
+    @Override
+    public ResponseEntity<?> getProject(
             @ApiParam(value = "ID of Project that needs to be fetched ", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
         LOGGER.info("Web service getProject invoked with id {}", id);
 
@@ -90,7 +126,7 @@ public class ProjectApi implements IProjectApi {
     }
 
     @Override
-    public ResponseEntity<Object> getAllProjects() {
+    public ResponseEntity<?> getAllProjects() {
         List<Project> Projects = projectService.findAll();
         httpStatus = HttpStatus.OK;
         httpResponseBody = !Projects.isEmpty() ? Projects.stream().map(Project -> modelMapper.map(Project, ViewProjectDto.class)).collect(Collectors.toList())
@@ -99,7 +135,7 @@ public class ProjectApi implements IProjectApi {
     }
 
     @Override
-    public ResponseEntity<Object> deleteProject(
+    public ResponseEntity<?> deleteProject(
             @ApiParam(value = "ID of Project that needs to be deleted", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
         LOGGER.info("Web service deleteProject invoked with id {}", id);
         Optional<Project> preDeleteProject = projectService.findById(id);
@@ -116,7 +152,7 @@ public class ProjectApi implements IProjectApi {
     }
 
     @Override
-    public ResponseEntity<Object> updateProject(
+    public ResponseEntity<?> updateProject(
             @ApiParam(value = "ID of Project that needs to be updated", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id,
             @ApiParam(required = true, value = "projectDto", name = "projectDto") @RequestBody ProjectDto projectDto, BindingResult bindingResult) throws Exception {
         LOGGER.info("Web service updateProject invoked with id {}", id);
@@ -144,7 +180,7 @@ public class ProjectApi implements IProjectApi {
     }
 
     @Override
-    public ResponseEntity<Object> getAllValidatedProjects() {
+    public ResponseEntity<?> getAllValidatedProjects() {
         List<Project> Projects = projectService.findByStatusProject(ProjectStatus.VALIDATED);
         httpStatus = HttpStatus.OK;
         httpResponseBody = !Projects.isEmpty() ? Projects.stream().map(Project -> modelMapper.map(Project, ViewProjectDto.class)).collect(Collectors.toList())
@@ -153,7 +189,7 @@ public class ProjectApi implements IProjectApi {
     }
 
     @Override
-    public ResponseEntity<Object> validateProject(@PathVariable int id) {
+    public ResponseEntity<?> validateProject(@PathVariable int id) {
         Optional<Project> project = projectService.findById(id);
 
         if (project.isPresent()) {

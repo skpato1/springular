@@ -1,5 +1,7 @@
 package com.sifast.springular.framework.business.logic.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -7,8 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -308,12 +312,29 @@ public class CommandExecutorService implements ICommandExecutorService {
     }
 
     @Override
-    public void zipProject(Project project) throws FileNotFoundException, IOException {
-        List<File> folder = new ArrayList<File>();
+    public byte[] zipProject(Project project) throws FileNotFoundException, IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
+        ZipOutputStream zipOutputStream = new ZipOutputStream(bufferedOutputStream);
+        ArrayList<File> files = new ArrayList<>(2);
+        // List<File> folder = new ArrayList<File>();
         File file = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW + project.getNameProject());
-        folder.add(file);
-        zip.zip(folder, ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW + project.getNameProject() + Constants.POINT_ZIP);
+        files.add(file);
+        // folder.add(file);
+        // zip.zip(files, ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW + project.getNameProject() + Constants.POINT_ZIP);
 
+        for (File fileToZip : files) {
+            zip.zipFile(fileToZip, fileToZip.getName(), zipOutputStream);
+        }
+
+        if (zipOutputStream != null) {
+            zipOutputStream.finish();
+            zipOutputStream.flush();
+            IOUtils.closeQuietly(zipOutputStream);
+        }
+        IOUtils.closeQuietly(bufferedOutputStream);
+        IOUtils.closeQuietly(byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
     }
 
 }

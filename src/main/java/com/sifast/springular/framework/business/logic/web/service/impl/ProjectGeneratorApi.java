@@ -3,11 +3,12 @@ package com.sifast.springular.framework.business.logic.web.service.impl;
 import java.io.IOException;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,12 +46,11 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
     private IProjectService projectService;
 
     @Override
-    public ResponseEntity<Object> generateProjectWithJdl(@PathVariable int id) throws IOException, InterruptedException {
-        LOGGER.info("Web service generateProjectWithJdl invoked with projectDto {}", id);
+    public byte[] zipAndDownloadProject(@PathVariable int id, HttpServletResponse response) throws IOException, InterruptedException {
+        LOGGER.info("Web service generate Project invoked with project id {}", id);
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
         Optional<Project> project = projectService.findById(id);
         if (project.isPresent()) {
-            httpStatus = HttpStatus.OK;
 
             commandExecutorService.cloneSpringularFrameworkSocleFromGitlab(project.get(), isWindows);
 
@@ -96,14 +96,17 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 
             jdlFileGeneratorService.writeFilesWebServicesApiImpl(project.get());
 
-            commandExecutorService.zipProject(project.get());
+            response.setStatus(HttpServletResponse.SC_OK);
 
+            response.addHeader("Content-Disposition", "attachment; filename=\"" + project.get().getNameProject() + ".zip\"");
+
+            return commandExecutorService.zipProject(project.get());
         } else {
-            httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.DATABASE_NOT_FOUND);
+            httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.PROJECT_NOT_FOUND);
             httpStatus = HttpStatus.NOT_FOUND;
             httpResponseBody = httpErrorResponse;
         }
-        return new ResponseEntity<>(httpResponseBody, httpStatus);
+        return null;
     }
 
 }

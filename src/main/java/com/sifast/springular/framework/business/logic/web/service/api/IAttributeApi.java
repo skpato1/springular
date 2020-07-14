@@ -17,26 +17,24 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-
 public interface IAttributeApi {
-	
-	@ApiResponses(value = {
-	@ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.ATTRIBUTE_CREATED_SUCCESSFULLY, response = ViewAttributeDto.class),
-	@ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class) })
-	@ApiOperation(value = "create an attribute ", response = ViewProjectDto.class)
-	@RequestMapping(value = "/attribute", method = RequestMethod.POST)
-	ResponseEntity<Object> saveAttribute(CreateAttributeDto attributeDto, BindingResult bindingResult);
 
-	@RequestMapping(value = "/attribute/{id}", method = RequestMethod.GET)
-	ResponseEntity<Object> getAttribute(int id);
+    @ApiResponses(value = { @ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.ATTRIBUTE_CREATED_SUCCESSFULLY, response = ViewAttributeDto.class),
+            @ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class) })
+    @ApiOperation(value = "create an attribute ", response = ViewProjectDto.class)
+    @RequestMapping(value = "/attribute", method = RequestMethod.POST)
+    ResponseEntity<?> saveAttribute(CreateAttributeDto attributeDto, BindingResult bindingResult);
 
-	@RequestMapping(value = "/attributes", method = RequestMethod.GET)
-	ResponseEntity<Object> getAllAttributes();
-	
-	@RequestMapping(value = "/attribute/{id}", method = RequestMethod.DELETE)
-	ResponseEntity<Object> deleteAttribute(int id);
-	
-	@RequestMapping(value = "/attribute/{id}", method = RequestMethod.PUT)
-	ResponseEntity<Object> updateAttribute(int id,AttributeDto attributeDto, BindingResult bindingResult);
+    @RequestMapping(value = "/attribute/{id}", method = RequestMethod.GET)
+    ResponseEntity<?> getAttribute(int id);
+
+    @RequestMapping(value = "/attributes", method = RequestMethod.GET)
+    ResponseEntity<?> getAllAttributes();
+
+    @RequestMapping(value = "/attribute/{id}", method = RequestMethod.DELETE)
+    ResponseEntity<?> deleteAttribute(int id);
+
+    @RequestMapping(value = "/attribute/{id}", method = RequestMethod.PUT)
+    ResponseEntity<?> updateAttribute(int id, AttributeDto attributeDto, BindingResult bindingResult);
 
 }

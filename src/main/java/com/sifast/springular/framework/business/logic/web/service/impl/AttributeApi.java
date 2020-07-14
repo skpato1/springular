@@ -38,121 +38,119 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping(value = "/api/")
 public class AttributeApi implements IAttributeApi {
 
-	 private static final Logger LOGGER = LoggerFactory.getLogger(AttributeApi.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AttributeApi.class);
 
-	    private Object httpResponseBody;
+    private Object httpResponseBody;
 
-	    private HttpStatus httpStatus;
-	    
-	    private HttpErrorResponse httpErrorResponse = new HttpErrorResponse();
+    private HttpStatus httpStatus;
 
-	    
-		 	@Autowired
-		    private ConfiguredModelMapper modelMapper;
+    private HttpErrorResponse httpErrorResponse = new HttpErrorResponse();
 
-		    @Autowired
-		    private AttributeMapper attributeMapper;
-		    
-		    @Autowired
-		    private IAttributeService attributeService;
-		    
-		    @Autowired
-		    private IBuisnessLogicEntityService buisnessLogicEntityService;
+    @Autowired
+    private ConfiguredModelMapper modelMapper;
 
+    @Autowired
+    private AttributeMapper attributeMapper;
 
-		@Override
-		public ResponseEntity<Object> getAttribute(@ApiParam(value = "ID of Attribute that needs to be fetched", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
-			LOGGER.info("Web service getattribute invoked with id {}", id);
+    @Autowired
+    private IAttributeService attributeService;
 
-	        Optional<Attribute> attribute = attributeService.findById(id);
-	        if (attribute.isPresent()) {
-	            httpStatus = HttpStatus.OK;
-	            httpResponseBody = attributeMapper.mapAttributeToViewAttributeDto(attribute.get());
-	        } else {
-	        	httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.ATTRIBUTE_NOT_FOUND);
-	        	httpStatus = HttpStatus.NOT_FOUND;
-	        	httpResponseBody = httpErrorResponse;	        }
-	        return new ResponseEntity<>(httpResponseBody, httpStatus);
-		}
+    @Autowired
+    private IBuisnessLogicEntityService buisnessLogicEntityService;
 
-		@Override
-		public ResponseEntity<Object> getAllAttributes() {
-				List<Attribute> attributes = attributeService.findAll();
-		        httpStatus = HttpStatus.OK;
-		        httpResponseBody = !attributes.isEmpty() ? attributes.stream().map(attribute -> modelMapper.map(attribute, ViewAttributeDto.class)).collect(Collectors.toList()) : Collections.emptyList();
-		        return new ResponseEntity<>(httpResponseBody, httpStatus);
-		}
+    @Override
+    public ResponseEntity<?> getAttribute(
+            @ApiParam(value = "ID of Attribute that needs to be fetched", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
+        LOGGER.info("Web service getattribute invoked with id {}", id);
 
-		@Override
-		public ResponseEntity<Object> deleteAttribute(@ApiParam(value = "ID of Attribute that needs to be deleted", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
-			LOGGER.info("Web service deleteattribute invoked with id {}", id);
-			 Optional<Attribute> preDeleteattribute = attributeService.findById(id);
-		        if (!preDeleteattribute.isPresent()) {
-		        	httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.ATTRIBUTE_NOT_FOUND);
-	                httpStatus = HttpStatus.NOT_FOUND;
-		        	httpResponseBody = httpErrorResponse;	  
-		        } else {
-		            
-		                attributeService.delete(preDeleteattribute.get());
-		                httpStatus = HttpStatus.OK;
-		                LOGGER.info("INFO level message: attribute with id = {} deleted ", id);
-		            
-		        }
-		        return new ResponseEntity<>(httpResponseBody, httpStatus);
-		}
+        Optional<Attribute> attribute = attributeService.findById(id);
+        if (attribute.isPresent()) {
+            httpStatus = HttpStatus.OK;
+            httpResponseBody = attributeMapper.mapAttributeToViewAttributeDto(attribute.get());
+        } else {
+            httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.ATTRIBUTE_NOT_FOUND);
+            httpStatus = HttpStatus.NOT_FOUND;
+            httpResponseBody = httpErrorResponse;
+        }
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
 
-		@Override
-		public ResponseEntity<Object> updateAttribute(@ApiParam(value = "ID of Attribute that needs to be updated", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id,@ApiParam(required = true, value = "attributeDto", name = "attributeDto") @RequestBody AttributeDto attributeDto, BindingResult bindingResult) {
-			LOGGER.info("Web service updateattribute invoked with id {}", id);
-			if (!bindingResult.hasFieldErrors()) {
-		            Optional<Attribute> attribute = attributeService.findById(id);
-		            if (attribute.isPresent()) {
-		            	Attribute preUpdateattribute = attribute.get();
-		            	Attribute updatedAttribute = attributeService.save(preUpdateattribute);
-		                httpStatus = HttpStatus.OK;
-		                httpResponseBody = modelMapper.map(attribute, Attribute.class);
-		                LOGGER.info("INFO level message: attribute updated {}", updatedAttribute);
+    @Override
+    public ResponseEntity<?> getAllAttributes() {
+        List<Attribute> attributes = attributeService.findAll();
+        httpStatus = HttpStatus.OK;
+        httpResponseBody = !attributes.isEmpty() ? attributes.stream().map(attribute -> modelMapper.map(attribute, ViewAttributeDto.class)).collect(Collectors.toList())
+                : Collections.emptyList();
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
 
-		            } else {
-		            	httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.ATTRIBUTE_NOT_FOUND);
-		                httpStatus = HttpStatus.NOT_FOUND;
-			        	httpResponseBody = httpErrorResponse;
-		            }
-		        } else {
-		            httpStatus = HttpStatus.BAD_REQUEST;
-		        }
-		        return new ResponseEntity<>(httpResponseBody, httpStatus);
-		}
+    @Override
+    public ResponseEntity<?> deleteAttribute(
+            @ApiParam(value = "ID of Attribute that needs to be deleted", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
+        LOGGER.info("Web service deleteattribute invoked with id {}", id);
+        Optional<Attribute> preDeleteattribute = attributeService.findById(id);
+        if (!preDeleteattribute.isPresent()) {
+            httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.ATTRIBUTE_NOT_FOUND);
+            httpStatus = HttpStatus.NOT_FOUND;
+            httpResponseBody = httpErrorResponse;
+        } else {
 
-		@Override
-		public ResponseEntity<Object> saveAttribute(@ApiParam(required = true, value = "attributeDto", name = "attributeDto") @RequestBody CreateAttributeDto attributeDto, BindingResult bindingResult) {
-			 LOGGER.info("Web service saveattribute invoked with AttributeDto {}", attributeDto);
-		        try {
-					Optional<BuisnessLogicEntity> entity = buisnessLogicEntityService.findById(attributeDto.getEntity_id());
+            attributeService.delete(preDeleteattribute.get());
+            httpStatus = HttpStatus.OK;
+            LOGGER.info("INFO level message: attribute with id = {} deleted ", id);
 
-				if(entity.isPresent())
-			        {
-					Attribute attributeToBeSaved=attributeMapper.mapCreateAttribute(attributeDto);
-					attributeToBeSaved.setBuisness(entity.get());
-					Attribute saveattribute=attributeService.save(attributeToBeSaved);
-			        httpStatus = HttpStatus.OK;
-			        httpResponseBody = modelMapper.map(saveattribute, ViewAttributeDto.class);
-			        }
-				else {
-					httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(),
-							ApiMessage.ATTRIBUTE_NOT_FOUND);
-					httpStatus = HttpStatus.NOT_FOUND;
-					httpResponseBody = httpErrorResponse;
-				}
-		        }
-		        catch (Exception e) {
-		            httpStatus = HttpStatus.BAD_REQUEST;
-		        }
-		        
+        }
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
 
-		        return new ResponseEntity<>(httpResponseBody, httpStatus);
-		}
-	
-	
+    @Override
+    public ResponseEntity<?> updateAttribute(
+            @ApiParam(value = "ID of Attribute that needs to be updated", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id,
+            @ApiParam(required = true, value = "attributeDto", name = "attributeDto") @RequestBody AttributeDto attributeDto, BindingResult bindingResult) {
+        LOGGER.info("Web service updateattribute invoked with id {}", id);
+        if (!bindingResult.hasFieldErrors()) {
+            Optional<Attribute> attribute = attributeService.findById(id);
+            if (attribute.isPresent()) {
+                Attribute preUpdateattribute = attribute.get();
+                Attribute updatedAttribute = attributeService.save(preUpdateattribute);
+                httpStatus = HttpStatus.OK;
+                httpResponseBody = modelMapper.map(attribute, Attribute.class);
+                LOGGER.info("INFO level message: attribute updated {}", updatedAttribute);
+
+            } else {
+                httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.ATTRIBUTE_NOT_FOUND);
+                httpStatus = HttpStatus.NOT_FOUND;
+                httpResponseBody = httpErrorResponse;
+            }
+        } else {
+            httpStatus = HttpStatus.BAD_REQUEST;
+        }
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
+
+    @Override
+    public ResponseEntity<?> saveAttribute(@ApiParam(required = true, value = "attributeDto", name = "attributeDto") @RequestBody CreateAttributeDto attributeDto,
+            BindingResult bindingResult) {
+        LOGGER.info("Web service saveattribute invoked with AttributeDto {}", attributeDto);
+        try {
+            Optional<BuisnessLogicEntity> entity = buisnessLogicEntityService.findById(attributeDto.getEntity_id());
+
+            if (entity.isPresent()) {
+                Attribute attributeToBeSaved = attributeMapper.mapCreateAttribute(attributeDto);
+                attributeToBeSaved.setBuisness(entity.get());
+                Attribute saveattribute = attributeService.save(attributeToBeSaved);
+                httpStatus = HttpStatus.OK;
+                httpResponseBody = modelMapper.map(saveattribute, ViewAttributeDto.class);
+            } else {
+                httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.ATTRIBUTE_NOT_FOUND);
+                httpStatus = HttpStatus.NOT_FOUND;
+                httpResponseBody = httpErrorResponse;
+            }
+        } catch (Exception e) {
+            httpStatus = HttpStatus.BAD_REQUEST;
+        }
+
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
 
 }

@@ -193,6 +193,7 @@ public class DtoFileWriter {
                 }
             }
         });
+
         attributes.stream().forEach(attribute -> {
             if (ent.getCreateListDtosIfChild() && attribute.getTypeAttribute().name().equals(AttributesTypeEnum.Set.name())) {
                 try {

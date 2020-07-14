@@ -58,8 +58,7 @@ public class RelationshipApi implements IRelationshipApi {
     private RelationshipMapper relationshipMapper;
 
     @Override
-    public ResponseEntity<Object> saveRelationship(
-            @ApiParam(required = true, value = "relationshipDto", name = "relationshipDto") @RequestBody CreateRelationshipDto relationshipDto,
+    public ResponseEntity<?> saveRelationship(@ApiParam(required = true, value = "relationshipDto", name = "relationshipDto") @RequestBody CreateRelationshipDto relationshipDto,
             BindingResult bindingResult) {
         LOGGER.info("Web service saveRelationship invoked with projectDto {}", relationshipDto);
         int parentEntity_id = relationshipDto.getParentEntity_id();
@@ -77,8 +76,7 @@ public class RelationshipApi implements IRelationshipApi {
                 ViewRelationshipDto relationshipToBeReturned = modelMapper.map(savedRelationship, ViewRelationshipDto.class);
                 httpResponseBody = relationshipToBeReturned;
             } else {
-                httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(),
-                        ApiMessage.BUISNESS_LOGIC_ENTITY_NOT_FOUND);
+                httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.BUISNESS_LOGIC_ENTITY_NOT_FOUND);
                 httpStatus = HttpStatus.NOT_FOUND;
                 httpResponseBody = httpErrorResponse;
             }
@@ -93,7 +91,7 @@ public class RelationshipApi implements IRelationshipApi {
     }
 
     @Override
-    public ResponseEntity<Object> getRelationship(
+    public ResponseEntity<?> getRelationship(
             @ApiParam(value = "ID of Relationship that needs to be fetched", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
         LOGGER.info("Web service getRelationship invoked with id {}", id);
 
@@ -102,8 +100,7 @@ public class RelationshipApi implements IRelationshipApi {
             httpStatus = HttpStatus.OK;
             httpResponseBody = relationshipMapper.mapRelationshipToViewRelationshipDto(relationship.get());
         } else {
-            httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(),
-                    ApiMessage.RELATIONSHIP_NOT_FOUND);
+            httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.RELATIONSHIP_NOT_FOUND);
             httpStatus = HttpStatus.NOT_FOUND;
             httpResponseBody = httpErrorResponse;
         }
@@ -115,11 +112,24 @@ public class RelationshipApi implements IRelationshipApi {
             @ApiParam(value = "ID of Project", required = true, allowableValues = "range[1,infinity]") @PathVariable("projectId") int projectId) {
         List<Relationship> relationships = relationshipService.findAll();
         httpStatus = HttpStatus.OK;
-        httpResponseBody = !relationships.isEmpty()
-                ? relationships.stream().map(Relationship -> modelMapper.map(Relationship, ViewRelationshipDto.class))
-                .filter(element -> element.getChildEntity().getProject().getId() == projectId)
-                .collect(Collectors.toList())
-                : Collections.emptyList();
+        httpResponseBody = !relationships.isEmpty() ? relationships.stream().map(Relationship -> modelMapper.map(Relationship, ViewRelationshipDto.class))
+                .filter(element -> element.getChildEntity().getProject().getId() == projectId).collect(Collectors.toList()) : Collections.emptyList();
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
+
+    @Override
+    public ResponseEntity<?> deleteRelationship(
+            @ApiParam(value = "ID of Relationship that needs to be deleted", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
+        LOGGER.info("Web service deleteRelationship invoked with id {}", id);
+        Optional<Relationship> preDeleteRelationship = relationshipService.findById(id);
+        if (!preDeleteRelationship.isPresent()) {
+            httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.RELATIONSHIP_NOT_FOUND);
+            httpStatus = HttpStatus.NOT_FOUND;
+        } else {
+            relationshipService.delete(preDeleteRelationship.get());
+            httpStatus = HttpStatus.OK;
+            LOGGER.info("INFO level message: Relationship with id = {} deleted ", id);
+        }
         return new ResponseEntity<>(httpResponseBody, httpStatus);
     }
 

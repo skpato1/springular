@@ -17,18 +17,18 @@ import io.swagger.annotations.ApiResponses;
 
 public interface IRelationshipApi {
 
-	
-	@ApiResponses(value = {
-			@ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.RELATIONSHIP_CREATED_SUCCESSFULLY, response = ViewRelationshipDto.class),
-			@ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class) })
-			@ApiOperation(value = "save Relationship", response = ViewRelationshipDto.class)
-			@RequestMapping(value = "/relationship", method = RequestMethod.POST)
-			ResponseEntity<Object> saveRelationship(CreateRelationshipDto relationShipDto, BindingResult bindingResult);
+    @ApiResponses(value = { @ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.RELATIONSHIP_CREATED_SUCCESSFULLY, response = ViewRelationshipDto.class),
+            @ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class) })
+    @ApiOperation(value = "save Relationship", response = ViewRelationshipDto.class)
+    @RequestMapping(value = "/relationship", method = RequestMethod.POST)
+    ResponseEntity<?> saveRelationship(CreateRelationshipDto relationShipDto, BindingResult bindingResult);
 
-			@RequestMapping(value = "/relationship/{id}", method = RequestMethod.GET)
-			ResponseEntity<Object> getRelationship(int id);
+    @RequestMapping(value = "/relationship/{id}", method = RequestMethod.GET)
+    ResponseEntity<?> getRelationship(int id);
 
-			@RequestMapping(value = "/relationship/project/{projectId}", method = RequestMethod.GET)
-			ResponseEntity<?> getAllRelationshipsByProject(int projectId);
-	
+    @RequestMapping(value = "/relationship/project/{projectId}", method = RequestMethod.GET)
+    ResponseEntity<?> getAllRelationshipsByProject(int projectId);
+
+    @RequestMapping(value = "/relationship/{id}", method = RequestMethod.DELETE)
+    ResponseEntity<?> deleteRelationship(int id);
 }

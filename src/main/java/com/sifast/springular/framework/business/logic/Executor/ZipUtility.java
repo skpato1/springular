@@ -12,27 +12,31 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.springframework.stereotype.Component;
+
 /**
  * This utility compresses a list of files to standard ZIP format file.
  * It is able to compress all sub files and sub directories, recursively.
+ *
  * @author www.codejava.net
  *
  */
 @Component
 public class ZipUtility {
+
     /**
      * A constants for buffer size used to read/write data
      */
     private static final int BUFFER_SIZE = 4096;
+
     /**
      * Compresses a list of files to a destination zip file
+     *
      * @param listFiles A collection of files and directories
      * @param destZipFile The path of the destination zip file
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public void zip(List<File> listFiles, String destZipFile) throws FileNotFoundException,
-            IOException {
+    public void zip(List<File> listFiles, String destZipFile) throws FileNotFoundException, IOException {
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(destZipFile));
         for (File file : listFiles) {
             if (file.isDirectory()) {
@@ -44,8 +48,10 @@ public class ZipUtility {
         zos.flush();
         zos.close();
     }
+
     /**
      * Compresses files represented in an array of paths
+     *
      * @param files a String array containing file paths
      * @param destZipFile The path of the destination zip file
      * @throws FileNotFoundException
@@ -58,16 +64,17 @@ public class ZipUtility {
         }
         zip(listFiles, destZipFile);
     }
+
     /**
      * Adds a directory to the current zip output stream
-     * @param folder the directory to be  added
+     *
+     * @param folder the directory to be added
      * @param parentFolder the path of parent directory
      * @param zos the current zip output stream
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private void zipDirectory(File folder, String parentFolder,
-            ZipOutputStream zos) throws FileNotFoundException, IOException {
+    private void zipDirectory(File folder, String parentFolder, ZipOutputStream zos) throws FileNotFoundException, IOException {
         for (File file : folder.listFiles()) {
             if (file.isDirectory()) {
                 zipDirectory(file, parentFolder + "/" + file.getName(), zos);
@@ -75,10 +82,9 @@ public class ZipUtility {
             }
             zos.putNextEntry(new ZipEntry(parentFolder + "/" + file.getName()));
             @SuppressWarnings("resource")
-			BufferedInputStream bis = new BufferedInputStream(
-                    new FileInputStream(file));
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
             @SuppressWarnings("unused")
-			long bytesRead = 0;
+            long bytesRead = 0;
             byte[] bytesIn = new byte[BUFFER_SIZE];
             int read = 0;
             while ((read = bis.read(bytesIn)) != -1) {
@@ -88,21 +94,21 @@ public class ZipUtility {
             zos.closeEntry();
         }
     }
+
     /**
      * Adds a file to the current zip output stream
+     *
      * @param file the file to be added
      * @param zos the current zip output stream
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private void zipFile(File file, ZipOutputStream zos)
-            throws FileNotFoundException, IOException {
+    private void zipFile(File file, ZipOutputStream zos) throws FileNotFoundException, IOException {
         zos.putNextEntry(new ZipEntry(file.getName()));
         @SuppressWarnings("resource")
-		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(
-                file));
+        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
         @SuppressWarnings("unused")
-		long bytesRead = 0;
+        long bytesRead = 0;
         byte[] bytesIn = new byte[BUFFER_SIZE];
         int read = 0;
         while ((read = bis.read(bytesIn)) != -1) {
@@ -110,5 +116,34 @@ public class ZipUtility {
             bytesRead += read;
         }
         zos.closeEntry();
+    }
+
+    public void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
+        if (fileToZip.isHidden()) {
+            return;
+        }
+        if (fileToZip.isDirectory()) {
+            if (fileName.endsWith("/")) {
+                zipOut.putNextEntry(new ZipEntry(fileName));
+                zipOut.closeEntry();
+            } else {
+                zipOut.putNextEntry(new ZipEntry(fileName + "/"));
+                zipOut.closeEntry();
+            }
+            File[] children = fileToZip.listFiles();
+            for (File childFile : children) {
+                zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
+            }
+            return;
+        }
+        FileInputStream fis = new FileInputStream(fileToZip);
+        ZipEntry zipEntry = new ZipEntry(fileName);
+        zipOut.putNextEntry(zipEntry);
+        byte[] bytes = new byte[1024];
+        int length;
+        while ((length = fis.read(bytes)) >= 0) {
+            zipOut.write(bytes, 0, length);
+        }
+        fis.close();
     }
 }

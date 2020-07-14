@@ -63,7 +63,7 @@ public class DatabaseApi implements IDatabaseApi {
     ICommandExecutorService commandExecutorService;
 
     @Override
-    public ResponseEntity<Object> saveDatabase(@ApiParam(required = true, value = "databaseDto", name = "databaseDto") @RequestBody CreateDatabaseDto databaseDto,
+    public ResponseEntity<?> saveDatabase(@ApiParam(required = true, value = "databaseDto", name = "databaseDto") @RequestBody CreateDatabaseDto databaseDto,
             BindingResult bindingResult) {
         LOGGER.info("Web service saveDatabase invoked with databaseDto {}", databaseDto);
         try {
@@ -73,9 +73,6 @@ public class DatabaseApi implements IDatabaseApi {
                 project.get().setDatabase(databaseToBeSaved);
                 databaseToBeSaved.setProject(project.get());
                 Database saveddatabase = databaseService.save(databaseToBeSaved);
-                // commandExecutorService.createDataBase(databaseDto.getNameDatabase());
-                // commandExecutorService.generateApplicationPropertiesFromAngular(project.get(),databaseDto.getTypeDatabase(), databaseDto.getNameDatabase(),
-                // databaseDto.getUsernameDatabase(), databaseDto.getPasswordDatabase());
                 httpStatus = HttpStatus.OK;
                 httpResponseBody = modelMapper.map(saveddatabase, ViewDatabaseDto.class);
             } else {
@@ -95,7 +92,7 @@ public class DatabaseApi implements IDatabaseApi {
     }
 
     @Override
-    public ResponseEntity<Object> getDatabase(
+    public ResponseEntity<?> getDatabase(
             @ApiParam(value = "ID of Database that needs to be fetched", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
         LOGGER.info("Web service getDatabase invoked with id {}", id);
 
@@ -112,7 +109,7 @@ public class DatabaseApi implements IDatabaseApi {
     }
 
     @Override
-    public ResponseEntity<Object> getAllDatabases() {
+    public ResponseEntity<?> getAllDatabases() {
         List<Database> databases = databaseService.findAll();
         httpStatus = HttpStatus.OK;
         httpResponseBody = !databases.isEmpty() ? databases.stream().map(database -> modelMapper.map(database, ViewDatabaseDto.class)).collect(Collectors.toList())
@@ -121,7 +118,7 @@ public class DatabaseApi implements IDatabaseApi {
     }
 
     @Override
-    public ResponseEntity<Object> deleteDatabase(
+    public ResponseEntity<?> deleteDatabase(
             @ApiParam(value = "ID of Database that needs to be deleted", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
         LOGGER.info("Web service deleteDatabase invoked with id {}", id);
         Optional<Database> preDeletedatabase = databaseService.findById(id);
@@ -139,7 +136,7 @@ public class DatabaseApi implements IDatabaseApi {
     }
 
     @Override
-    public ResponseEntity<Object> updateDatabase(
+    public ResponseEntity<?> updateDatabase(
             @ApiParam(value = "ID of Database that needs to be updated", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id,
             @ApiParam(required = true, value = "databaseDto", name = "databaseDto") @RequestBody DatabaseDto databaseDto, BindingResult bindingResult) throws Exception {
         LOGGER.info("Web service updateDatabase invoked with id {}", id);

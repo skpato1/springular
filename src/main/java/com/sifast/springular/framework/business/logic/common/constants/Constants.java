@@ -16,7 +16,7 @@ public class Constants {
 
     public static final String PATTERN_CMD_MYSQL_DB = "/Applications/xampp/xamppfiles/bin/mysql -uroot --execute \"create DATABASE ";
 
-    public static final String PATTERN_GIT_CLONE = "git clone http://git.sifast.com/";
+    public static final String PATTERN_GIT_CLONE = "git clone git@git.sifast.com:";
 
     public static final String PATTERN_POINT_GIT = ".git";
 

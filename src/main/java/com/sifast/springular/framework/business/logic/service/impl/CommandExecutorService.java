@@ -1,22 +1,5 @@
 package com.sifast.springular.framework.business.logic.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.zip.ZipOutputStream;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.sifast.springular.framework.business.logic.Executor.DtoFileWriter;
 import com.sifast.springular.framework.business.logic.Executor.SystemCommandExecutor;
 import com.sifast.springular.framework.business.logic.Executor.ZipUtility;
@@ -28,9 +11,28 @@ import com.sifast.springular.framework.business.logic.common.constants.Constants
 import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
 import com.sifast.springular.framework.business.logic.entities.Project;
 import com.sifast.springular.framework.business.logic.service.ICommandExecutorService;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.zip.ZipOutputStream;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CommandExecutorService implements ICommandExecutorService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandExecutorService.class);
 
     @Value("${app.path}")
     private String appDirectory;
@@ -52,6 +54,7 @@ public class CommandExecutorService implements ICommandExecutorService {
 
     @Override
     public String executeCommand(String cmd) throws IOException, InterruptedException {
+        LOGGER.debug("executeCommand : {}", cmd);
         List<String> commands = new ArrayList<String>();
         commands.add(CommandConstantsLinux.PATTERN_CMD_SH);
         commands.add(Constants.PATTERN_CMD_SH_OPTION_C);
@@ -60,24 +63,23 @@ public class CommandExecutorService implements ICommandExecutorService {
         commandExecutor.executeCommand();
         StringBuilder stdout = commandExecutor.getStandardOutputFromCommand();
         StringBuilder stderr = commandExecutor.getStandardErrorFromCommand();
-
         if (stdout != null) {
             return stdout.toString();
-
         } else {
             return stderr.toString();
         }
-
     }
 
     @Override
     public void createDataBase(String nameDB) throws IOException, InterruptedException {
+        LOGGER.debug("createDataBase");
         executeCommand(Constants.PATTERN_CMD_MYSQL_DB.concat(nameDB).concat(Constants.PATTERN_POINT_VIRGULE).concat(Constants.PATTERN_ANTI_SLASH));
 
     }
 
     @Override
     public void cloneSpringularFrameworkSocleFromGitlab(Project project, boolean isWindows) throws IOException, InterruptedException {
+        LOGGER.debug("cloneSpringularFrameworkSocleFromGitlab");
         executeCommand(Constants.PATTERN_GIT_CLONE.concat(project.getUsernameProject()).concat(Constants.PATTERN_SLASH).concat(Constants.OLD_PROJECT_NAME_TO_CLONE)
                 .concat(Constants.PATTERN_POINT_GIT));
 
@@ -85,7 +87,7 @@ public class CommandExecutorService implements ICommandExecutorService {
 
     @Override
     public void generateApplicationPropertiesFromAngular(Project project, String typeDB, String nameDB, String usernameDB, String pwdDB) throws IOException, InterruptedException {
-
+        LOGGER.debug("generateApplicationPropertiesFromAngular");
         File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATTERN_PROJECT_PATH_APPLICATION_PROPERTIES));
         String fileContext = FileUtils.readFileToString(file);
         fileContext = fileContext.replaceAll(Constants.PATTERN_DATABASE_NAME, nameDB);
@@ -97,6 +99,7 @@ public class CommandExecutorService implements ICommandExecutorService {
 
     @Override
     public void executeJdlFromTerminal(boolean isWindows) throws IOException, InterruptedException {
+        LOGGER.debug("executeJdlFromTerminal");
         String path = pathVaribleEnvironment;
         ProcessBuilder processBuilder = null;
         try {
@@ -113,7 +116,6 @@ public class CommandExecutorService implements ICommandExecutorService {
             Executors.newSingleThreadExecutor().submit(streamGobbler);
             process.waitFor();
             File file = new File(fileJdlToGenerate);
-            file.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -122,23 +124,28 @@ public class CommandExecutorService implements ICommandExecutorService {
 
     @Override
     public void copyEntitiesToGeneratedProject(Project project, boolean isWindows) throws IOException, InterruptedException {
+        LOGGER.debug("copyEntitiesToGeneratedProject");
         String entitiesFiles = extraireEntitiesFilesToCopy(project);
         executeCopyEntitiesCommandForDifferentOs(project, isWindows, entitiesFiles);
     }
 
     public void executeCopyEntitiesCommandForDifferentOs(Project project, boolean isWindows, String entitiesFiles) throws IOException, InterruptedException {
+        LOGGER.debug("executeCopyEntitiesCommandForDifferentOs");
         if (isWindows) {
             executeCommand(CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(ConstantsPath.PATH_TO_GENERATED_JHIPSTER_PROJECT).concat(ConstantsPath.DESKTOP)
                     .concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE));
         } else {
-
-            executeCommand(CommandConstantsLinux.COPY_COMMAND_LINUX_FILES.concat(ConstantsPath.PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES).concat(entitiesFiles).concat("} ")
-                    .concat(ConstantsPath.DESKTOP).concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE));
-
+            String[] splitted = entitiesFiles.substring(1).split(",");
+            for (String entity : splitted) {
+                executeCommand(
+                        CommandConstantsLinux.COPY_COMMAND_LINUX_FILES.concat(ConstantsPath.PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES).concat(entity).concat(" ")
+                                .concat(ConstantsPath.DESKTOP).concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE));
+            }
         }
     }
 
     public String extraireEntitiesFilesToCopy(Project project) {
+        LOGGER.debug("extraireEntitiesFilesToCopy");
         List<BuisnessLogicEntity> entitiesToCopy = project.getEntities();
         String entitiesFiles = "{";
         for (int i = 0; i < entitiesToCopy.size(); i++) {
@@ -154,6 +161,7 @@ public class CommandExecutorService implements ICommandExecutorService {
 
     @Override
     public void createFolderForEachDto(Project project) throws IOException, InterruptedException {
+        LOGGER.debug("createFolderForEachDto");
         project.getEntities().stream().forEach(entity -> {
             try {
                 executeCommand(Constants.MKDIR_COMMAND.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
@@ -167,12 +175,13 @@ public class CommandExecutorService implements ICommandExecutorService {
 
     @Override
     public void copyDaoToGeneratedProject(Project project, boolean isWindows) throws IOException, InterruptedException {
+        LOGGER.debug("copyDaoToGeneratedProject");
         String daoFiles = extraireDaoFilesToCopy(project);
         executeCopyDaoCommandForDifferentOs(project, isWindows, daoFiles);
     }
 
     private void executeCopyDaoCommandForDifferentOs(Project project, boolean isWindows, String daoFiles) throws IOException, InterruptedException {
-
+        LOGGER.debug("executeCopyDaoCommandForDifferentOs");
         if (isWindows) {
             executeCommand(CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(ConstantsPath.PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT).concat(ConstantsPath.DESKTOP)
                     .concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DAO_PACKAGE));
@@ -186,6 +195,7 @@ public class CommandExecutorService implements ICommandExecutorService {
     }
 
     private String extraireDaoFilesToCopy(Project project) {
+        LOGGER.debug("extraireDaoFilesToCopy");
         List<BuisnessLogicEntity> daoToCopy = project.getEntities();
         String daoFiles = "{";
         for (int i = 0; i < daoToCopy.size(); i++) {
@@ -197,6 +207,7 @@ public class CommandExecutorService implements ICommandExecutorService {
 
     @Override
     public void renameDaoToGeneratedProject(Project project, boolean isWindows) throws IOException, InterruptedException {
+        LOGGER.debug("renameDaoToGeneratedProject");
         project.getEntities().stream().forEach(entity -> {
             try {
                 executeCommand(CommandConstantsLinux.RENAME_COMMAND_LINUX_FILES.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
@@ -212,12 +223,14 @@ public class CommandExecutorService implements ICommandExecutorService {
 
     @Override
     public void copyEntitiesToDtoFolder(Project project, boolean isWindows) throws IOException, InterruptedException {
+        LOGGER.debug("copyEntitiesToDtoFolder");
         String EntitiesToCopyFiles = extraireEntitiesFilesToCopy(project);
         executeCopyEntitiesToDtoCommandForDifferentOs(isWindows, EntitiesToCopyFiles, project);
     }
 
     @Override
     public void renameDTo(Project project, boolean isWindows) throws IOException, InterruptedException {
+        LOGGER.debug("renameDTo");
         project.getEntities().stream().forEach(entity -> {
             try {
                 executeCommand(CommandConstantsLinux.RENAME_COMMAND_LINUX_FILES.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
@@ -235,6 +248,7 @@ public class CommandExecutorService implements ICommandExecutorService {
     }
 
     private void executeCopyEntitiesToDtoCommandForDifferentOs(boolean isWindows, String entitiesToCopyFiles, Project project) throws IOException, InterruptedException {
+        LOGGER.debug("executeCopyEntitiesToDtoCommandForDifferentOs");
         project.getEntities().stream().forEach(entity -> {
 
             try {
@@ -254,12 +268,14 @@ public class CommandExecutorService implements ICommandExecutorService {
     }
 
     private void executeCopyCommandLinux(Project project, BuisnessLogicEntity entity) throws IOException, InterruptedException {
+        LOGGER.debug("executeCopyCommandLinux");
         executeCommand(CommandConstantsLinux.COPY_COMMAND_LINUX_FILES_CP.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
                 .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES).concat(entity.getNameEntity()).concat(".java ").concat(ConstantsPath.DESKTOP)
                 .concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES).concat(entity.getNameEntity().toLowerCase()));
     }
 
     private void executeCopyCommandWindows(Project project, BuisnessLogicEntity entity) throws IOException, InterruptedException {
+        LOGGER.debug("executeCopyCommandWindows");
         executeCommand(CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
                 .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES).concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
                 .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES).concat(entity.getNameEntity().toLowerCase()));
@@ -267,13 +283,14 @@ public class CommandExecutorService implements ICommandExecutorService {
 
     @Override
     public void editNameProjectAfterCloning(Project project, boolean isWindows) throws IOException, InterruptedException {
-
+        LOGGER.debug("editNameProjectAfterCloning");
         renameProjectFolder(project);
         editPomFilesWithTheNewProjectName(project);
 
     }
 
     private void editPomFilesWithTheNewProjectName(Project project) throws IOException {
+        LOGGER.debug("editPomFilesWithTheNewProjectName");
         File pom = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH).concat(Constants.POM_XML));
         File pomPersistence = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH)
                 .concat(ConstantsModules.SIFAST_SPRING_PERSISTENCE).concat(Constants.PATTERN_SLASH).concat(Constants.POM_XML));
@@ -300,6 +317,7 @@ public class CommandExecutorService implements ICommandExecutorService {
     }
 
     private void editPomFile(Project project, File file) throws IOException {
+        LOGGER.debug("editPomFile");
         String fileContext = FileUtils.readFileToString(file);
         fileContext = fileContext.replaceAll(Constants.OLD_PROJECT_NAME, project.getNameProject());
         fileContext = fileContext.replaceAll(Constants.OLD_PROJECT_NAME_ALT, project.getNameProject());
@@ -307,12 +325,14 @@ public class CommandExecutorService implements ICommandExecutorService {
     }
 
     private void renameProjectFolder(Project project) throws IOException, InterruptedException {
+        LOGGER.debug("renameProjectFolder");
         executeCommand(CommandConstantsLinux.RENAME_COMMAND_LINUX_FILES.concat(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE).concat(" ")
                 .concat(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW).concat(project.getNameProject()));
     }
 
     @Override
     public byte[] zipProject(Project project) throws FileNotFoundException, IOException {
+        LOGGER.debug("zipProject");
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
         ZipOutputStream zipOutputStream = new ZipOutputStream(bufferedOutputStream);

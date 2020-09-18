@@ -1,15 +1,5 @@
 package com.sifast.springular.framework.business.logic.Executor;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.io.FileUtils;
-import org.springframework.stereotype.Component;
-
 import com.sifast.springular.framework.business.logic.common.AttributesTypeEnum;
 import com.sifast.springular.framework.business.logic.common.RelationshipTypeEnum;
 import com.sifast.springular.framework.business.logic.common.constants.Constants;
@@ -20,9 +10,21 @@ import com.sifast.springular.framework.business.logic.entities.Attribute;
 import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
 import com.sifast.springular.framework.business.logic.entities.Project;
 import com.sifast.springular.framework.business.logic.entities.Relationship;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 @Component
 public class DtoFileWriter {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(DtoFileWriter.class);
 
     public void generateSuperFilesInEachFolderDTO(BuisnessLogicEntity entity, Project project) {
         project.getEntities().stream().forEach(ent -> {
@@ -274,7 +276,9 @@ public class DtoFileWriter {
     }
 
     private void writeGettersAndSettersForDto(FileWriter myWriter, List<Attribute> attributes, BuisnessLogicEntity ent) {
+        LOGGER.debug("writeGettersAndSettersForDto");
         attributes.stream().forEach(attributeForGetterAndSetter -> {
+            LOGGER.debug("attributes : {}", attributeForGetterAndSetter.getNameAttribute());
             String firstLetter = null;
             String getterAttribute = null;
             if (!attributeForGetterAndSetter.getNameAttribute().equals("") && !attributeForGetterAndSetter.getNameAttribute().isEmpty()) {
@@ -444,7 +448,7 @@ public class DtoFileWriter {
     private void writeViewGettersAndSetters(BuisnessLogicEntity ent, List<Attribute> attributes, List<Attribute> attributesView, FileWriter myWriter) {
         writeViewGettersAndSettersForDto(ent, myWriter);
         writeViewGettersAndSettersForRelationshipAttributes(ent, myWriter, attributesView);
-        writeGettersAndSettersForDto(myWriter, attributes, ent);
+        writeGettersAndSettersForDto(myWriter, attributesView, ent);
     }
 
     private void writeViewAttributes(BuisnessLogicEntity ent, List<Attribute> attributes, List<Attribute> attributesView, FileWriter myWriter) throws IOException {
@@ -736,6 +740,7 @@ public class DtoFileWriter {
     private void writeViewGettersAndSettersForDto(BuisnessLogicEntity ent, FileWriter myWriter) {
 
         try {
+
             myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.PUBLIC).concat(AttributesTypeEnum.Long.name()).concat(" ").concat("get").concat(Constants.ID)
                     .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE).concat(" ").concat(Constants.ACCOLADE_OUVRANT)
                     .concat(Constants.PATTERN_RETOUR_LIGNE).concat(Constants.PATTERN_TABULATION).concat(Constants.PATTERN_TABULATION).concat(Constants.RETURN)

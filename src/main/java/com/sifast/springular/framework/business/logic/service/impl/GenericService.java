@@ -1,18 +1,16 @@
 package com.sifast.springular.framework.business.logic.service.impl;
 
+import com.sifast.springular.framework.business.logic.common.constants.Constants;
+import com.sifast.springular.framework.business.logic.dao.IGenericDao;
+import com.sifast.springular.framework.business.logic.service.IGenericService;
 import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import com.sifast.springular.framework.business.logic.common.constants.Constants;
-import com.sifast.springular.framework.business.logic.dao.IGenericDao;
-import com.sifast.springular.framework.business.logic.service.IGenericService;
 
 
 public class GenericService<T, P extends Serializable> implements IGenericService<T, P> {
@@ -27,67 +25,70 @@ public class GenericService<T, P extends Serializable> implements IGenericServic
         return genericDao.save(entity);
     }
 
-	@Override
+    @Override
+    public <S extends T> List<S> saveAll(Iterable<S> entities) {
+        return genericDao.saveAll(entities);
+    }
+
+    @Override
     public T update(T entity) {
         return genericDao.save(entity);
     }
 
-	@Override
+    @Override
     public void delete(T entity) {
         genericDao.delete(entity);
     }
 
-	@Override
+    @Override
     public List<T> findAll() {
         return genericDao.findAll();
     }
 
-	@Override
+    @Override
     public List<T> findAllById(Iterable<P> ids) {
         return genericDao.findAllById(ids);
     }
 
-	@Override
+    @Override
     public List<T> findAll(Sort sort) {
         return genericDao.findAll(sort);
     }
-	@Override
+
+    @Override
     public Page<T> findAll(Pageable pageable) {
         return genericDao.findAll(pageable);
     }
-	@Override
+
+    @Override
     public boolean existsById(P id) {
         return genericDao.existsById(id);
     }
 
-	 @Override
-	    public void deleteById(P id) {
-	        genericDao.deleteById(id);
-	    }
+    @Override
+    public void deleteById(P id) {
+        genericDao.deleteById(id);
+    }
 
-	 @Override
-	    public void deleteAll() {
-	        genericDao.deleteAll();
-	    }
+    @Override
+    public void deleteAll() {
+        genericDao.deleteAll();
+    }
 
-	 @Override
-	    public T getOne(P id) {
-	        return genericDao.getOne(id);
-	    }
+    @Override
+    public T getOne(P id) {
+        return genericDao.getOne(id);
+    }
 
-	@Override
-	public Optional<T> findById(P id) {
-		
+    @Override
+    public Optional<T> findById(P id) {
+
         Optional<T> returnedObject;
         returnedObject = genericDao.findById(id);
         return returnedObject;
 
-	}
+    }
 
 
-
-
-   
-   
 }
 

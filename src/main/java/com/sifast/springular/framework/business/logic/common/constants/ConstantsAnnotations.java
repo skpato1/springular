@@ -49,4 +49,14 @@ public class ConstantsAnnotations {
     public static final String ANNOTATION_VALIDATED = "@Validated";
 
     public static final String GET_MAPPING = "@GetMapping";
+
+    public static final String POST_MAPPING = "@PostMapping";
+
+    public static final String PUT_MAPPING = "@PutMapping";
+
+    public static final String DELETE_MAPPING = "@DeleteMapping";
+
+    private ConstantsAnnotations() {
+
+    }
 }

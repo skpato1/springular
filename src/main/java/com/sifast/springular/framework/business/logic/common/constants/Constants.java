@@ -10,7 +10,9 @@ public class Constants {
 
     public static final int MAX_STRING_SIZE = 200;
 
-    public static final String PATTERN_TABULATION = "	";
+    public static final String PATTERN_TABULATION = "\t";
+
+    public static final String PATTERN_DOUBLE_TABULATION = "\t\t";
 
     public static final String PATTERN_CMD_SH_OPTION_C = "-c";
 
@@ -34,7 +36,7 @@ public class Constants {
 
     public static final String PATTERN_RETOUR_LIGNE = "\n";
 
-    public static final String PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE = ";\n";
+    public static final String PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE = ";\n";
 
     public static final String ACCOLADE_OUVRANT = "{";
 
@@ -150,7 +152,7 @@ public class Constants {
 
     public static final String API_MESSAGE = "message = ApiMessage.";
 
-    public static final String _CREATED_SUCCESSFULLY = "_CREATED_SUCCESSFULLY";
+    public static final String CREATED_SUCCESSFULLY = "_CREATED_SUCCESSFULLY";
 
     public static final String RESPONSE_EGALE = "response = ";
 
@@ -256,7 +258,7 @@ public class Constants {
 
     public static final String HTTP_ERROR_RESPONSE_SET_CODE_AND_MESSAGE = "httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.";
 
-    public static final String _NOT_FOUND = "_NOT_FOUND";
+    public static final String NOT_FOUND = "_NOT_FOUND";
 
     public static final String CONSTANTS_DECLARATION = "public static final String ";
 
@@ -272,9 +274,9 @@ public class Constants {
 
     public static final String DECLARATION_EXCEPTION_EX_IN_CATCH = "Exception ex";
 
-    public static final String ERROR_SAVE_ = "ERR_SAVE";
+    public static final String ERROR_SAVE = "ERR_SAVE";
 
-    public static final String _TYPE = "_TYPE";
+    public static final String TYPE = "_TYPE";
 
     public static final String HTTP_STATUS_INTERNAL_SERVER_ERROR = "httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;\n";
 
@@ -426,5 +428,32 @@ public class Constants {
     public static final String METHOD_GET_VERSIONS_WITHOUT_RELATIONSHIPS = "getVersionsWithoutRelationships";
 
     public static final String METHOD_GET_DIFFERENCES_BETWEEN_TWO_VERSIONS = "compareTwoVersionsOfTheSameObject";
+
+    public static final String SERVICE = "Service";
+
+    public static final String AUDIT = "Audit";
+
+    public static final String MAPPER = "Mapper";
+
+    public static final String ELEMENT = "element";
+
+    public static final String POINT_JAVA = ".java";
+
+    public static final String MAPPED = "mapped";
+
+    public static final String AUDIT_SERVICE = "AuditService";
+
+    public static final String VERSIONS = "versions";
+
+    public static final String VALIDATOR = "Validator";
+
+    public static final String ID_OF = "ID of";
+
+    public static final String V1 = "v1";
+
+    public static final String V2 = "v2";
+
+    private Constants() {
+    }
 
 }

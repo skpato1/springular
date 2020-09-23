@@ -1,6 +1,6 @@
 package com.sifast.springular.framework.business.logic.web.dto.relationship;
 
-import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.ViewBuisnessLogicEntity;
+import com.sifast.springular.framework.business.logic.web.dto.buisness_logic_entity.ViewBuisnessLogicEntity;
 
 public class ViewRelationshipDto extends RelationshipDto {
 

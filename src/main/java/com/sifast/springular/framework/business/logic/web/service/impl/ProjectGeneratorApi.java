@@ -1,10 +1,16 @@
 package com.sifast.springular.framework.business.logic.web.service.impl;
 
+import com.sifast.springular.framework.business.logic.common.ApiMessage;
+import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
+import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
+import com.sifast.springular.framework.business.logic.entities.Project;
+import com.sifast.springular.framework.business.logic.service.ICommandExecutorService;
+import com.sifast.springular.framework.business.logic.service.IJDLFileGeneratorService;
+import com.sifast.springular.framework.business.logic.service.IProjectService;
+import com.sifast.springular.framework.business.logic.web.service.api.IProjectGeneratorApi;
 import java.io.IOException;
 import java.util.Optional;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,27 +20,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sifast.springular.framework.business.logic.common.ApiMessage;
-import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
-import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
-import com.sifast.springular.framework.business.logic.entities.Project;
-import com.sifast.springular.framework.business.logic.service.ICommandExecutorService;
-import com.sifast.springular.framework.business.logic.service.IJDLFileGeneratorService;
-import com.sifast.springular.framework.business.logic.service.IProjectService;
-import com.sifast.springular.framework.business.logic.web.service.api.IProjectGeneratorApi;
-
 @RestController
 @CrossOrigin("*")
 @RequestMapping(value = "/api/")
 public class ProjectGeneratorApi implements IProjectGeneratorApi {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseApi.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProjectGeneratorApi.class);
 
     private HttpErrorResponse httpErrorResponse = new HttpErrorResponse();
 
-    private Object httpResponseBody;
+    Object httpResponseBody;
 
-    private HttpStatus httpStatus;
+    HttpStatus httpStatus;
 
     @Autowired
     private IJDLFileGeneratorService jdlFileGeneratorService;
@@ -106,7 +103,7 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
             httpStatus = HttpStatus.NOT_FOUND;
             httpResponseBody = httpErrorResponse;
         }
-        return null;
+        return new byte[]{};
     }
 
 }

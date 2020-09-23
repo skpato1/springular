@@ -1,17 +1,14 @@
-package com.sifast.springular.framework.business.logic.Executor;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import org.springframework.stereotype.Component;
+package com.sifast.springular.framework.business.logic.executor;
 
 import com.sifast.springular.framework.business.logic.common.constants.Constants;
 import com.sifast.springular.framework.business.logic.common.constants.ConstantsAnnotations;
 import com.sifast.springular.framework.business.logic.common.constants.ConstantsImportPackage;
 import com.sifast.springular.framework.business.logic.common.constants.ConstantsPath;
-import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
 import com.sifast.springular.framework.business.logic.entities.Project;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ValidatorWriter {
@@ -20,7 +17,7 @@ public class ValidatorWriter {
         project.getEntities().stream().forEach(ent -> {
             try {
                 String fileValidator = ent.getNameEntity().concat("Validator");
-                FileWriter myWriter = writeImportsAndStructureOfClassInValidators(project, ent, fileValidator);
+                FileWriter myWriter = writeImportsAndStructureOfClassInValidators(project, fileValidator);
                 closeAccoladeAndFile(myWriter);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -28,7 +25,7 @@ public class ValidatorWriter {
         });
     }
 
-    private FileWriter writeImportsAndStructureOfClassInValidators(Project project, BuisnessLogicEntity ent, String fileValidator) throws IOException {
+    private FileWriter writeImportsAndStructureOfClassInValidators(Project project, String fileValidator) throws IOException {
         File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_VALIDATOR).concat(fileValidator).concat(".java"));
 
         FileWriter myWriter = new FileWriter(file);

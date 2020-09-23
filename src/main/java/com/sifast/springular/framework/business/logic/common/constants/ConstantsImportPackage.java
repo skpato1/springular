@@ -18,7 +18,7 @@ public class ConstantsImportPackage {
 
     public static final String IMPORT_DTO_CONSTANTS = "import com.sifast.common.Constants;\n";
 
-    public static final String IMPORT_DTO_IWebServicesValidators = "import com.sifast.common.utils.IWebServicesValidators;\n";
+    public static final String IMPORT_DTO_I_WEB_SERVICES_VALIDATORS = "import com.sifast.common.utils.IWebServicesValidators;\n";
 
     public static final String PACKAGE_JHIPSTER_DAO = "package com.sifast.springular.framework.repository;";
 
@@ -144,6 +144,15 @@ public class ConstantsImportPackage {
 
     public static final String IMPORT_GET_MAPPING = "import org.springframework.web.bind.annotation.GetMapping;\n";
 
+    public static final String IMPORT_POST_MAPPING = "import org.springframework.web.bind.annotation.PostMapping;\n";
+
+    public static final String IMPORT_PUT_MAPPING = "import org.springframework.web.bind.annotation.PutMapping;\n";
+
+    public static final String IMPORT_DELETE_MAPPING = "import org.springframework.web.bind.annotation.DeleteMapping;\n";
+
     public static final String IMPORT_ENTITY_AUDIT_SERVICE = "import com.sifast.service.audit.";
+
+    private ConstantsImportPackage() {
+    }
 
 }

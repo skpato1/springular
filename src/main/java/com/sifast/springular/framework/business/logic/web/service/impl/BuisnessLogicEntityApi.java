@@ -1,11 +1,26 @@
 package com.sifast.springular.framework.business.logic.web.service.impl;
 
+import com.sifast.springular.framework.business.logic.common.ApiMessage;
+import com.sifast.springular.framework.business.logic.common.BusinessLogicException;
+import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
+import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
+import com.sifast.springular.framework.business.logic.entities.Attribute;
+import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
+import com.sifast.springular.framework.business.logic.entities.Project;
+import com.sifast.springular.framework.business.logic.service.IBuisnessLogicEntityService;
+import com.sifast.springular.framework.business.logic.service.IProjectService;
+import com.sifast.springular.framework.business.logic.web.config.ConfiguredModelMapper;
+import com.sifast.springular.framework.business.logic.web.dto.buisness_logic_entity.BuisnessLogicEntityDto;
+import com.sifast.springular.framework.business.logic.web.dto.buisness_logic_entity.CreateBuisnessLogicEntityDto;
+import com.sifast.springular.framework.business.logic.web.dto.buisness_logic_entity.ViewBuisnessLogicEntityDto;
+import com.sifast.springular.framework.business.logic.web.mapper.BuisnessLogicEntityMapper;
+import com.sifast.springular.framework.business.logic.web.service.api.IBuisnessLogicEntityApi;
+import io.swagger.annotations.ApiParam;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,24 +32,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.sifast.springular.framework.business.logic.common.ApiMessage;
-import com.sifast.springular.framework.business.logic.common.BuisnessLogicException;
-import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
-import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
-import com.sifast.springular.framework.business.logic.entities.Attribute;
-import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
-import com.sifast.springular.framework.business.logic.entities.Project;
-import com.sifast.springular.framework.business.logic.service.IBuisnessLogicEntityService;
-import com.sifast.springular.framework.business.logic.service.IProjectService;
-import com.sifast.springular.framework.business.logic.web.config.ConfiguredModelMapper;
-import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.BuisnessLogicEntityDto;
-import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.CreateBuisnessLogicEntityDto;
-import com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity.ViewBuisnessLogicEntityDto;
-import com.sifast.springular.framework.business.logic.web.mapper.BuisnessLogicEntityMapper;
-import com.sifast.springular.framework.business.logic.web.service.api.IBuisnessLogicEntityApi;
-
-import io.swagger.annotations.ApiParam;
 
 @RestController
 @CrossOrigin("*")
@@ -68,18 +65,18 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
         LOGGER.info("Web service saveBuisnessLogicEntity invoked with buisnessLogicEntityDto {}", buisnessLogicEntityDto);
         try {
             if (buisnessLogicEntityDto.getCreateListDtosIfChild().equals(buisnessLogicEntityDto.getCreateListIdsIfChild())) {
-                throw new BuisnessLogicException(ApiMessage.CHOICES_MUST_BE_DIFFERENT);
+                throw new BusinessLogicException(ApiMessage.CHOICES_MUST_BE_DIFFERENT);
             }
-            Optional<Project> project = projectService.findById(buisnessLogicEntityDto.getProject_id());
+            Optional<Project> project = projectService.findById(buisnessLogicEntityDto.getProjectId());
             if (project.isPresent()) {
                 BuisnessLogicEntity entityToBeSaved = buisnessLogicEntityMapper.mapCreateBuisnessLogicEntity(buisnessLogicEntityDto);
                 entityToBeSaved.setProject(project.get());
                 if (entityToBeSaved.getAttributes() != null) {
-                    List<Attribute> attributesSetId = entityToBeSaved.getAttributes();
-                    for (int i = 0; i < attributesSetId.size(); i++) {
-                        attributesSetId.get(i).setBuisness(entityToBeSaved);
+                    List<Attribute> attributes = entityToBeSaved.getAttributes();
+                    for (int i = 0; i < attributes.size(); i++) {
+                        attributes.get(i).setBuisness(entityToBeSaved);
                     }
-                    entityToBeSaved.setAttributes(attributesSetId);
+                    entityToBeSaved.setAttributes(attributes);
                 }
                 BuisnessLogicEntity savedBuisnessLogicEntity = buisnessLogicEntityService.save(entityToBeSaved);
 
@@ -90,9 +87,7 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
                 httpStatus = HttpStatus.NOT_FOUND;
                 httpResponseBody = httpErrorResponse;
             }
-        }
-
-        catch (BuisnessLogicException e) {
+        } catch (BusinessLogicException e) {
             httpStatus = HttpStatus.BAD_REQUEST;
             httpResponseBody = new HttpErrorResponse(HttpCostumCode.BAD_REQUEST.getValue(), e.getMessage());
         } catch (Exception e) {
@@ -126,7 +121,7 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
         List<BuisnessLogicEntity> buisnessLogicEntitys = buisnessLogicEntityService.findAll();
         httpStatus = HttpStatus.OK;
         httpResponseBody = !buisnessLogicEntitys.isEmpty()
-                ? buisnessLogicEntitys.stream().map(BuisnessLogicEntity -> modelMapper.map(BuisnessLogicEntity, ViewBuisnessLogicEntityDto.class)).collect(Collectors.toList())
+                ? buisnessLogicEntitys.stream().map(buisnessLogicEntity -> modelMapper.map(buisnessLogicEntity, ViewBuisnessLogicEntityDto.class)).collect(Collectors.toList())
                 : Collections.emptyList();
         return new ResponseEntity<>(httpResponseBody, httpStatus);
     }
@@ -178,7 +173,7 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
     public ResponseEntity<?> getBuisnessLogicEntityByProject(
             @ApiParam(value = "ID of Project that needs to be fetched", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id) {
         LOGGER.info("Web service getBuisnessLogicEntityByProject invoked with id {}", id);
-        List<ViewBuisnessLogicEntityDto> entitiesToReturn = new ArrayList<ViewBuisnessLogicEntityDto>();
+        List<ViewBuisnessLogicEntityDto> entitiesToReturn = new ArrayList<>();
         Optional<Project> project = projectService.findById(id);
         if (project.isPresent()) {
             httpStatus = HttpStatus.OK;

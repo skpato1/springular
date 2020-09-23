@@ -47,4 +47,8 @@ public class ConstantsPath {
     public static final String PATH_TO_PROJECT_VALIDATOR = "/sifast-spring-web/src/main/java/com/sifast/validator/";
 
     public static final String PATH_TO_PROJECT_AUDIT_SERVICE = "/sifast-spring-service/src/main/java/com/sifast/service/audit/";
+
+    private ConstantsPath() {
+
+    }
 }

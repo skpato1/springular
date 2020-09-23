@@ -1,10 +1,5 @@
 package com.sifast.springular.framework.business.logic.web.service.api;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
 import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.ApiStatus;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
@@ -12,41 +7,46 @@ import com.sifast.springular.framework.business.logic.web.dto.project.CreateProj
 import com.sifast.springular.framework.business.logic.web.dto.project.ProjectDatabaseDto;
 import com.sifast.springular.framework.business.logic.web.dto.project.ProjectDto;
 import com.sifast.springular.framework.business.logic.web.dto.project.ViewProjectDto;
-
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 public interface IProjectApi {
 
-    @ApiResponses(value = { @ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.PROJECT_CREATED_SUCCESSFULLY, response = ViewProjectDto.class),
-            @ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class) })
+    @ApiResponses(value = {@ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.PROJECT_CREATED_SUCCESSFULLY, response = ViewProjectDto.class),
+            @ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class)})
     @ApiOperation(value = "save project", response = ViewProjectDto.class)
-    @RequestMapping(value = "/project", method = RequestMethod.POST)
+    @PostMapping(value = "/project")
     ResponseEntity<?> saveProject(CreateProjectDto projectDto, BindingResult bindingResult);
 
-    @RequestMapping(value = "/project/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/project/{id}")
     ResponseEntity<?> getProject(int id);
 
-    @RequestMapping(value = "/projects", method = RequestMethod.GET)
+    @GetMapping(value = "/projects")
     ResponseEntity<?> getAllProjects();
 
-    @RequestMapping(value = "/projects/validated", method = RequestMethod.GET)
+    @GetMapping(value = "/projects/validated")
     ResponseEntity<?> getAllValidatedProjects();
 
-    @RequestMapping(value = "/project/validate/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/project/validate/{id}")
     ResponseEntity<?> validateProject(int id);
 
-    @RequestMapping(value = "/project/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/project/{id}")
     ResponseEntity<?> deleteProject(int id);
 
-    @RequestMapping(value = "/project/{id}", method = RequestMethod.PUT)
-    ResponseEntity<?> updateProject(int id, ProjectDto projectDto, BindingResult bindingResult) throws Exception;
+    @PutMapping(value = "/project/{id}")
+    ResponseEntity<?> updateProject(int id, ProjectDto projectDto, BindingResult bindingResult);
 
-    @ApiResponses(value = { @ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.PROJECT_CREATED_SUCCESSFULLY, response = ProjectDatabaseDto.class),
-            @ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class) })
+    @ApiResponses(value = {@ApiResponse(code = ApiStatus.STATUS_ACCEPTED, message = ApiMessage.PROJECT_CREATED_SUCCESSFULLY, response = ProjectDatabaseDto.class),
+            @ApiResponse(code = ApiStatus.STATUS_BAD_REQUEST, message = ApiMessage.INVALID_INPUT, response = HttpErrorResponse.class)})
     @ApiOperation(value = "save project and database", response = ViewProjectDto.class)
-    @RequestMapping(value = "/project/database", method = RequestMethod.POST)
+    @PostMapping(value = "/project/database")
     ResponseEntity<?> saveProjectAndDatabase(ProjectDatabaseDto projectDatabaseDto, BindingResult bindingResult);
 
 }

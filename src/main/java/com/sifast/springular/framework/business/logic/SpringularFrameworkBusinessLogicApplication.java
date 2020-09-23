@@ -7,17 +7,16 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @Configuration
-@ComponentScan(basePackages = { "com.sifast.springular.framework.business.logic.entities", "com.sifast.springular.framework.business.logic.web.service.impl",
+@ComponentScan(basePackages = {"com.sifast.springular.framework.business.logic.entities", "com.sifast.springular.framework.business.logic.web.service.impl",
         "com.sifast.springular.framework.business.logic.service", "com.sifast.springular.framework.business.logic.service.impl",
         "com.sifast.springular.framework.business.logic.dao", "com.sifast.springular.framework.business.logic.web.service.api",
         "com.sifast.springular.framework.business.logic.web.config", "com.sifast.springular.framework.business.logic.web.mapper",
-        "com.sifast.springular.framework.business.logic.Executor" })
-@EnableJpaRepositories({ "com.sifast.springular.framework.business.logic.dao", "com.sifast.springular.framework.business.logic.entities" })
+        "com.sifast.springular.framework.business.logic.executor"})
+@EnableJpaRepositories({"com.sifast.springular.framework.business.logic.dao", "com.sifast.springular.framework.business.logic.entities"})
 @EnableConfigurationProperties
 @EntityScan("com.sifast.springular.framework.business.logic.entities")
 @EnableSwagger2

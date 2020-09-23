@@ -1,4 +1,4 @@
-package com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity;
+package com.sifast.springular.framework.business.logic.web.dto.buisness_logic_entity;
 
 public class ViewBuisnessLogicEntityDto extends BuisnessLogicEntityDto {
 

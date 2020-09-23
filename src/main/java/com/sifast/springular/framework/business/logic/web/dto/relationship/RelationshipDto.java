@@ -1,67 +1,63 @@
 package com.sifast.springular.framework.business.logic.web.dto.relationship;
 
+import com.sifast.springular.framework.business.logic.common.ApiMessage;
+import com.sifast.springular.framework.business.logic.common.RelationshipTypeEnum;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import com.sifast.springular.framework.business.logic.common.ApiMessage;
-import com.sifast.springular.framework.business.logic.common.RelationshipTypeEnum;
-
 public class RelationshipDto {
-	
-	
-	
-	@NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
-	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
-	private RelationshipTypeEnum typeRelationship;
-	
-	
-	@NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
-	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
-	private int parentEntity_id;
-	
-	
-	@NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
-	@NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
-	private int childEntity_id;
 
 
-	public RelationshipTypeEnum getTypeRelationship() {
-		return typeRelationship;
-	}
+    @NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
+    @NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
+    private RelationshipTypeEnum typeRelationship;
 
 
-	public void setTypeRelationship(RelationshipTypeEnum typeRelationship) {
-		this.typeRelationship = typeRelationship;
-	}
+    @NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
+    @NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
+    private int parentEntityId;
 
 
-	public int getParentEntity_id() {
-		return parentEntity_id;
-	}
+    @NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
+    @NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
+    private int childEntityId;
 
 
-	public void setParentEntity_id(int parentEntity_id) {
-		this.parentEntity_id = parentEntity_id;
-	}
+    public RelationshipTypeEnum getTypeRelationship() {
+        return typeRelationship;
+    }
 
 
-	public int getChildEntity_id() {
-		return childEntity_id;
-	}
+    public void setTypeRelationship(RelationshipTypeEnum typeRelationship) {
+        this.typeRelationship = typeRelationship;
+    }
 
 
-	public void setChildEntity_id(int childEntity_id) {
-		this.childEntity_id = childEntity_id;
-	}
+    public int getParentEntityId() {
+        return parentEntityId;
+    }
 
 
-	@Override
-	public String toString() {
-		return "RelationshipDto [typeRelationship=" + typeRelationship + ", parentEntity_id=" + parentEntity_id
-				+ ", childEntity_id=" + childEntity_id + "]";
-	}
-	
-	
-	
+    public void setParentEntityId(int parentEntityId) {
+        this.parentEntityId = parentEntityId;
+    }
+
+
+    public int getChildEntityId() {
+        return childEntityId;
+    }
+
+
+    public void setChildEntityId(int childEntityId) {
+        this.childEntityId = childEntityId;
+    }
+
+
+    @Override
+    public String toString() {
+        return "RelationshipDto [typeRelationship=" + typeRelationship + ", parentEntity_id=" + parentEntityId
+                + ", childEntity_id=" + childEntityId + "]";
+    }
+
 
 }

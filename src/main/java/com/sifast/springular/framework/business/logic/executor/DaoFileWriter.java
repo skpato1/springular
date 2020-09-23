@@ -1,21 +1,18 @@
-package com.sifast.springular.framework.business.logic.Executor;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import org.springframework.stereotype.Component;
+package com.sifast.springular.framework.business.logic.executor;
 
 import com.sifast.springular.framework.business.logic.common.constants.Constants;
 import com.sifast.springular.framework.business.logic.common.constants.ConstantsAnnotations;
 import com.sifast.springular.framework.business.logic.common.constants.ConstantsImportPackage;
 import com.sifast.springular.framework.business.logic.common.constants.ConstantsPath;
 import com.sifast.springular.framework.business.logic.entities.Project;
+import java.io.File;
+import java.io.FileWriter;
+import org.springframework.stereotype.Component;
 
 @Component
 public class DaoFileWriter {
 
-    public void writeDaoFiles(Project project) throws IOException {
+    public void writeDaoFiles(Project project) {
         project.getEntities().stream().forEach(entity -> {
             try {
                 File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES).concat("I")
@@ -24,7 +21,7 @@ public class DaoFileWriter {
                 FileWriter myWriter = new FileWriter(file);
                 myWriter.write("");
                 myWriter.write(ConstantsImportPackage.PACKAGE_SPRINGULAR_DAO.concat(Constants.PATTERN_RETOUR_LIGNE));
-                myWriter.write(ConstantsImportPackage.IMPORT_SPRINGULAR_DOMAIN_TO_REPLACE.concat(entity.getNameEntity()).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                myWriter.write(ConstantsImportPackage.IMPORT_SPRINGULAR_DOMAIN_TO_REPLACE.concat(entity.getNameEntity()).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
                 myWriter.write(ConstantsImportPackage.IMPORT_SPRINGULAR_REPOSITORY_ALL.concat(Constants.PATTERN_RETOUR_LIGNE));
                 myWriter.write(ConstantsImportPackage.IMPORT_SPRINGULAR_REPOSITORY.concat(Constants.PATTERN_RETOUR_LIGNE));
                 myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
@@ -38,9 +35,7 @@ public class DaoFileWriter {
                 myWriter.write(Constants.ACCOLADE_FERMANTE);
                 myWriter.close();
 
-            }
-
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });

@@ -1,13 +1,12 @@
 package com.sifast.springular.framework.business.logic.web.mapper;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.sifast.springular.framework.business.logic.entities.Project;
 import com.sifast.springular.framework.business.logic.web.config.ConfiguredModelMapper;
 import com.sifast.springular.framework.business.logic.web.dto.project.CreateProjectDto;
 import com.sifast.springular.framework.business.logic.web.dto.project.ProjectDto;
 import com.sifast.springular.framework.business.logic.web.dto.project.ViewProjectDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ProjectMapper {
@@ -16,18 +15,15 @@ public class ProjectMapper {
     private ConfiguredModelMapper modelMapper;
 
     public Project mapCreateProject(CreateProjectDto projectDto) {
-        Project mappedProject = modelMapper.map(projectDto, Project.class);
-        return mappedProject;
+        return modelMapper.map(projectDto, Project.class);
     }
 
     public ViewProjectDto mapProjectToViewProjectDto(Project project) {
-        ViewProjectDto viewProjectDto = modelMapper.map(project, ViewProjectDto.class);
-        return viewProjectDto;
+        return modelMapper.map(project, ViewProjectDto.class);
     }
 
     public Project mapDatabaseDtoToModelDatabase(ProjectDto projectDto) {
-        Project mappedProject = modelMapper.map(projectDto, Project.class);
-        return mappedProject;
+        return modelMapper.map(projectDto, Project.class);
     }
 
 }

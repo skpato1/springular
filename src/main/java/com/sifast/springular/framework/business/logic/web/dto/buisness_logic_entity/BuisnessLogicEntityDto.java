@@ -1,15 +1,12 @@
-package com.sifast.springular.framework.business.logic.web.dto.buisnessLogicEntity;
-
-import com.sifast.springular.framework.business.logic.web.dto.project.ViewProjectDto;
-import java.util.List;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+package com.sifast.springular.framework.business.logic.web.dto.buisness_logic_entity;
 
 import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.constants.Constants;
 import com.sifast.springular.framework.business.logic.web.dto.attribute.AttributeDto;
+import java.util.List;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class BuisnessLogicEntityDto {
 
@@ -26,7 +23,7 @@ public class BuisnessLogicEntityDto {
 
     @NotEmpty(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
     @NotNull(message = ApiMessage.REQUIRED_VALIDATION_FAILED)
-    private int project_id;
+    private int projectId;
 
     private Boolean isTrackable;
 
@@ -70,12 +67,12 @@ public class BuisnessLogicEntityDto {
         this.attributes = attributes;
     }
 
-    public int getProject_id() {
-        return project_id;
+    public int getProjectId() {
+        return projectId;
     }
 
-    public void setProject_id(int project_id) {
-        this.project_id = project_id;
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 
     @Override
@@ -85,7 +82,7 @@ public class BuisnessLogicEntityDto {
         sb.append(", attributes=").append(attributes);
         sb.append(", createListIdsIfChild=").append(createListIdsIfChild);
         sb.append(", createListDtosIfChild=").append(createListDtosIfChild);
-        sb.append(", project_id=").append(project_id);
+        sb.append(", project_id=").append(projectId);
         sb.append(", isTrackable=").append(isTrackable);
         sb.append('}');
         return sb.toString();

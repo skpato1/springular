@@ -1,22 +1,5 @@
 package com.sifast.springular.framework.business.logic.web.service.impl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
@@ -31,8 +14,22 @@ import com.sifast.springular.framework.business.logic.web.dto.database.DatabaseD
 import com.sifast.springular.framework.business.logic.web.dto.database.ViewDatabaseDto;
 import com.sifast.springular.framework.business.logic.web.mapper.DatabaseMapper;
 import com.sifast.springular.framework.business.logic.web.service.api.IDatabaseApi;
-
 import io.swagger.annotations.ApiParam;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin("*")
@@ -67,7 +64,7 @@ public class DatabaseApi implements IDatabaseApi {
             BindingResult bindingResult) {
         LOGGER.info("Web service saveDatabase invoked with databaseDto {}", databaseDto);
         try {
-            Optional<Project> project = projectService.findById(databaseDto.getProject_id());
+            Optional<Project> project = projectService.findById(databaseDto.getProjectId());
             if (project.isPresent()) {
                 Database databaseToBeSaved = databaseMapper.mapCreateDatabase(databaseDto);
                 project.get().setDatabase(databaseToBeSaved);
@@ -138,12 +135,11 @@ public class DatabaseApi implements IDatabaseApi {
     @Override
     public ResponseEntity<?> updateDatabase(
             @ApiParam(value = "ID of Database that needs to be updated", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id,
-            @ApiParam(required = true, value = "databaseDto", name = "databaseDto") @RequestBody DatabaseDto databaseDto, BindingResult bindingResult) throws Exception {
+            @ApiParam(required = true, value = "databaseDto", name = "databaseDto") @RequestBody DatabaseDto databaseDto, BindingResult bindingResult) {
         LOGGER.info("Web service updateDatabase invoked with id {}", id);
         if (!bindingResult.hasFieldErrors()) {
             Optional<Database> database = databaseService.findById(id);
             if (database.isPresent()) {
-                findDatabaseById(id);
                 Database mappedDatabase = databaseMapper.mapDatabaseDtoToModelDatabase(databaseDto);
                 mappedDatabase.setId(id);
                 Database updatedDatabase = databaseService.save(mappedDatabase);
@@ -162,11 +158,4 @@ public class DatabaseApi implements IDatabaseApi {
         return new ResponseEntity<>(httpResponseBody, httpStatus);
     }
 
-    private Database findDatabaseById(int id) throws Exception {
-        Optional<Database> database = databaseService.findById(id);
-        if (!database.isPresent()) {
-            throw new Exception();
-        }
-        return database.get();
-    }
 }

@@ -1,11 +1,4 @@
-package com.sifast.springular.framework.business.logic.Executor;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.stereotype.Component;
+package com.sifast.springular.framework.business.logic.executor;
 
 import com.sifast.springular.framework.business.logic.common.RelationshipTypeEnum;
 import com.sifast.springular.framework.business.logic.common.constants.Constants;
@@ -15,6 +8,11 @@ import com.sifast.springular.framework.business.logic.entities.Attribute;
 import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
 import com.sifast.springular.framework.business.logic.entities.Project;
 import com.sifast.springular.framework.business.logic.entities.Relationship;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.stereotype.Component;
 
 @Component
 public class FileWrite {
@@ -22,12 +20,12 @@ public class FileWrite {
     public void writeRelationshipsInJdlFile(Project project, FileWriter myWriter) {
         List<Integer> usedRelationshipsIds = new ArrayList<>();
         project.getEntities().stream().forEach(entity -> {
-            entity.getRelationshipsParent().stream().forEach(parentRelationship -> {
-                addRelationshipToJdlFile(usedRelationshipsIds, parentRelationship, myWriter);
-            });
-            entity.getRelationshipsChild().stream().forEach(childRelationship -> {
-                addRelationshipToJdlFile(usedRelationshipsIds, childRelationship, myWriter);
-            });
+            entity.getRelationshipsParent().stream().forEach(parentRelationship ->
+                    addRelationshipToJdlFile(usedRelationshipsIds, parentRelationship, myWriter)
+            );
+            entity.getRelationshipsChild().stream().forEach(childRelationship ->
+                    addRelationshipToJdlFile(usedRelationshipsIds, childRelationship, myWriter)
+            );
         });
     }
 

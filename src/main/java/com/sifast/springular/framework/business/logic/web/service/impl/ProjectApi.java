@@ -1,22 +1,5 @@
 package com.sifast.springular.framework.business.logic.web.service.impl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
@@ -33,8 +16,22 @@ import com.sifast.springular.framework.business.logic.web.dto.project.ViewProjec
 import com.sifast.springular.framework.business.logic.web.mapper.DatabaseMapper;
 import com.sifast.springular.framework.business.logic.web.mapper.ProjectMapper;
 import com.sifast.springular.framework.business.logic.web.service.api.IProjectApi;
-
 import io.swagger.annotations.ApiParam;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin("*")
@@ -127,9 +124,9 @@ public class ProjectApi implements IProjectApi {
 
     @Override
     public ResponseEntity<?> getAllProjects() {
-        List<Project> Projects = projectService.findAll();
+        List<Project> projects = projectService.findAll();
         httpStatus = HttpStatus.OK;
-        httpResponseBody = !Projects.isEmpty() ? Projects.stream().map(Project -> modelMapper.map(Project, ViewProjectDto.class)).collect(Collectors.toList())
+        httpResponseBody = !projects.isEmpty() ? projects.stream().map(project -> modelMapper.map(project, ViewProjectDto.class)).collect(Collectors.toList())
                 : Collections.emptyList();
         return new ResponseEntity<>(httpResponseBody, httpStatus);
     }
@@ -154,12 +151,11 @@ public class ProjectApi implements IProjectApi {
     @Override
     public ResponseEntity<?> updateProject(
             @ApiParam(value = "ID of Project that needs to be updated", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id,
-            @ApiParam(required = true, value = "projectDto", name = "projectDto") @RequestBody ProjectDto projectDto, BindingResult bindingResult) throws Exception {
+            @ApiParam(required = true, value = "projectDto", name = "projectDto") @RequestBody ProjectDto projectDto, BindingResult bindingResult) {
         LOGGER.info("Web service updateProject invoked with id {}", id);
         if (!bindingResult.hasFieldErrors()) {
-            Optional<Project> Project = projectService.findById(id);
-            if (Project.isPresent()) {
-                findProjectById(id);
+            Optional<Project> project = projectService.findById(id);
+            if (project.isPresent()) {
                 Project mappedProject = projectMapper.mapDatabaseDtoToModelDatabase(projectDto);
                 mappedProject.setId(id);
                 Project updatedProject = projectService.save(mappedProject);
@@ -181,9 +177,9 @@ public class ProjectApi implements IProjectApi {
 
     @Override
     public ResponseEntity<?> getAllValidatedProjects() {
-        List<Project> Projects = projectService.findByStatusProject(ProjectStatus.VALIDATED);
+        List<Project> projects = projectService.findByStatusProject(ProjectStatus.VALIDATED);
         httpStatus = HttpStatus.OK;
-        httpResponseBody = !Projects.isEmpty() ? Projects.stream().map(Project -> modelMapper.map(Project, ViewProjectDto.class)).collect(Collectors.toList())
+        httpResponseBody = !projects.isEmpty() ? projects.stream().map(project -> modelMapper.map(project, ViewProjectDto.class)).collect(Collectors.toList())
                 : Collections.emptyList();
         return new ResponseEntity<>(httpResponseBody, httpStatus);
     }
@@ -206,12 +202,5 @@ public class ProjectApi implements IProjectApi {
 
     }
 
-    private Project findProjectById(int id) throws Exception {
-        Optional<Project> project = projectService.findById(id);
-        if (!project.isPresent()) {
-            throw new Exception();
-        }
-        return project.get();
-    }
 
 }

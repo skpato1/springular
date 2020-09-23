@@ -1,14 +1,4 @@
-package com.sifast.springular.framework.business.logic.Executor;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+package com.sifast.springular.framework.business.logic.executor;
 
 import com.sifast.springular.framework.business.logic.common.AttributesTypeEnum;
 import com.sifast.springular.framework.business.logic.common.RelationshipTypeEnum;
@@ -21,6 +11,14 @@ import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEnti
 import com.sifast.springular.framework.business.logic.entities.Project;
 import com.sifast.springular.framework.business.logic.entities.Relationship;
 import com.sifast.springular.framework.business.logic.service.impl.RelationshipService;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class AuditServiceFileWriter {
@@ -34,26 +32,26 @@ public class AuditServiceFileWriter {
             String viewFileDto = "View".concat(ent.getNameEntity()).concat("Dto");
             String viewFileDtoVariable = ent.getNameEntity().toLowerCase().concat("Dto");
             String nameFileAuditService = ent.getNameEntity().concat("AuditService");
-            String serviceFile = "I".concat(ent.getNameEntity()).concat("Service");
-            String serviceVariable = ent.getNameEntity().toLowerCase().concat("Service");
-            String auditServiceFile = "Audit".concat("Service");
-            String auditServiceVariable = "audit".concat("Service");
-            String entityMapper = ent.getNameEntity().concat("Mapper");
-            String variableEntityMapper = ent.getNameEntity().toLowerCase().concat("Mapper");
+            String serviceFile = "I".concat(ent.getNameEntity()).concat(Constants.SERVICE);
+            String serviceVariable = ent.getNameEntity().toLowerCase().concat(Constants.SERVICE);
+            String auditServiceFile = Constants.AUDIT.concat(Constants.SERVICE);
+            String auditServiceVariable = "audit".concat(Constants.SERVICE);
+            String entityMapper = ent.getNameEntity().concat(Constants.MAPPER);
+            String variableEntityMapper = ent.getNameEntity().toLowerCase().concat(Constants.MAPPER);
             try {
                 FileWriter myWriter = writeImportsAndStructureOfClassInAuditServiceFiles(project, ent, nameFileAuditService, serviceFile, viewFileDto);
-                injectServicesAndMappers(ent, myWriter, serviceFile, serviceVariable, auditServiceFile, auditServiceVariable, entityMapper, variableEntityMapper);
+                injectServicesAndMappers(myWriter, serviceFile, serviceVariable, auditServiceFile, auditServiceVariable, entityMapper, variableEntityMapper);
                 List<String> variables = declareUsefulVariables(ent, myWriter);
                 writeMethodCompareTwoVersionsOfTheSameObject(ent, myWriter, variables, viewFileDto);
-                writeMethodGetSortedVersions(ent, myWriter, viewFileDto, viewFileDtoVariable, serviceVariable, auditServiceVariable, entityMapper, variableEntityMapper);
-                writeMethodGetVersionsWithoutRelationships(entity, myWriter, viewFileDto, viewFileDtoVariable, serviceVariable, auditServiceVariable, entityMapper,
+                writeMethodGetSortedVersions(ent, myWriter, viewFileDto, viewFileDtoVariable, serviceVariable, auditServiceVariable, variableEntityMapper);
+                writeMethodGetVersionsWithoutRelationships(entity, myWriter, viewFileDto, viewFileDtoVariable, serviceVariable, auditServiceVariable,
                         variableEntityMapper);
                 writeMethodGetVersionFromAllVersions(myWriter, viewFileDto);
-                writeMethodGetEntityFromAllVersions(myWriter, ent, viewFileDto, project);
+                writeMethodGetEntityFromAllVersions(myWriter, ent, viewFileDto);
                 closeAccoladeAndFile(myWriter);
                 writeViewImportsAfterAddRelationshipsAttribute(ent, project);
                 injectChildMapper(ent, project, entityMapper, variableEntityMapper);
-                importInjectedChildMapper(ent, project, entityMapper, variableEntityMapper);
+                importInjectedChildMapper(ent, project);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -61,7 +59,7 @@ public class AuditServiceFileWriter {
         });
     }
 
-    private void writeMethodGetEntityFromAllVersions(FileWriter myWriter, BuisnessLogicEntity ent, String viewFileDto, Project project) throws IOException {
+    private void writeMethodGetEntityFromAllVersions(FileWriter myWriter, BuisnessLogicEntity ent, String viewFileDto) throws IOException {
         retourAlaLigneAndTabulation(myWriter);
         String nameMethod = Constants.GET_LOWERCASE.concat(ent.getNameEntity()).concat("FromAllVersions");
         String typeDeRetourDeMethod = ent.getNameEntity();
@@ -85,8 +83,8 @@ public class AuditServiceFileWriter {
             retourAlaLigneAndTabulation(myWriter);
             writeSignatureOfMethodWithTwoEntryVariable(myWriter, Constants.CREATE_AND_SET_CHILD_TO_THE_ENTITY_PARENT_METHOD, Constants.VOID, entryTypeVariable, entryVariable,
                     ent.getNameEntity(), variableToInstance);
-            if (existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent()) != null) {
-                String nameChildEntity = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
+            String nameChildEntity = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
+            if (nameChildEntity != null) {
                 String firstLetterView = nameChildEntity.charAt(0) + "";
                 String attributeToLowerCase = firstLetterView.toLowerCase() + nameChildEntity.substring(1, nameChildEntity.length()).toLowerCase();
                 String attributeSelaveEntityName = attributeToLowerCase + "s";
@@ -95,10 +93,9 @@ public class AuditServiceFileWriter {
                 tabulation(myWriter);
                 instanciateSetOfClassWithEmptyConstructor(myWriter, nameChildEntity, attributeSelaveEntityName);
                 tabulation(myWriter);
-                String element_forEach = "element";
                 myWriter.write(entryVariable.concat(Constants.POINT).concat(Constants.GET_ENTITY_METHOD).concat(Constants.POINT).concat(Constants.GET_LOWERCASE)
                         .concat(getterAttribute).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.POINT).concat(Constants.FOR_EACH)
-                        .concat(Constants.PARENTHESE_OUVRANTE).concat(element_forEach).concat(Constants.FLECHE).concat(Constants.ACCOLADE_OUVRANT)
+                        .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.ELEMENT).concat(Constants.FLECHE).concat(Constants.ACCOLADE_OUVRANT)
                         .concat(Constants.PATTERN_RETOUR_LIGNE));
                 tabulation(myWriter);
                 tabulation(myWriter);
@@ -106,11 +103,11 @@ public class AuditServiceFileWriter {
                 tabulation(myWriter);
                 tabulation(myWriter);
                 retourAlaLigneAndTabulation(myWriter);
-                String childPostCommentMapper = nameChildEntity.toLowerCase().concat("Mapper");
+                String childPostCommentMapper = nameChildEntity.toLowerCase().concat(Constants.MAPPER);
                 String methodToMapViewChildEntityDtoToChildEntity = "mapView".concat(nameChildEntity).concat("DtoTo").concat(nameChildEntity);
                 myWriter.write(attributeSelaveEntityName.concat(Constants.POINT).concat(Constants.ADD).concat(Constants.PARENTHESE_OUVRANTE).concat(childPostCommentMapper)
-                        .concat(Constants.POINT).concat(methodToMapViewChildEntityDtoToChildEntity).concat(Constants.PARENTHESE_OUVRANTE).concat(element_forEach)
-                        .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                        .concat(Constants.POINT).concat(methodToMapViewChildEntityDtoToChildEntity).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.ELEMENT)
+                        .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
                 tabulation(myWriter);
                 closeConditionAccolade(myWriter);
                 tabulation(myWriter);
@@ -121,17 +118,15 @@ public class AuditServiceFileWriter {
                 myWriter.write(Constants.CLOSE_FOREACH);
                 retourAlaLigneAndTabulation(myWriter);
                 myWriter.write(variableToInstance.concat(Constants.POINT).concat(Constants.SET_LOWERCASE.concat(getterAttribute)).concat(Constants.PARENTHESE_OUVRANTE)
-                        .concat(attributeSelaveEntityName).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                        .concat(attributeSelaveEntityName).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
                 closeConditionAccolade(myWriter);
             }
-            // writeViewImportsAfterAddRelationshipsAttribute(ent, project);
-
         }
     }
 
     private void callMethodCreateAndSetChildToTheEntityParent(FileWriter myWriter, String entryVariable, String variableToInstance) throws IOException {
         myWriter.write(Constants.CREATE_AND_SET_CHILD_TO_THE_ENTITY_PARENT_METHOD.concat(Constants.PARENTHESE_OUVRANTE).concat(entryVariable).concat(Constants.VIRGULE)
-                .concat(variableToInstance).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(variableToInstance).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
     private void setAttributesOfEntityFromEntryVariable(FileWriter myWriter, BuisnessLogicEntity ent, String entryVariable, String variableToInstance) {
@@ -142,7 +137,6 @@ public class AuditServiceFileWriter {
             try {
                 setEntity(myWriter, entryVariable, variableToInstance, getAttribute, setAttribute);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         });
@@ -150,13 +144,13 @@ public class AuditServiceFileWriter {
 
     private void instanciateClassWithEmptyConstructor(FileWriter myWriter, String typeDeRetourDeMethod, String variableToInstance) throws IOException {
         myWriter.write(typeDeRetourDeMethod.concat(" ").concat(variableToInstance).concat(Constants.EGALE).concat(Constants.NEW).concat(typeDeRetourDeMethod)
-                .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
     private void instanciateSetOfClassWithEmptyConstructor(FileWriter myWriter, String typeDeRetourDeMethod, String variableToInstance) throws IOException {
         myWriter.write(AttributesTypeEnum.Set.toString().concat(Constants.INFERIEUR).concat(typeDeRetourDeMethod).concat(Constants.SUPERIEUR).concat(" ").concat(variableToInstance)
                 .concat(Constants.EGALE).concat(Constants.HASHSET_DECLARATION).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE)
-                .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
     private void writeSignatureOfMethodWithOneEntryVariable(FileWriter myWriter, String nameMethod, String typeDeRetourDeMethod, String entryTypeVariable, String entryVariable)
@@ -206,19 +200,19 @@ public class AuditServiceFileWriter {
 
     private void setVerion(FileWriter myWriter, String entryVariable, String versionToReturn, String getAuthor, String setAuthor) throws IOException {
         myWriter.write(versionToReturn.concat(Constants.POINT).concat(setAuthor).concat(Constants.PARENTHESE_OUVRANTE).concat(entryVariable).concat(Constants.POINT)
-                .concat(getAuthor).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(getAuthor).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
     private void setEntity(FileWriter myWriter, String entryVariable, String versionToReturn, String getAuthor, String setAuthor) throws IOException {
         myWriter.write(versionToReturn.concat(Constants.POINT).concat(setAuthor).concat(Constants.PARENTHESE_OUVRANTE).concat(entryVariable).concat(Constants.POINT)
                 .concat(Constants.GET_ENTITY_METHOD).concat(Constants.POINT).concat(getAuthor).concat(Constants.PARENTHESE_FERMANTE)
-                .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
     private void instanceOfVersionDTO(FileWriter myWriter, String versionToReturn) throws IOException {
         myWriter.write(Constants.VERSION_DTO.concat(Constants.INFERIEUR).concat(Constants.POINT_INTERROGATION).concat(Constants.SUPERIEUR).concat(" ").concat(versionToReturn)
                 .concat(Constants.EGALE).concat(Constants.NEW).concat(Constants.VERSION_DTO).concat(Constants.INFERIEUR).concat(Constants.SUPERIEUR)
-                .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
     private String writeSignatureOfMethodGetVersionFromAllVersions(FileWriter myWriter, String viewFileDto, String entryVariable) throws IOException {
@@ -230,7 +224,7 @@ public class AuditServiceFileWriter {
     }
 
     private void writeMethodGetSortedVersions(BuisnessLogicEntity ent, FileWriter myWriter, String viewFileDto, String viewFileDtoVariable, String serviceVariable,
-            String auditServiceVariable, String entityMapper, String variableEntityMapper) throws IOException {
+            String auditServiceVariable, String variableEntityMapper) throws IOException {
         writeSignatureGetSortedVersionsMethod(myWriter, viewFileDto);
         tabulation(myWriter);
         initializeCounter(myWriter);
@@ -239,7 +233,7 @@ public class AuditServiceFileWriter {
         tabulation(myWriter);
         String retrievedEntity = retrieveOptionalEntityFromMethodFindById(myWriter, ent, serviceVariable);
         tabulation(myWriter);
-        conditionIfretrievedOptionalEntityIsPresent(myWriter, retrievedEntity, auditServiceVariable, viewFileDto, entityMapper, viewDtoVariable, variableEntityMapper);
+        conditionIfretrievedOptionalEntityIsPresent(myWriter, retrievedEntity, auditServiceVariable, viewFileDto, viewDtoVariable, variableEntityMapper);
         tabulation(myWriter);
         returnStreamFilter(myWriter, viewDtoVariable);
         tabulation(myWriter);
@@ -249,7 +243,7 @@ public class AuditServiceFileWriter {
     }
 
     private void writeMethodGetVersionsWithoutRelationships(BuisnessLogicEntity ent, FileWriter myWriter, String viewFileDto, String viewFileDtoVariable, String serviceVariable,
-            String auditServiceVariable, String entityMapper, String variableEntityMapper) throws IOException {
+            String auditServiceVariable, String variableEntityMapper) throws IOException {
         writeSignatureGetVersionsWithoutRelationshipsMethod(myWriter, viewFileDto);
         tabulation(myWriter);
         tabulation(myWriter);
@@ -257,7 +251,7 @@ public class AuditServiceFileWriter {
         tabulation(myWriter);
         String retrievedEntity = retrieveOptionalEntityFromMethodFindById(myWriter, ent, serviceVariable);
         tabulation(myWriter);
-        conditionIfretrievedOptionalEntityIsPresentWithoutRelationships(myWriter, retrievedEntity, auditServiceVariable, viewFileDto, entityMapper, viewDtoVariable,
+        conditionIfretrievedOptionalEntityIsPresentWithoutRelationships(myWriter, retrievedEntity, auditServiceVariable, viewFileDto, viewDtoVariable,
                 variableEntityMapper);
         tabulation(myWriter);
         returnResult(myWriter, viewFileDtoVariable);
@@ -274,15 +268,14 @@ public class AuditServiceFileWriter {
         tabulation(myWriter);
         myWriter.write(
                 Constants.NEW.concat(" ").concat(Constants.RESPONSE_ENTITY_RESULT).concat(Constants.INFERIEUR).concat(Constants.SUPERIEUR).concat(Constants.PARENTHESE_OUVRANTE)
-                        .concat(Constants.HTTP_STATUS_NOT_FOUND_RESPONSE_ENTITY).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                        .concat(Constants.HTTP_STATUS_NOT_FOUND_RESPONSE_ENTITY).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
         tabulation(myWriter);
         myWriter.write(Constants.ACCOLADE_FERMANTE);
     }
 
     private void returnStreamFilter(FileWriter myWriter, String viewDtoVariable) throws IOException {
-        String element_filter = "element";
         myWriter.write(viewDtoVariable.concat(Constants.POINT).concat(Constants.STREAM_METHOD).concat(Constants.POINT).concat(Constants.FILTER)
-                .concat(Constants.PARENTHESE_OUVRANTE).concat(element_filter).concat(Constants.FLECHE).concat(element_filter).concat(Constants.POINT)
+                .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.ELEMENT).concat(Constants.FLECHE).concat(Constants.ELEMENT).concat(Constants.POINT)
                 .concat(Constants.GET_ENTITY_METHOD).concat(Constants.POINT).concat(Constants.GET_ID_METHOD).concat(Constants.EGALE_CONDITION).concat(Constants.ID_MINUS)
                 .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.POINT).concat(Constants.COLLECT_METHOD).concat(Constants.PARENTHESE_OUVRANTE)
                 .concat(Constants.COLLECTORS_TO_MAP).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.VERSION_DTO).concat(Constants.QUATRE_POINTS)
@@ -294,14 +287,15 @@ public class AuditServiceFileWriter {
                 .concat(Constants.STREAM_METHOD).concat(Constants.POINT).concat(Constants.SORTED).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.COMPARATOR_COMPARING)
                 .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.VERSION_DTO).concat(Constants.QUATRE_POINTS).concat(Constants.GET_CREATEDAT_FILTER)
                 .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.POINT).concat(Constants.PEEK_METHOD)
-                .concat(Constants.PARENTHESE_OUVRANTE).concat(element_filter).concat(Constants.FLECHE).concat(element_filter).concat(Constants.POINT).concat(Constants.SET_VERSION)
+                .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.ELEMENT).concat(Constants.FLECHE).concat(Constants.ELEMENT).concat(Constants.POINT)
+                .concat(Constants.SET_VERSION)
                 .concat(Constants.PARENTHESE_OUVRANTE).concat("i++").concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.POINT)
                 .concat(Constants.COLLECT_METHOD).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.COLLECTORS_LIST).concat(Constants.PARENTHESE_FERMANTE)
-                .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
         closeConditionAccolade(myWriter);
     }
 
-    private void conditionIfretrievedOptionalEntityIsPresent(FileWriter myWriter, String retrievedEntity, String auditService, String viewFileDto, String entityMapper,
+    private void conditionIfretrievedOptionalEntityIsPresent(FileWriter myWriter, String retrievedEntity, String auditService, String viewFileDto,
             String viewDtoVariable, String variableEntityMapper) throws IOException {
         String listOfretrievedVersions = "listOfretrievedVersions";
         myWriter.write(Constants.IF.concat(Constants.PARENTHESE_OUVRANTE).concat(retrievedEntity).concat(Constants.POINT).concat(Constants.IS_PRESENT_METHOD)
@@ -311,10 +305,9 @@ public class AuditServiceFileWriter {
                 .concat(Constants.SUPERIEUR).concat(Constants.SUPERIEUR).concat(" ").concat(listOfretrievedVersions).concat(Constants.EGALE).concat(auditService)
                 .concat(Constants.POINT).concat(Constants.METHOD_GET_VERSIONS_WITH_DEEP_PLUS).concat(Constants.PARENTHESE_OUVRANTE).concat(retrievedEntity).concat(Constants.POINT)
                 .concat(Constants.GET_METHOD).concat(Constants.VIRGULE).concat(Constants.ID_MINUS).concat(Constants.PARENTHESE_FERMANTE)
-                .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
         tabulation(myWriter);
-        String element_forEach = "element";
-        myWriter.write(listOfretrievedVersions.concat(Constants.POINT).concat(Constants.FOR_EACH).concat(Constants.PARENTHESE_OUVRANTE).concat(element_forEach)
+        myWriter.write(listOfretrievedVersions.concat(Constants.POINT).concat(Constants.FOR_EACH).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.ELEMENT)
                 .concat(Constants.FLECHE).concat(Constants.ACCOLADE_OUVRANT));
         tabulation(myWriter);
         myWriter.write(Constants.TRY.concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
@@ -322,11 +315,11 @@ public class AuditServiceFileWriter {
         tabulation(myWriter);
         String mapToVersionDto = "mapToVersionDto";
         myWriter.write(Constants.VERSION_DTO.concat(Constants.INFERIEUR).concat(viewFileDto).concat(Constants.SUPERIEUR).concat(" ").concat(mapToVersionDto).concat(Constants.EGALE)
-                .concat(variableEntityMapper).concat(Constants.POINT).concat(Constants.MAP_TO_VERSION_DTO).concat(Constants.PARENTHESE_OUVRANTE).concat(element_forEach)
-                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(variableEntityMapper).concat(Constants.POINT).concat(Constants.MAP_TO_VERSION_DTO).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.ELEMENT)
+                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
         tabulation(myWriter);
         myWriter.write(viewDtoVariable.concat(Constants.POINT).concat(Constants.ADD).concat(Constants.PARENTHESE_OUVRANTE).concat(mapToVersionDto)
-                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
         closeConditionAccolade(myWriter);
         myWriter.write(Constants.CATCH_EXCEPTION);
         retourAlaLigneAndTabulation(myWriter);
@@ -334,7 +327,7 @@ public class AuditServiceFileWriter {
     }
 
     private void conditionIfretrievedOptionalEntityIsPresentWithoutRelationships(FileWriter myWriter, String retrievedEntity, String auditService, String viewFileDto,
-            String entityMapper, String viewDtoVariable, String variableEntityMapper) throws IOException {
+            String viewDtoVariable, String variableEntityMapper) throws IOException {
         String listOfretrievedVersions = "listOfretrievedVersions";
         myWriter.write(Constants.IF.concat(Constants.PARENTHESE_OUVRANTE).concat(retrievedEntity).concat(Constants.POINT).concat(Constants.IS_PRESENT_METHOD)
                 .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
@@ -343,10 +336,9 @@ public class AuditServiceFileWriter {
                 .concat(Constants.SUPERIEUR).concat(Constants.SUPERIEUR).concat(" ").concat(listOfretrievedVersions).concat(Constants.EGALE).concat(auditService)
                 .concat(Constants.POINT).concat(Constants.METHOD_GET_VERSIONS_WITHOUT_RELATIONSHIPS).concat(Constants.PARENTHESE_OUVRANTE).concat(retrievedEntity)
                 .concat(Constants.POINT).concat(Constants.GET_METHOD).concat(Constants.VIRGULE).concat(Constants.ID_MINUS).concat(Constants.PARENTHESE_FERMANTE)
-                .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
         tabulation(myWriter);
-        String element_forEach = "element";
-        myWriter.write(listOfretrievedVersions.concat(Constants.POINT).concat(Constants.FOR_EACH).concat(Constants.PARENTHESE_OUVRANTE).concat(element_forEach)
+        myWriter.write(listOfretrievedVersions.concat(Constants.POINT).concat(Constants.FOR_EACH).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.ELEMENT)
                 .concat(Constants.FLECHE).concat(Constants.ACCOLADE_OUVRANT));
         tabulation(myWriter);
         myWriter.write(Constants.TRY.concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
@@ -354,11 +346,11 @@ public class AuditServiceFileWriter {
         tabulation(myWriter);
         String mapToVersionDto = "mapToVersionDto";
         myWriter.write(Constants.VERSION_DTO.concat(Constants.INFERIEUR).concat(viewFileDto).concat(Constants.SUPERIEUR).concat(" ").concat(mapToVersionDto).concat(Constants.EGALE)
-                .concat(variableEntityMapper).concat(Constants.POINT).concat(Constants.MAP_TO_VERSION_DTO).concat(Constants.PARENTHESE_OUVRANTE).concat(element_forEach)
-                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(variableEntityMapper).concat(Constants.POINT).concat(Constants.MAP_TO_VERSION_DTO).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.ELEMENT)
+                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
         tabulation(myWriter);
         myWriter.write(viewDtoVariable.concat(Constants.POINT).concat(Constants.ADD).concat(Constants.PARENTHESE_OUVRANTE).concat(mapToVersionDto)
-                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
         closeConditionAccolade(myWriter);
         myWriter.write(Constants.CATCH_EXCEPTION);
         retourAlaLigneAndTabulation(myWriter);
@@ -369,7 +361,7 @@ public class AuditServiceFileWriter {
         String retrievedEntity = ent.getNameEntity().toLowerCase();
         myWriter.write(Constants.OPTIONAL.concat(Constants.INFERIEUR).concat(ent.getNameEntity()).concat(Constants.SUPERIEUR).concat(" ").concat(retrievedEntity)
                 .concat(Constants.EGALE).concat(serviceVariable).concat(Constants.POINT).concat(Constants.FIND_BY_ID).concat(Constants.PARENTHESE_OUVRANTE)
-                .concat(Constants.ID_MINUS).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.ID_MINUS).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
         return retrievedEntity;
     }
 
@@ -377,13 +369,13 @@ public class AuditServiceFileWriter {
         myWriter.write(AttributesTypeEnum.List.toString().concat(Constants.INFERIEUR).concat(Constants.VERSION_DTO).concat(Constants.INFERIEUR).concat(viewFileDto)
                 .concat(Constants.SUPERIEUR).concat(Constants.SUPERIEUR).concat(" ").concat(viewFileDtoVariable).concat(Constants.EGALE).concat(Constants.NEW)
                 .concat(Constants.ARRAY_LIST).concat(Constants.INFERIEUR).concat(Constants.VERSION_DTO).concat(Constants.INFERIEUR).concat(viewFileDto).concat(Constants.SUPERIEUR)
-                .concat(Constants.SUPERIEUR).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.SUPERIEUR).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
         return viewFileDtoVariable;
     }
 
     private String initializeCounter(FileWriter myWriter) throws IOException {
         String counter = "i";
-        myWriter.write(counter.concat(Constants.EGALE).concat("1").concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+        myWriter.write(counter.concat(Constants.EGALE).concat("1").concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
         return counter;
     }
 
@@ -411,19 +403,19 @@ public class AuditServiceFileWriter {
         String retrieveVersions = retrieveVersionsFromGetSortedVersions(myWriter, viewFileDto);
         forEachAllRetrievedVersions(ent, myWriter, retrieveVersions, variables);
         retrieveListOfTheChangesOftheTwoObjects(myWriter, variables, retrievedListDiffEntities, retrievedListDiffVersions);
-        String ListOfChanges = "diff";
-        addTheTwoListOfChangesInOneList(myWriter, retrievedListDiffEntities, retrievedListDiffVersions, ListOfChanges);
-        returnResult(myWriter, ListOfChanges);
+        String listOfChanges = "diff";
+        addTheTwoListOfChangesInOneList(myWriter, retrievedListDiffEntities, retrievedListDiffVersions, listOfChanges);
+        returnResult(myWriter, listOfChanges);
         closeConditionAccolade(myWriter);
     }
 
-    private void addTheTwoListOfChangesInOneList(FileWriter myWriter, String retrievedListDiffEntities, String retrievedListDiffVersions, String ListOfChanges) throws IOException {
+    private void addTheTwoListOfChangesInOneList(FileWriter myWriter, String retrievedListDiffEntities, String retrievedListDiffVersions, String listOfChanges) throws IOException {
         myWriter.write(Constants.PATTERN_TABULATION.concat(AttributesTypeEnum.List.toString()).concat(Constants.INFERIEUR).concat(Constants.VERSION_DIFF_DTO)
-                .concat(Constants.SUPERIEUR).concat(" ").concat(ListOfChanges).concat(Constants.EGALE).concat(Constants.NEW).concat(Constants.ARRAY_LIST)
+                .concat(Constants.SUPERIEUR).concat(" ").concat(listOfChanges).concat(Constants.EGALE).concat(Constants.NEW).concat(Constants.ARRAY_LIST)
                 .concat(Constants.INFERIEUR).concat(Constants.SUPERIEUR).concat(Constants.PARENTHESE_OUVRANTE).concat(retrievedListDiffEntities)
-                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
-        myWriter.write(Constants.PATTERN_TABULATION.concat(ListOfChanges).concat(Constants.POINT).concat(Constants.ADD_ALL_METHOD).concat(Constants.PARENTHESE_OUVRANTE)
-                .concat(retrievedListDiffVersions).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
+        myWriter.write(Constants.PATTERN_TABULATION.concat(listOfChanges).concat(Constants.POINT).concat(Constants.ADD_ALL_METHOD).concat(Constants.PARENTHESE_OUVRANTE)
+                .concat(retrievedListDiffVersions).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
     private void retrieveListOfTheChangesOftheTwoObjects(FileWriter myWriter, List<String> variables, String retrievedListDiffEntities, String retrievedListDiffVersions)
@@ -439,38 +431,37 @@ public class AuditServiceFileWriter {
     private void retrievedChangesInList(FileWriter myWriter, String var1, String var2, String retrievedListDiffEntities) throws IOException {
         myWriter.write(AttributesTypeEnum.List.toString().concat(Constants.INFERIEUR).concat(Constants.VERSION_DIFF_DTO).concat(Constants.SUPERIEUR).concat(" ")
                 .concat(retrievedListDiffEntities).concat(Constants.EGALE).concat(Constants.AUDIT_SERVICE_POINT_COMPARE_TWO_OBJECTS).concat(Constants.PARENTHESE_OUVRANTE)
-                .concat(var1).concat(Constants.VIRGULE).concat(var2).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(var1).concat(Constants.VIRGULE).concat(var2).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
     private String forEachAllRetrievedVersions(BuisnessLogicEntity ent, FileWriter myWriter, String retrieveVersions, List<String> variables) throws IOException {
-        String forEach_element = "element";
         retourAlaLigneAndTabulation(myWriter);
-        myWriter.write(retrieveVersions.concat(Constants.POINT).concat(Constants.FOR_EACH).concat(Constants.PARENTHESE_OUVRANTE).concat(forEach_element).concat(Constants.FLECHE)
+        myWriter.write(retrieveVersions.concat(Constants.POINT).concat(Constants.FOR_EACH).concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.ELEMENT).concat(Constants.FLECHE)
                 .concat(Constants.ACCOLADE_OUVRANT));
         retourAlaLigneAndTabulation(myWriter);
-        conditionIfEntryVersionEgaleRetrievedVersion(ent, myWriter, variables.get(0), variables.get(1), variables.get(2), variables.get(3), forEach_element);
-        return forEach_element;
+        conditionIfEntryVersionEgaleRetrievedVersion(ent, myWriter, variables.get(0), variables.get(1), variables.get(2), variables.get(3), Constants.ELEMENT);
+        return Constants.ELEMENT;
     }
 
     private void conditionIfEntryVersionEgaleRetrievedVersion(BuisnessLogicEntity ent, FileWriter myWriter, String entity1, String entity2, String version1, String version2,
-            String forEach_element) throws IOException {
+            String forEachElement) throws IOException {
         String v1 = "v1";
         String v2 = "v2";
         String methodGetEntityFromAllVersions = "get".concat(ent.getNameEntity()).concat("FromAllVersions");
         retourAlaLigneAndTabulation(myWriter);
-        ifEntryVersionEgaleRetrievedVersion(myWriter, forEach_element, v1);
+        ifEntryVersionEgaleRetrievedVersion(myWriter, forEachElement, v1);
         retourAlaLigneAndTabulation(myWriter);
-        retrieveEntityVariable(myWriter, entity1, forEach_element, methodGetEntityFromAllVersions);
+        retrieveEntityVariable(myWriter, entity1, forEachElement, methodGetEntityFromAllVersions);
         tabulation(myWriter);
-        retrieveVersionVariable(myWriter, version1, forEach_element);
+        retrieveVersionVariable(myWriter, version1, forEachElement);
         closeConditionAccolade(myWriter);
         retourAlaLigneAndTabulation(myWriter);
         myWriter.write(Constants.ELSE.concat(" "));
-        ifEntryVersionEgaleRetrievedVersion(myWriter, forEach_element, v2);
+        ifEntryVersionEgaleRetrievedVersion(myWriter, forEachElement, v2);
         retourAlaLigneAndTabulation(myWriter);
-        retrieveEntityVariable(myWriter, entity2, forEach_element, methodGetEntityFromAllVersions);
+        retrieveEntityVariable(myWriter, entity2, forEachElement, methodGetEntityFromAllVersions);
         tabulation(myWriter);
-        retrieveVersionVariable(myWriter, version2, forEach_element);
+        retrieveVersionVariable(myWriter, version2, forEachElement);
         closeConditionAccolade(myWriter);
         closeForEach(myWriter);
     }
@@ -479,9 +470,9 @@ public class AuditServiceFileWriter {
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE.concat(Constants.PATTERN_TABULATION).concat(Constants.CLOSE_FOREACH).concat(Constants.PATTERN_RETOUR_LIGNE));
     }
 
-    private void ifEntryVersionEgaleRetrievedVersion(FileWriter myWriter, String forEach_element, String v1) throws IOException {
+    private void ifEntryVersionEgaleRetrievedVersion(FileWriter myWriter, String forEachElement, String v1) throws IOException {
         myWriter.write(Constants.IF.concat(Constants.PARENTHESE_OUVRANTE)
-                .concat(v1.concat(Constants.EGALE_CONDITION).concat(forEach_element).concat(Constants.POINT).concat(Constants.GET_VERSION)).concat(Constants.PARENTHESE_FERMANTE)
+                .concat(v1.concat(Constants.EGALE_CONDITION).concat(forEachElement).concat(Constants.POINT).concat(Constants.GET_VERSION)).concat(Constants.PARENTHESE_FERMANTE)
                 .concat(Constants.ACCOLADE_OUVRANT).concat(Constants.PATTERN_RETOUR_LIGNE));
     }
 
@@ -489,21 +480,21 @@ public class AuditServiceFileWriter {
         myWriter.write(Constants.PATTERN_TABULATION.concat(Constants.ACCOLADE_FERMANTE));
     }
 
-    private void retrieveVersionVariable(FileWriter myWriter, String version1, String forEach_element) throws IOException {
-        myWriter.write(version1.concat(Constants.EGALE).concat(Constants.METHOD_GET_VERSION_FROM_ALL_VERSIONS).concat(Constants.PARENTHESE_OUVRANTE).concat(forEach_element)
-                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+    private void retrieveVersionVariable(FileWriter myWriter, String version1, String forEachElement) throws IOException {
+        myWriter.write(version1.concat(Constants.EGALE).concat(Constants.METHOD_GET_VERSION_FROM_ALL_VERSIONS).concat(Constants.PARENTHESE_OUVRANTE).concat(forEachElement)
+                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
-    private void retrieveEntityVariable(FileWriter myWriter, String entity1, String forEach_element, String methodGetEntityFromAllVersions) throws IOException {
-        myWriter.write(entity1.concat(Constants.EGALE).concat(methodGetEntityFromAllVersions).concat(Constants.PARENTHESE_OUVRANTE).concat(forEach_element)
-                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+    private void retrieveEntityVariable(FileWriter myWriter, String entity1, String forEachElement, String methodGetEntityFromAllVersions) throws IOException {
+        myWriter.write(entity1.concat(Constants.EGALE).concat(methodGetEntityFromAllVersions).concat(Constants.PARENTHESE_OUVRANTE).concat(forEachElement)
+                .concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
     private String retrieveVersionsFromGetSortedVersions(FileWriter myWriter, String viewFileDto) throws IOException {
         String retrieveVersions = "versions";
         myWriter.write(AttributesTypeEnum.List.toString().concat(Constants.INFERIEUR).concat(Constants.VERSION_DTO).concat(Constants.INFERIEUR).concat(viewFileDto)
                 .concat(Constants.SUPERIEUR).concat(Constants.SUPERIEUR).concat(" ").concat(retrieveVersions).concat(Constants.EGALE).concat(Constants.METHOD_GET_SORTED_VERSIONS)
-                .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.ID_MINUS).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.PARENTHESE_OUVRANTE).concat(Constants.ID_MINUS).concat(Constants.PARENTHESE_FERMANTE).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
         return retrieveVersions;
     }
 
@@ -520,14 +511,13 @@ public class AuditServiceFileWriter {
 
     private void returnResult(FileWriter myWriter, String result) throws IOException {
         myWriter.write(Constants.PATTERN_TABULATION);
-        myWriter.write(Constants.RETURN.concat(" ").concat(result).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+        myWriter.write(Constants.RETURN.concat(" ").concat(result).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
 
     }
 
     private String firstLetterUpperCase(Attribute attributeForGetterAndSetter) {
         String firstLetter = attributeForGetterAndSetter.getNameAttribute().charAt(0) + "";
-        String getterAttribute = firstLetter.toUpperCase().concat(attributeForGetterAndSetter.getNameAttribute().substring(1));
-        return getterAttribute;
+        return firstLetter.toUpperCase().concat(attributeForGetterAndSetter.getNameAttribute().substring(1));
     }
 
     private boolean isThisParentEntityAndOneToManyRelationship(String nameEntity, List<Relationship> relations) {
@@ -544,11 +534,9 @@ public class AuditServiceFileWriter {
     private String existEntityInParentTableOneToMany(String nameEntity, List<Relationship> relations) {
         String childrEntityName = null;
         for (Relationship relationship : relations) {
-            if (relationship.getParentEntity().getNameEntity().equals(nameEntity) && relationship.getTypeRelationship().equals(RelationshipTypeEnum.OneToMany)) {
-                if (relationship.getChildEntity().getNameEntity() != null) {
-                    childrEntityName = relationship.getChildEntity().getNameEntity();
-                    System.out.println(childrEntityName);
-                }
+            if (relationship.getParentEntity().getNameEntity().equals(nameEntity) && relationship.getTypeRelationship().equals(RelationshipTypeEnum.OneToMany)
+                    && relationship.getChildEntity().getNameEntity() != null) {
+                childrEntityName = relationship.getChildEntity().getNameEntity();
             }
         }
         return childrEntityName;
@@ -562,7 +550,7 @@ public class AuditServiceFileWriter {
         String version1 = "version1";
         String version2 = "version2";
         retourAlaLigneAndTabulation(myWriter);
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         declareIntegerCounter(myWriter, counter);
         retourAlaLigneAndTabulation(myWriter);
         declareVariableEntityAndInitializeNull(ent, myWriter, variable1);
@@ -581,14 +569,15 @@ public class AuditServiceFileWriter {
 
     private void writeViewImportsAfterAddRelationshipsAttribute(BuisnessLogicEntity ent, Project project) throws IOException {
         String child = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
-        String namefileToWriteIn = ent.getNameEntity().concat("Audit").concat("Service");
+        String namefileToWriteIn = ent.getNameEntity().concat(Constants.AUDIT).concat(Constants.SERVICE);
         if (child != null) {
             String childModel = child;
             File file = new File(
-                    ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(namefileToWriteIn).concat(".java"));
+                    ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(namefileToWriteIn)
+                            .concat(Constants.POINT_JAVA));
             String fileContext = FileUtils.readFileToString(file);
             fileContext = fileContext.replaceAll(ConstantsImportPackage.IMPORT_VERSION_DIFF_DTO, ConstantsImportPackage.IMPORT_VERSION_DIFF_DTO
-                    .concat(ConstantsImportPackage.IMPORT_ENTITY_MODEL.concat(childModel).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE)));
+                    .concat(ConstantsImportPackage.IMPORT_ENTITY_MODEL.concat(childModel).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE)));
             FileUtils.write(file, fileContext);
         }
 
@@ -596,18 +585,18 @@ public class AuditServiceFileWriter {
 
     private void declareVersionDtoAndInitializeNull(FileWriter myWriter, String version1) throws IOException {
         myWriter.write(Constants.VERSION_DTO.concat(Constants.INFERIEUR).concat(Constants.POINT_INTERROGATION).concat(Constants.SUPERIEUR).concat(" ").concat(version1)
-                .concat(Constants.EGALE).concat(Constants.NULL).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.EGALE).concat(Constants.NULL).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
     private void declareVariableEntityAndInitializeNull(BuisnessLogicEntity ent, FileWriter myWriter, String variable1) throws IOException {
-        myWriter.write(ent.getNameEntity().concat(" ").concat(variable1).concat(Constants.EGALE).concat(Constants.NULL).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+        myWriter.write(ent.getNameEntity().concat(" ").concat(variable1).concat(Constants.EGALE).concat(Constants.NULL).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
     private void declareIntegerCounter(FileWriter myWriter, String counter) throws IOException {
-        myWriter.write(Constants.PRIVATE.concat(Constants.INT).concat(" ").concat(counter).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+        myWriter.write(Constants.PRIVATE.concat(Constants.INT).concat(" ").concat(counter).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
-    private void injectServicesAndMappers(BuisnessLogicEntity ent, FileWriter myWriter, String serviceFile, String serviceVariable, String auditServiceFile,
+    private void injectServicesAndMappers(FileWriter myWriter, String serviceFile, String serviceVariable, String auditServiceFile,
             String auditServiceVariable, String entityMapper, String variableEntityMapper) throws IOException {
         autoWiredEntityService(myWriter, serviceFile, serviceVariable);
         autoWiredAuditService(myWriter, auditServiceFile, auditServiceVariable);
@@ -618,19 +607,19 @@ public class AuditServiceFileWriter {
     private void autoWiredEntityMapper(FileWriter myWriter, String entityMapper, String variableEntityMapper) throws IOException {
         autoWiredAnnotation(myWriter);
         tabulation(myWriter);
-        myWriter.write(entityMapper.concat(" ").concat(variableEntityMapper).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+        myWriter.write(entityMapper.concat(" ").concat(variableEntityMapper).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
     private void autoWiredEntityService(FileWriter myWriter, String serviceFile, String serviceVariable) throws IOException {
         autoWiredAnnotation(myWriter);
         tabulation(myWriter);
-        myWriter.write(serviceFile.concat(" ").concat(serviceVariable).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+        myWriter.write(serviceFile.concat(" ").concat(serviceVariable).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
     private void autoWiredAuditService(FileWriter myWriter, String auditServiceFile, String auditServiceVariable) throws IOException {
         autoWiredAnnotation(myWriter);
         tabulation(myWriter);
-        myWriter.write(auditServiceFile.concat(" ").concat(auditServiceVariable).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+        myWriter.write(auditServiceFile.concat(" ").concat(auditServiceVariable).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
     }
 
     private void retourAlaLigneAndTabulation(FileWriter myWriter) throws IOException {
@@ -651,7 +640,8 @@ public class AuditServiceFileWriter {
             String viewFileDto) throws IOException {
 
         File file = new File(
-                ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(nameFileAuditService).concat(".java"));
+                ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(nameFileAuditService)
+                        .concat(Constants.POINT_JAVA));
         FileWriter myWriter = new FileWriter(file);
         myWriter.write(ConstantsImportPackage.PACKAGE_SERVICE_AUDIT.concat(Constants.PATTERN_RETOUR_LIGNE));
         myWriter.write(ConstantsImportPackage.IMPORT_AUTOWIRED);
@@ -665,11 +655,11 @@ public class AuditServiceFileWriter {
         myWriter.write(ConstantsImportPackage.IMPORT_HTTP_STATUS);
         myWriter.write(ConstantsImportPackage.IMPORT_RESPONSE_ENTITY);
         myWriter.write(ConstantsImportPackage.IMPORT_ANNOTATION_SERVICE);
-        myWriter.write(ConstantsImportPackage.IMPORT_MAPPER.concat(ent.getNameEntity()).concat("Mapper").concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+        myWriter.write(ConstantsImportPackage.IMPORT_MAPPER.concat(ent.getNameEntity()).concat(Constants.MAPPER).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
         myWriter.write(ConstantsImportPackage.IMPORT_DTO.concat(ent.getNameEntity().toLowerCase()).concat(Constants.POINT).concat(viewFileDto)
-                .concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
-        myWriter.write(ConstantsImportPackage.IMPORT_ENTITY_MODEL.concat(ent.getNameEntity()).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
-        myWriter.write(ConstantsImportPackage.IMPORT_INTERFACE_SERVICE.concat(serviceFile).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                .concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
+        myWriter.write(ConstantsImportPackage.IMPORT_ENTITY_MODEL.concat(ent.getNameEntity()).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
+        myWriter.write(ConstantsImportPackage.IMPORT_INTERFACE_SERVICE.concat(serviceFile).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
         myWriter.write(ConstantsImportPackage.IMPORT_VERSION_DTO);
         myWriter.write(ConstantsImportPackage.IMPORT_VERSION_DIFF_DTO);
         myWriter.write(Constants.PATTERN_RETOUR_LIGNE);
@@ -691,31 +681,33 @@ public class AuditServiceFileWriter {
 
     private void injectChildMapper(BuisnessLogicEntity ent, Project project, String entityMapper, String variableEntityMapper) throws IOException {
         String child = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
-        String namefileToWriteIn = ent.getNameEntity().concat("Audit").concat("Service");
+        String namefileToWriteIn = ent.getNameEntity().concat(Constants.AUDIT).concat(Constants.SERVICE);
         if (child != null) {
-            String childMapper = child.concat("Mapper");
-            String childMapperVariable = child.toLowerCase().concat("Mapper");
+            String childMapper = child.concat(Constants.MAPPER);
+            String childMapperVariable = child.toLowerCase().concat(Constants.MAPPER);
             File file = new File(
-                    ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(namefileToWriteIn).concat(".java"));
+                    ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(namefileToWriteIn)
+                            .concat(Constants.POINT_JAVA));
             String fileContext = FileUtils.readFileToString(file);
-            fileContext = fileContext.replaceAll(entityMapper.concat(" ").concat(variableEntityMapper).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE),
-                    entityMapper.concat(" ").concat(variableEntityMapper).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE).concat(Constants.PATTERN_RETOUR_LIGNE)
+            fileContext = fileContext.replaceAll(entityMapper.concat(" ").concat(variableEntityMapper).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE),
+                    entityMapper.concat(" ").concat(variableEntityMapper).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE).concat(Constants.PATTERN_RETOUR_LIGNE)
                             .concat(Constants.PATTERN_TABULATION).concat(ConstantsAnnotations.ANNOTATION_AUTOWIRED).concat(Constants.PATTERN_TABULATION).concat(childMapper)
-                            .concat(" ").concat(childMapperVariable).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE));
+                            .concat(" ").concat(childMapperVariable).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE));
             FileUtils.write(file, fileContext);
         }
     }
 
-    private void importInjectedChildMapper(BuisnessLogicEntity ent, Project project, String entityMapper, String variableEntityMapper) throws IOException {
+    private void importInjectedChildMapper(BuisnessLogicEntity ent, Project project) throws IOException {
         String child = existEntityInParentTableOneToMany(ent.getNameEntity(), ent.getRelationshipsParent());
-        String namefileToWriteIn = ent.getNameEntity().concat("Audit").concat("Service");
+        String namefileToWriteIn = ent.getNameEntity().concat(Constants.AUDIT).concat(Constants.SERVICE);
         if (child != null) {
             String childModel = child;
-            String childMapperImport = child.concat("Mapper");
-            String modelChildImport = ConstantsImportPackage.IMPORT_ENTITY_MODEL.concat(childModel).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE);
-            String mapperChildImport = ConstantsImportPackage.IMPORT_MAPPER.concat(childMapperImport).concat(Constants.PATTERN_POINT_VIRGULE__ET_RETOUR_LIGNE);
+            String childMapperImport = child.concat(Constants.MAPPER);
+            String modelChildImport = ConstantsImportPackage.IMPORT_ENTITY_MODEL.concat(childModel).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE);
+            String mapperChildImport = ConstantsImportPackage.IMPORT_MAPPER.concat(childMapperImport).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE);
             File file = new File(
-                    ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(namefileToWriteIn).concat(".java"));
+                    ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(namefileToWriteIn)
+                            .concat(Constants.POINT_JAVA));
             String fileContext = FileUtils.readFileToString(file);
             fileContext = fileContext.replaceAll(modelChildImport, modelChildImport.concat(mapperChildImport));
             FileUtils.write(file, fileContext);

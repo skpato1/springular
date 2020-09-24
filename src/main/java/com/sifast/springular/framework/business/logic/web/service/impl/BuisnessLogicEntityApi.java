@@ -153,6 +153,7 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
             Optional<BuisnessLogicEntity> buisnessLogicEntity = buisnessLogicEntityService.findById(id);
             if (buisnessLogicEntity.isPresent()) {
                 BuisnessLogicEntity preUpdateBuisnessLogicEntity = buisnessLogicEntity.get();
+
                 BuisnessLogicEntity updatedBuisnessLogicEntity = buisnessLogicEntityService.save(preUpdateBuisnessLogicEntity);
                 httpStatus = HttpStatus.OK;
                 httpResponseBody = modelMapper.map(buisnessLogicEntity, BuisnessLogicEntity.class);

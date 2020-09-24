@@ -9,6 +9,7 @@ import com.sifast.springular.framework.business.logic.service.IBuisnessLogicEnti
 import com.sifast.springular.framework.business.logic.service.IRelationshipService;
 import com.sifast.springular.framework.business.logic.web.config.ConfiguredModelMapper;
 import com.sifast.springular.framework.business.logic.web.dto.relationship.CreateRelationshipDto;
+import com.sifast.springular.framework.business.logic.web.dto.relationship.RelationshipDto;
 import com.sifast.springular.framework.business.logic.web.dto.relationship.ViewRelationshipDto;
 import com.sifast.springular.framework.business.logic.web.mapper.RelationshipMapper;
 import com.sifast.springular.framework.business.logic.web.service.api.IRelationshipApi;
@@ -126,6 +127,50 @@ public class RelationshipApi implements IRelationshipApi {
             relationshipService.delete(preDeleteRelationship.get());
             httpStatus = HttpStatus.OK;
             LOGGER.info("INFO level message: Relationship with id = {} deleted ", id);
+        }
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
+    }
+
+    @Override
+    public ResponseEntity<?> updateRelationship(
+            @ApiParam(value = "ID of RelationShip that needs to be updated", required = true, allowableValues = "range[1,infinity]") @PathVariable("id") int id,
+            @ApiParam(required = true, value = "RelationshipDto", name = "RelationshipDto") @RequestBody RelationshipDto relationshipDto, BindingResult bindingResult) {
+        LOGGER.info("Web service updateRelationship invoked with id {}", id);
+        if (!bindingResult.hasFieldErrors()) {
+            Optional<Relationship> relationship = relationshipService.findById(id);
+            if (relationship.isPresent()) {
+                int parentEntityId = relationshipDto.getParentEntityId();
+                int childEntityId = relationshipDto.getChildEntityId();
+                try {
+                    Optional<BuisnessLogicEntity> parentEntity = entityService.findById(parentEntityId);
+                    Optional<BuisnessLogicEntity> childEntity = entityService.findById(childEntityId);
+                    if (parentEntity.isPresent() && childEntity.isPresent()) {
+                        Relationship relationshipToBeUpdated = relationship.get();
+                        relationshipToBeUpdated.setTypeRelationship(relationshipDto.getTypeRelationship());
+                        relationshipToBeUpdated.setParentEntity(parentEntity.get());
+                        relationshipToBeUpdated.setChildEntity(childEntity.get());
+                        Relationship savedRelationship = relationshipService.update(relationshipToBeUpdated);
+                        httpStatus = HttpStatus.OK;
+                        ViewRelationshipDto relationshipToBeReturned = modelMapper.map(savedRelationship, ViewRelationshipDto.class);
+                        httpResponseBody = relationshipToBeReturned;
+                    } else {
+                        httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.BUISNESS_LOGIC_ENTITY_NOT_FOUND);
+                        httpStatus = HttpStatus.NOT_FOUND;
+                        httpResponseBody = httpErrorResponse;
+                    }
+
+                } catch (Exception e) {
+                    httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.SERVER_ERROR.getValue(), ApiMessage.ERR_SAVE);
+                    httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                    httpResponseBody = httpErrorResponse;
+                }
+            } else {
+                httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.RELATIONSHIP_NOT_FOUND);
+                httpStatus = HttpStatus.NOT_FOUND;
+                httpResponseBody = httpErrorResponse;
+            }
+        } else {
+            httpStatus = HttpStatus.BAD_REQUEST;
         }
         return new ResponseEntity<>(httpResponseBody, httpStatus);
     }

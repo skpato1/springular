@@ -4,6 +4,7 @@ import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.ApiStatus;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
 import com.sifast.springular.framework.business.logic.web.dto.relationship.CreateRelationshipDto;
+import com.sifast.springular.framework.business.logic.web.dto.relationship.RelationshipDto;
 import com.sifast.springular.framework.business.logic.web.dto.relationship.ViewRelationshipDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -13,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 public interface IRelationshipApi {
 
@@ -30,4 +32,7 @@ public interface IRelationshipApi {
 
     @DeleteMapping(value = "/relationship/{id}")
     ResponseEntity<?> deleteRelationship(int id);
+
+    @PutMapping(value = "/relationship/{id}")
+    ResponseEntity<?> updateRelationship(int id, RelationshipDto relationshipDto, BindingResult bindingResult);
 }

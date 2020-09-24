@@ -84,7 +84,7 @@ public class RelationshipApi implements IRelationshipApi {
             httpResponseBody = httpErrorResponse;
         }
 
-        return null;
+        return new ResponseEntity<>(httpResponseBody, httpStatus);
     }
 
     @Override

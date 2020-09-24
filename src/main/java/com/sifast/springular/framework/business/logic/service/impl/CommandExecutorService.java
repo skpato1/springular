@@ -233,13 +233,13 @@ public class CommandExecutorService implements ICommandExecutorService {
                         .concat(Constants.PATTERN_SLASH).concat(entity.getNameEntity()).concat(".java ").concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
                         .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES).concat(entity.getNameEntity().toLowerCase())
                         .concat(Constants.PATTERN_SLASH).concat(entity.getNameEntity()).concat("Dto.java"));
-                dtoFileWriter.generateSuperFilesInEachFolderDTO(project);
+
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
-
+        dtoFileWriter.generateSuperFilesInEachFolderDTO(project);
     }
 
     private void executeCopyEntitiesToDtoCommandForDifferentOs(boolean isWindows, Project project) {

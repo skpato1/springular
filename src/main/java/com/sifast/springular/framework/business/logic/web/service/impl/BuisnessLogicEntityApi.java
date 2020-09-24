@@ -72,11 +72,11 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
                 BuisnessLogicEntity entityToBeSaved = buisnessLogicEntityMapper.mapCreateBuisnessLogicEntity(buisnessLogicEntityDto);
                 entityToBeSaved.setProject(project.get());
                 if (entityToBeSaved.getAttributes() != null) {
-                    List<Attribute> attributesSetId = entityToBeSaved.getAttributes();
-                    for (int i = 0; i < attributesSetId.size(); i++) {
-                        attributesSetId.get(i).setBuisness(entityToBeSaved);
+                    List<Attribute> attributes = entityToBeSaved.getAttributes();
+                    for (int i = 0; i < attributes.size(); i++) {
+                        attributes.get(i).setBuisness(entityToBeSaved);
                     }
-                    entityToBeSaved.setAttributes(attributesSetId);
+                    entityToBeSaved.setAttributes(attributes);
                 }
                 BuisnessLogicEntity savedBuisnessLogicEntity = buisnessLogicEntityService.save(entityToBeSaved);
 

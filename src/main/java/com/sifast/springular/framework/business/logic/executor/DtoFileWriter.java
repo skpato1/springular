@@ -422,8 +422,8 @@ public class DtoFileWriter {
                 }
                 String fileDto = "View".concat(ent.getNameEntity()).concat("Dto");
                 FileWriter myWriter = writeViewImportsAndStructureOfClassInDto(project, ent, attributesView);
-                writeViewAttributes(ent, attributesView, myWriter);
-                writeViewGettersAndSetters(ent, attributesView, myWriter);
+                writeViewAttributes(ent, attributes, attributesView, myWriter);
+                writeViewGettersAndSetters(ent, attributes, attributesView, myWriter);
                 writeViewToStringMethodInDto(ent, fileDto, myWriter);
                 closeAccoladeAndFile(myWriter);
                 writeViewImportsAfterAddRelationshipsAttribute(ent, project);
@@ -452,16 +452,16 @@ public class DtoFileWriter {
 
     }
 
-    private void writeViewGettersAndSetters(BuisnessLogicEntity ent, List<Attribute> attributesView, FileWriter myWriter) {
+    private void writeViewGettersAndSetters(BuisnessLogicEntity ent, List<Attribute> attributes, List<Attribute> attributesView, FileWriter myWriter) {
         LOGGER.debug("writeViewGettersAndSetters");
         writeViewGettersAndSettersForRelationshipAttributes(ent, myWriter, attributesView);
-        writeGettersAndSettersForDto(myWriter, attributesView, ent);
+        writeGettersAndSettersForDto(myWriter, attributes, ent);
     }
 
-    private void writeViewAttributes(BuisnessLogicEntity ent, List<Attribute> attributesView, FileWriter myWriter) throws IOException {
+    private void writeViewAttributes(BuisnessLogicEntity ent, List<Attribute> attributes, List<Attribute> attributesView, FileWriter myWriter) throws IOException {
         LOGGER.debug("writeViewAttributes");
         writeViewRelationshipAttributeFromAttribute(ent, myWriter, attributesView);
-        writeAttributesWithValidationAnnotationInDto(ent, myWriter, attributesView);
+        writeAttributesWithValidationAnnotationInDto(ent, myWriter, attributes);
     }
 
     private void writeViewGettersAndSettersForRelationshipAttributes(BuisnessLogicEntity ent, FileWriter myWriter, List<Attribute> attributes) {

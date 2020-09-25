@@ -1,8 +1,7 @@
 package com.sifast.springular.framework.business.logic.entities;
 
+import com.sifast.springular.framework.business.logic.common.AttributesTypeEnum;
 import java.io.Serializable;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,61 +11,55 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.sifast.springular.framework.business.logic.common.AttributesTypeEnum;
-
 @Table(name = "T_attribute")
 @Entity
-public class Attribute extends TimestampEntity implements Serializable{
+public class Attribute extends TimestampEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	@Column(name = "name_attribute")
-	private String nameAttribute;
-	@Column(name = "type_attribute")
-	private AttributesTypeEnum typeAttribute;
-	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private BuisnessLogicEntity buisnessLogicEntity;
+    private static final long serialVersionUID = 1L;
 
-	
-	
-	public int getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    @Column(name = "name_attribute")
+    private String nameAttribute;
+    @Column(name = "type_attribute")
+    private AttributesTypeEnum typeAttribute;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    private BuisnessLogicEntity buisnessLogicEntity;
 
-	public String getNameAttribute() {
-		return nameAttribute;
-	}
 
-	public void setNameAttribute(String nameAttribute) {
-		this.nameAttribute = nameAttribute;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public AttributesTypeEnum getTypeAttribute() {
-		return typeAttribute;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setTypeAttribute(AttributesTypeEnum typeAttribute) {
-		this.typeAttribute = typeAttribute;
-	}
+    public String getNameAttribute() {
+        return nameAttribute;
+    }
 
-	public BuisnessLogicEntity getBuisness() {
-		return buisnessLogicEntity;
-	}
+    public void setNameAttribute(String nameAttribute) {
+        this.nameAttribute = nameAttribute;
+    }
 
-	public void setBuisness(BuisnessLogicEntity buisness) {
-		this.buisnessLogicEntity = buisness;
-	}
-	
-	
-	
-	
+    public AttributesTypeEnum getTypeAttribute() {
+        return typeAttribute;
+    }
+
+    public void setTypeAttribute(AttributesTypeEnum typeAttribute) {
+        this.typeAttribute = typeAttribute;
+    }
+
+    public BuisnessLogicEntity getBuisness() {
+        return buisnessLogicEntity;
+    }
+
+    public void setBuisness(BuisnessLogicEntity buisness) {
+        this.buisnessLogicEntity = buisness;
+    }
+
 
 }

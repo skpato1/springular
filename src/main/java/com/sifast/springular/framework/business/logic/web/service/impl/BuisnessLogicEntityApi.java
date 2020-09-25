@@ -4,6 +4,7 @@ import com.sifast.springular.framework.business.logic.common.ApiMessage;
 import com.sifast.springular.framework.business.logic.common.BusinessLogicException;
 import com.sifast.springular.framework.business.logic.common.HttpCostumCode;
 import com.sifast.springular.framework.business.logic.common.HttpErrorResponse;
+import com.sifast.springular.framework.business.logic.dao.EntityDao;
 import com.sifast.springular.framework.business.logic.entities.Attribute;
 import com.sifast.springular.framework.business.logic.entities.BuisnessLogicEntity;
 import com.sifast.springular.framework.business.logic.entities.Project;
@@ -57,6 +58,9 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
 
     @Autowired
     private IProjectService projectService;
+
+    @Autowired
+    private EntityDao entityDao;
 
     @Override
     public ResponseEntity<?> saveBuisnessLogicEntity(
@@ -152,13 +156,29 @@ public class BuisnessLogicEntityApi implements IBuisnessLogicEntityApi {
         if (!bindingResult.hasFieldErrors()) {
             Optional<BuisnessLogicEntity> buisnessLogicEntity = buisnessLogicEntityService.findById(id);
             if (buisnessLogicEntity.isPresent()) {
-                BuisnessLogicEntity preUpdateBuisnessLogicEntity = buisnessLogicEntity.get();
+                Optional<Project> project = projectService.findById(buisnessLogicEntityDto.getProjectId());
+                if (project.isPresent()) {
+                    BuisnessLogicEntity toBeUpdatedBusinessLogicEntity;
+                    toBeUpdatedBusinessLogicEntity = modelMapper.map(buisnessLogicEntityDto, BuisnessLogicEntity.class);
+                    toBeUpdatedBusinessLogicEntity.setId(id);
+                    toBeUpdatedBusinessLogicEntity.setProject(project.get());
+                    if (toBeUpdatedBusinessLogicEntity.getAttributes() != null) {
+                        List<Attribute> attributes = new ArrayList<>(toBeUpdatedBusinessLogicEntity.getAttributes());
+                        for (int i = 0; i < attributes.size(); i++) {
+                            attributes.get(i).setBuisness(toBeUpdatedBusinessLogicEntity);
+                        }
 
-                BuisnessLogicEntity updatedBuisnessLogicEntity = buisnessLogicEntityService.save(preUpdateBuisnessLogicEntity);
-                httpStatus = HttpStatus.OK;
-                httpResponseBody = modelMapper.map(buisnessLogicEntity, BuisnessLogicEntity.class);
-                LOGGER.info("INFO level message: BuisnessLogicEntity updated {}", updatedBuisnessLogicEntity);
-
+                        toBeUpdatedBusinessLogicEntity.setAttributes(attributes);
+                    }
+                    BuisnessLogicEntity updatedBuisnessLogicEntity = buisnessLogicEntityService.update(toBeUpdatedBusinessLogicEntity);
+                    httpStatus = HttpStatus.OK;
+                    httpResponseBody = modelMapper.map(updatedBuisnessLogicEntity, ViewBuisnessLogicEntityDto.class);
+                    LOGGER.info("INFO level message: BuisnessLogicEntity updated {}", updatedBuisnessLogicEntity);
+                } else {
+                    httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.PROJECT_NOT_FOUND);
+                    httpStatus = HttpStatus.NOT_FOUND;
+                    httpResponseBody = httpErrorResponse;
+                }
             } else {
                 httpErrorResponse.setHttpCodeAndMessage(HttpCostumCode.NOT_FOUND.getValue(), ApiMessage.BUISNESS_LOGIC_ENTITY_NOT_FOUND);
                 httpStatus = HttpStatus.NOT_FOUND;

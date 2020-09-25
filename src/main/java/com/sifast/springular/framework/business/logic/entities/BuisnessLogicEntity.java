@@ -2,7 +2,6 @@ package com.sifast.springular.framework.business.logic.entities;
 
 import java.io.Serializable;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,7 +43,7 @@ public class BuisnessLogicEntity extends TimestampEntity implements Serializable
         this.isTrackable = isTrackable;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buisnessLogicEntity", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buisnessLogicEntity", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Attribute> attributes;
 
     @ManyToOne(fetch = FetchType.LAZY)

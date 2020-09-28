@@ -18,10 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AuditServiceFileWriter {
+
+    @Value("${path.generated-project}")
+    private String pathToGeneratedProject;
 
     @Autowired
     RelationshipService relationshipService;
@@ -573,7 +577,7 @@ public class AuditServiceFileWriter {
         if (child != null) {
             String childModel = child;
             File file = new File(
-                    ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(namefileToWriteIn)
+                    pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(namefileToWriteIn)
                             .concat(Constants.POINT_JAVA));
             String fileContext = FileUtils.readFileToString(file);
             fileContext = fileContext.replaceAll(ConstantsImportPackage.IMPORT_VERSION_DIFF_DTO, ConstantsImportPackage.IMPORT_VERSION_DIFF_DTO
@@ -640,7 +644,7 @@ public class AuditServiceFileWriter {
             String viewFileDto) throws IOException {
 
         File file = new File(
-                ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(nameFileAuditService)
+                pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(nameFileAuditService)
                         .concat(Constants.POINT_JAVA));
         FileWriter myWriter = new FileWriter(file);
         myWriter.write(ConstantsImportPackage.PACKAGE_SERVICE_AUDIT.concat(Constants.PATTERN_RETOUR_LIGNE));
@@ -686,7 +690,7 @@ public class AuditServiceFileWriter {
             String childMapper = child.concat(Constants.MAPPER);
             String childMapperVariable = child.toLowerCase().concat(Constants.MAPPER);
             File file = new File(
-                    ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(namefileToWriteIn)
+                    pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(namefileToWriteIn)
                             .concat(Constants.POINT_JAVA));
             String fileContext = FileUtils.readFileToString(file);
             fileContext = fileContext.replaceAll(entityMapper.concat(" ").concat(variableEntityMapper).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE),
@@ -706,7 +710,7 @@ public class AuditServiceFileWriter {
             String modelChildImport = ConstantsImportPackage.IMPORT_ENTITY_MODEL.concat(childModel).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE);
             String mapperChildImport = ConstantsImportPackage.IMPORT_MAPPER.concat(childMapperImport).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE);
             File file = new File(
-                    ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(namefileToWriteIn)
+                    pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_AUDIT_SERVICE).concat(namefileToWriteIn)
                             .concat(Constants.POINT_JAVA));
             String fileContext = FileUtils.readFileToString(file);
             fileContext = fileContext.replaceAll(modelChildImport, modelChildImport.concat(mapperChildImport));

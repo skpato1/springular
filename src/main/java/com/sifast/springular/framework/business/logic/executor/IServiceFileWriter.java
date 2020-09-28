@@ -8,15 +8,19 @@ import com.sifast.springular.framework.business.logic.entities.Project;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class IServiceFileWriter {
 
+    @Value("${path.generated-project}")
+    private String pathToGeneratedProject;
+
     public void writeIServiceFiles(Project project) {
         project.getEntities().stream().forEach(entity -> {
             File file = new File(
-                    ConstantsPath.DESKTOP
+                    pathToGeneratedProject
                             .concat(project.getNameProject())
                             .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_SERVICE_PACKAGE_FILES)
                             .concat("I").concat(entity.getNameEntity()).concat("Service.java"));
@@ -50,7 +54,7 @@ public class IServiceFileWriter {
     public void writeImplementServiceFiles(Project project) {
         project.getEntities().stream().forEach(entity -> {
             File file = new File(
-                    ConstantsPath.DESKTOP
+                    pathToGeneratedProject
                             .concat(project.getNameProject())
                             .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_SERVICE_IMPL_PACKAGE_FILES)
                             .concat(entity.getNameEntity()).concat("Service.java"));

@@ -93,6 +93,12 @@ public class ProjectGeneratorApi implements IProjectGeneratorApi {
 
             jdlFileGeneratorService.writeFilesWebServicesApiImpl(project.get());
 
+            commandExecutorService.deleteGeneratedJHipsterProjectContent(isWindows);
+
+            commandExecutorService.deleteClonedProjectSocleFromGeneratedProject(project.get(), isWindows);
+
+            commandExecutorService.deleteClonedProjectSocleFromGenerator(isWindows);
+
             response.setStatus(HttpServletResponse.SC_OK);
 
             response.addHeader("Content-Disposition", "attachment; filename=\"" + project.get().getNameProject() + ".zip\"");

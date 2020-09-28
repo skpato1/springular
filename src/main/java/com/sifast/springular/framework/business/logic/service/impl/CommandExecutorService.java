@@ -36,8 +36,8 @@ public class CommandExecutorService implements ICommandExecutorService {
     @Value("${app.path}")
     private String appDirectory;
 
-    @Value("${file.path}")
-    private String fileJDL;
+    @Value("${path.generated-project}")
+    private String pathToGeneratedProject;
 
     @Value("${file.generate.path}")
     private String fileJdlToGenerate;
@@ -87,7 +87,7 @@ public class CommandExecutorService implements ICommandExecutorService {
     @Override
     public void generateApplicationPropertiesFromAngular(Project project, String typeDB, String nameDB, String usernameDB, String pwdDB) throws IOException, InterruptedException {
         LOGGER.debug("generateApplicationPropertiesFromAngular");
-        File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATTERN_PROJECT_PATH_APPLICATION_PROPERTIES));
+        File file = new File(pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.PATTERN_PROJECT_PATH_APPLICATION_PROPERTIES));
         String fileContext = FileUtils.readFileToString(file);
         fileContext = fileContext.replace(Constants.PATTERN_DATABASE_NAME, nameDB);
         fileContext = fileContext.replace(Constants.PATTERN_DATABASE_USERNAME, usernameDB);
@@ -130,14 +130,14 @@ public class CommandExecutorService implements ICommandExecutorService {
     public void executeCopyEntitiesCommandForDifferentOs(Project project, boolean isWindows, String entitiesFiles) throws IOException, InterruptedException {
         LOGGER.debug("executeCopyEntitiesCommandForDifferentOs");
         if (isWindows) {
-            executeCommand(CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(ConstantsPath.PATH_TO_GENERATED_JHIPSTER_PROJECT).concat(ConstantsPath.DESKTOP)
+            executeCommand(CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(appDirectory + ConstantsPath.PATH_TO_GENERATED_JHIPSTER_PROJECT).concat(pathToGeneratedProject)
                     .concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE));
         } else {
             String[] splitted = entitiesFiles.substring(1).split(",");
             for (String entity : splitted) {
                 executeCommand(
-                        CommandConstantsLinux.COPY_COMMAND_LINUX_FILES.concat(ConstantsPath.PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES).concat(entity).concat(" ")
-                                .concat(ConstantsPath.DESKTOP).concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE));
+                        CommandConstantsLinux.COPY_COMMAND_LINUX_FILES.concat(appDirectory + ConstantsPath.PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES).concat(entity).concat(" ")
+                                .concat(pathToGeneratedProject).concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE));
             }
         }
     }
@@ -161,7 +161,7 @@ public class CommandExecutorService implements ICommandExecutorService {
         LOGGER.debug("createFolderForEachDto");
         project.getEntities().stream().forEach(entity -> {
             try {
-                executeCommand(Constants.MKDIR_COMMAND.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
+                executeCommand(Constants.MKDIR_COMMAND.concat(pathToGeneratedProject).concat(project.getNameProject())
                         .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES).concat(entity.getNameEntity().toLowerCase()));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -180,12 +180,13 @@ public class CommandExecutorService implements ICommandExecutorService {
     private void executeCopyDaoCommandForDifferentOs(Project project, boolean isWindows, String daoFiles) throws IOException, InterruptedException {
         LOGGER.debug("executeCopyDaoCommandForDifferentOs");
         if (isWindows) {
-            executeCommand(CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(ConstantsPath.PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT).concat(ConstantsPath.DESKTOP)
+            executeCommand(CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(appDirectory + ConstantsPath.PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT).concat(pathToGeneratedProject)
                     .concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DAO_PACKAGE));
         } else {
 
-            executeCommand(CommandConstantsLinux.COPY_COMMAND_LINUX_FILES.concat(ConstantsPath.PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT_FILES).concat(daoFiles).concat("} ")
-                    .concat(ConstantsPath.DESKTOP).concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DAO_PACKAGE));
+            executeCommand(
+                    CommandConstantsLinux.COPY_COMMAND_LINUX_FILES.concat(appDirectory + ConstantsPath.PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT_FILES).concat(daoFiles).concat("} ")
+                            .concat(pathToGeneratedProject).concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DAO_PACKAGE));
 
         }
 
@@ -206,9 +207,9 @@ public class CommandExecutorService implements ICommandExecutorService {
         LOGGER.debug("renameDaoToGeneratedProject");
         project.getEntities().stream().forEach(entity -> {
             try {
-                executeCommand(CommandConstantsLinux.RENAME_COMMAND_LINUX_FILES.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
+                executeCommand(CommandConstantsLinux.RENAME_COMMAND_LINUX_FILES.concat(pathToGeneratedProject).concat(project.getNameProject())
                         .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES).concat(entity.getNameEntity().concat("Repository.java "))
-                        .concat(ConstantsPath.DESKTOP).concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES).concat("I")
+                        .concat(pathToGeneratedProject).concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES).concat("I")
                         .concat(entity.getNameEntity()).concat("Dao.java"));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -228,9 +229,9 @@ public class CommandExecutorService implements ICommandExecutorService {
         LOGGER.debug("renameDTo");
         project.getEntities().stream().forEach(entity -> {
             try {
-                executeCommand(CommandConstantsLinux.RENAME_COMMAND_LINUX_FILES.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
+                executeCommand(CommandConstantsLinux.RENAME_COMMAND_LINUX_FILES.concat(pathToGeneratedProject).concat(project.getNameProject())
                         .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES).concat(entity.getNameEntity().toLowerCase())
-                        .concat(Constants.PATTERN_SLASH).concat(entity.getNameEntity()).concat(".java ").concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
+                        .concat(Constants.PATTERN_SLASH).concat(entity.getNameEntity()).concat(".java ").concat(pathToGeneratedProject).concat(project.getNameProject())
                         .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES).concat(entity.getNameEntity().toLowerCase())
                         .concat(Constants.PATTERN_SLASH).concat(entity.getNameEntity()).concat("Dto.java"));
 
@@ -264,15 +265,15 @@ public class CommandExecutorService implements ICommandExecutorService {
 
     private void executeCopyCommandLinux(Project project, BuisnessLogicEntity entity) throws IOException, InterruptedException {
         LOGGER.debug("executeCopyCommandLinux");
-        executeCommand(CommandConstantsLinux.COPY_COMMAND_LINUX_FILES_CP.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
-                .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES).concat(entity.getNameEntity()).concat(".java ").concat(ConstantsPath.DESKTOP)
+        executeCommand(CommandConstantsLinux.COPY_COMMAND_LINUX_FILES_CP.concat(pathToGeneratedProject).concat(project.getNameProject())
+                .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES).concat(entity.getNameEntity()).concat(".java ").concat(pathToGeneratedProject)
                 .concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES).concat(entity.getNameEntity().toLowerCase()));
     }
 
     private void executeCopyCommandWindows(Project project, BuisnessLogicEntity entity) throws IOException, InterruptedException {
         LOGGER.debug("executeCopyCommandWindows");
-        executeCommand(CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
-                .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES).concat(ConstantsPath.DESKTOP).concat(project.getNameProject())
+        executeCommand(CommandConstantsWindows.COPY_COMMAND_WINDOWS.concat(pathToGeneratedProject).concat(project.getNameProject())
+                .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_MODEL_PACKAGE_FILES).concat(pathToGeneratedProject).concat(project.getNameProject())
                 .concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES).concat(entity.getNameEntity().toLowerCase()));
     }
 
@@ -286,20 +287,20 @@ public class CommandExecutorService implements ICommandExecutorService {
 
     private void editPomFilesWithTheNewProjectName(Project project) throws IOException {
         LOGGER.debug("editPomFilesWithTheNewProjectName");
-        File pom = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH).concat(Constants.POM_XML));
-        File pomPersistence = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH)
+        File pom = new File(pathToGeneratedProject.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH).concat(Constants.POM_XML));
+        File pomPersistence = new File(pathToGeneratedProject.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH)
                 .concat(ConstantsModules.SIFAST_SPRING_PERSISTENCE).concat(Constants.PATTERN_SLASH).concat(Constants.POM_XML));
-        File pomService = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH)
+        File pomService = new File(pathToGeneratedProject.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH)
                 .concat(ConstantsModules.SIFAST_SPRING_SERVICE).concat(Constants.PATTERN_SLASH).concat(Constants.POM_XML));
-        File pomWeb = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH)
+        File pomWeb = new File(pathToGeneratedProject.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH)
                 .concat(ConstantsModules.SIFAST_SPRING_WEB).concat(Constants.PATTERN_SLASH).concat(Constants.POM_XML));
-        File pomCommon = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH)
+        File pomCommon = new File(pathToGeneratedProject.concat(project.getNameProject()).concat(Constants.PATTERN_SLASH)
                 .concat(ConstantsModules.SIFAST_SPRING_COMMON).concat(Constants.PATTERN_SLASH).concat(Constants.POM_XML));
 
-        File applicationPropertiesFile = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.APPLICATION_PROPERTIES_PROJECT_DESKTOP));
+        File applicationPropertiesFile = new File(pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.APPLICATION_PROPERTIES_PROJECT_DESKTOP));
 
         File swaggerConfigFile = new File(
-                ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.SWAGGER_PROJECT_CONFIG_FILE_PATH).concat(Constants.SWAGGER_CONFIG_FILE));
+                pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.SWAGGER_PROJECT_CONFIG_FILE_PATH).concat(Constants.SWAGGER_CONFIG_FILE));
 
         editPomFile(project, pom);
         editPomFile(project, pomPersistence);
@@ -322,7 +323,7 @@ public class CommandExecutorService implements ICommandExecutorService {
     private void renameProjectFolder(Project project) throws IOException, InterruptedException {
         LOGGER.debug("renameProjectFolder");
         executeCommand(CommandConstantsLinux.RENAME_COMMAND_LINUX_FILES.concat(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE).concat(" ")
-                .concat(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW).concat(project.getNameProject()));
+                .concat(pathToGeneratedProject).concat(project.getNameProject()));
     }
 
     @Override
@@ -332,7 +333,7 @@ public class CommandExecutorService implements ICommandExecutorService {
         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
         ZipOutputStream zipOutputStream = new ZipOutputStream(bufferedOutputStream);
         ArrayList<File> files = new ArrayList<>(2);
-        File file = new File(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW + project.getNameProject());
+        File file = new File(pathToGeneratedProject + project.getNameProject());
         files.add(file);
         for (File fileToZip : files) {
             zip.zipFile(fileToZip, fileToZip.getName(), zipOutputStream);
@@ -343,6 +344,42 @@ public class CommandExecutorService implements ICommandExecutorService {
         IOUtils.closeQuietly(bufferedOutputStream);
         IOUtils.closeQuietly(byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
+    }
+
+    @Override
+    public void deleteGeneratedJHipsterProjectContent(boolean isWindows) throws IOException, InterruptedException {
+        LOGGER.debug("deleteGeneratedJHipsterProjectContent");
+        if (isWindows) {
+            executeCommand(CommandConstantsLinux.REMOVE_COMMAND_WINDOWS.concat("/S /Q ").concat(appDirectory.replace("/", "\\")).concat(Constants.ETOILE));
+        } else {
+            executeCommand(CommandConstantsLinux.REMOVE_COMMAND_LINUX.concat("-rf ").concat(appDirectory).concat("&& ").concat(CommandConstantsLinux.CREATE_FOLDER_COMMAND_LINUX)
+                    .concat(appDirectory));
+        }
+    }
+
+    @Override
+    public void deleteClonedProjectSocleFromGeneratedProject(Project project, boolean isWindows) throws IOException, InterruptedException {
+        LOGGER.debug("deleteClonedProjectSocleFromGeneratedProject");
+        if (isWindows) {
+            executeCommand(
+                    CommandConstantsLinux.REMOVE_COMMAND_WINDOWS.concat("/Q ").concat(pathToGeneratedProject).concat(project.getNameProject())
+                            .concat(Constants.PATTERN_SLASH).concat(Constants.OLD_PROJECT_NAME_TO_CLONE));
+        } else {
+            executeCommand(
+                    CommandConstantsLinux.REMOVE_COMMAND_LINUX.concat("-rf ").concat(pathToGeneratedProject).concat(project.getNameProject())
+                            .concat(Constants.PATTERN_SLASH).concat(Constants.OLD_PROJECT_NAME_TO_CLONE));
+        }
+    }
+
+    @Override
+    public void deleteClonedProjectSocleFromGenerator(boolean isWindows) throws IOException, InterruptedException {
+        LOGGER.debug("deleteClonedProjectSocleFromGenerator");
+        if (isWindows) {
+            executeCommand(CommandConstantsLinux.REMOVE_COMMAND_WINDOWS.concat("/Q ").concat(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE));
+        } else {
+            executeCommand(
+                    CommandConstantsLinux.REMOVE_COMMAND_LINUX.concat("-rf ").concat(ConstantsPath.PATH_TO_CLONED_PROJECT_SOURCE));
+        }
     }
 
 }

@@ -19,12 +19,16 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DtoFileWriter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DtoFileWriter.class);
+
+    @Value("${path.generated-project}")
+    private String pathToGeneratedProject;
 
     public void generateSuperFilesInEachFolderDTO(Project project) {
         LOGGER.debug("generateSuperFilesInEachFolderDTO");
@@ -186,7 +190,7 @@ public class DtoFileWriter {
 
     private FileWriter writeImportsAndStructureOfClassInDto(Project project, BuisnessLogicEntity ent, List<Attribute> attributes) throws IOException {
         LOGGER.debug("writeImportsAndStructureOfClassInDto");
-        File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
+        File file = new File(pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
                 .concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH).concat(ent.getNameEntity()).concat("Dto.java"));
         String fileDto = ent.getNameEntity().concat("Dto");
         FileWriter myWriter = new FileWriter(file);
@@ -441,7 +445,7 @@ public class DtoFileWriter {
         String namefileToWriteIn = "View".concat(ent.getNameEntity()).concat("Dto");
         if (child != null) {
             String viewChildDto = "View".concat(child).concat("Dto");
-            File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
+            File file = new File(pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
                     .concat(nameFolderToWriteIn).concat(Constants.PATTERN_SLASH).concat(namefileToWriteIn).concat(".java"));
             String fileContext = FileUtils.readFileToString(file);
             fileContext = fileContext.replaceAll(ConstantsImportPackage.IMPORT_DTO_I_WEB_SERVICES_VALIDATORS,
@@ -795,7 +799,7 @@ public class DtoFileWriter {
     private FileWriter writeViewImportsAndStructureOfClassInDto(Project project, BuisnessLogicEntity ent, List<Attribute> attributes) throws IOException {
         LOGGER.debug("writeViewImportsAndStructureOfClassInDto");
         String fileDto = "View".concat(ent.getNameEntity()).concat("Dto");
-        File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
+        File file = new File(pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DTO_FOLDERS_PACKAGE_FILES)
                 .concat(ent.getNameEntity().toLowerCase()).concat(Constants.PATTERN_SLASH).concat(fileDto).concat(".java"));
 
         FileWriter myWriter = new FileWriter(file);

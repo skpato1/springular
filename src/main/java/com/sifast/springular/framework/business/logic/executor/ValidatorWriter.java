@@ -8,10 +8,14 @@ import com.sifast.springular.framework.business.logic.entities.Project;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ValidatorWriter {
+
+    @Value("${path.generated-project}")
+    private String pathToGeneratedProject;
 
     public void generateValidators(Project project) {
         project.getEntities().stream().forEach(ent -> {
@@ -26,7 +30,7 @@ public class ValidatorWriter {
     }
 
     private FileWriter writeImportsAndStructureOfClassInValidators(Project project, String fileValidator) throws IOException {
-        File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_VALIDATOR).concat(fileValidator).concat(".java"));
+        File file = new File(pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_VALIDATOR).concat(fileValidator).concat(".java"));
 
         FileWriter myWriter = new FileWriter(file);
         myWriter.write("");

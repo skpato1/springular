@@ -19,12 +19,16 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MapperFileWriter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MapperFileWriter.class);
+
+    @Value("${path.generated-project}")
+    private String pathToGeneratedProject;
 
     Boolean checkManyParent = false;
 
@@ -631,7 +635,8 @@ public class MapperFileWriter {
 
     private FileWriter writeImportsAndStructureOfClassInMappers(Project project, BuisnessLogicEntity ent, List<BuisnessLogicEntity> parentEntities,
             List<BuisnessLogicEntity> childEntities) throws IOException {
-        File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_MAPPER).concat(ent.getNameEntity()).concat("Mapper.java"));
+        File file = new File(
+                pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_MAPPER).concat(ent.getNameEntity()).concat("Mapper.java"));
         String fileMapper = ent.getNameEntity().concat("Mapper");
         String fileCreateDto = ent.getNameEntity().concat("Dto");
         String fileViewDto = "View".concat(ent.getNameEntity()).concat("Dto");
@@ -718,7 +723,7 @@ public class MapperFileWriter {
         if (child != null) {
             String viewChildDto = "View".concat(child).concat("Dto");
             File file = new File(
-                    ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_MAPPER.concat(ent.getNameEntity()).concat("Mapper.java")));
+                    pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_MAPPER.concat(ent.getNameEntity()).concat("Mapper.java")));
             String fileContext = FileUtils.readFileToString(file);
             fileContext = fileContext.replaceAll(ConstantsImportPackage.IMPORT_VERSION_DTO, ConstantsImportPackage.IMPORT_VERSION_DTO.concat(ConstantsImportPackage.IMPORT_DTO
                     .concat(child.toLowerCase()).concat(Constants.POINT).concat(viewChildDto).concat(Constants.PATTERN_POINT_VIRGULE_ET_RETOUR_LIGNE)));

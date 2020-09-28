@@ -10,10 +10,14 @@ import com.sifast.springular.framework.business.logic.entities.Project;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class WebServiceApiImpl {
+
+    @Value("${path.generated-project}")
+    private String pathToGeneratedProject;
 
     public void generateWebServicesImplFiles(BuisnessLogicEntity ent, Project project) {
         try {
@@ -150,7 +154,7 @@ public class WebServiceApiImpl {
     }
 
     private FileWriter writeImportsAndStructureOfClassInWSApi(Project project, BuisnessLogicEntity ent) throws IOException {
-        File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_WS_API).concat(ent.getNameEntity()).concat("Api.java"));
+        File file = new File(pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_WS_API).concat(ent.getNameEntity()).concat("Api.java"));
         String fileApi = ent.getNameEntity().concat("Api");
         String fileCreateDto = ent.getNameEntity().concat("Dto");
         String fileViewDto = "View".concat(ent.getNameEntity()).concat("Dto");

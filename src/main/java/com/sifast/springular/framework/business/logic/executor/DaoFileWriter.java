@@ -7,15 +7,20 @@ import com.sifast.springular.framework.business.logic.common.constants.Constants
 import com.sifast.springular.framework.business.logic.entities.Project;
 import java.io.File;
 import java.io.FileWriter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DaoFileWriter {
 
+
+    @Value("${path.generated-project}")
+    private String pathToGeneratedProject;
+
     public void writeDaoFiles(Project project) {
         project.getEntities().stream().forEach(entity -> {
             try {
-                File file = new File(ConstantsPath.DESKTOP.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES).concat("I")
+                File file = new File(pathToGeneratedProject.concat(project.getNameProject()).concat(ConstantsPath.PATH_TO_PROJECT_FRAMEWORK_SOCLE_DAO_PACKAGE_FILES).concat("I")
                         + entity.getNameEntity().concat("Dao.java"));
                 String fileDao = "I".concat(entity.getNameEntity()).concat("Dao");
                 FileWriter myWriter = new FileWriter(file);

@@ -2,19 +2,15 @@ package com.sifast.springular.framework.business.logic.common.constants;
 
 public class ConstantsPath {
 
-    public static final String PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT_FILES = "/home/debian/Bureau/testjdl/src/main/java/com/sifast/springular/framework/repository/";
+    public static final String PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT_FILES = "src/main/java/com/sifast/springular/framework/repository/";
 
-    public static final String PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT = "/home/debian/Bureau/testjdl/src/main/java/com/sifast/springular/framework/repository/ ";
+    public static final String PATH_TO_GENERATED_DAO_JHIPSTER_PROJECT = "src/main/java/com/sifast/springular/framework/repository/ ";
 
-    public static final String PATH_TO_CLONED_PROJECT_SOURCE = "/home/debian/IdeaProjects/springular-framework-business-logic/springular-framework-socle";
+    public static final String PATH_TO_CLONED_PROJECT_SOURCE = "../springular-framework-business-logic/springular-framework-socle";
 
-    public static final String PATH_TO_CLONED_PROJECT_SOURCE_DESKTOP_NEW = "/home/debian/Bureau/";
+    public static final String PATH_TO_GENERATED_JHIPSTER_PROJECT = "src/main/java/com/sifast/springular/framework/domain/ ";
 
-    public static final String PATH_TO_GENERATED_JHIPSTER_PROJECT = "/home/debian/Bureau/testjdl/src/main/java/com/sifast/springular/framework/domain/ ";
-
-    public static final String PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES = "/home/debian/Bureau/testjdl/src/main/java/com/sifast/springular/framework/domain/";
-
-    public static final String DESKTOP = "/home/debian/Bureau/";
+    public static final String PATH_TO_GENERATED_JHIPSTER_PROJECT_FOR_FILES = "src/main/java/com/sifast/springular/framework/domain/";
 
     public static final String PATH_TO_PROJECT_COMMON = "/sifast-spring-common/src/main/java/com/sifast/common/";
 

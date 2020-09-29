@@ -453,6 +453,10 @@ public class Constants {
 
     public static final String V2 = "v2";
 
+    public static final String ETOILE = "*";
+
+    public static final String POINT_ETOILE = ".*";
+
     private Constants() {
     }
 

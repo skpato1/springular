@@ -32,4 +32,10 @@ public interface ICommandExecutorService {
     public void editNameProjectAfterCloning(Project project, boolean isWindows) throws IOException, InterruptedException;
 
     public byte[] zipProject(Project project) throws IOException;
+
+    public void deleteGeneratedJHipsterProjectContent(boolean isWindows) throws InterruptedException, IOException;
+
+    public void deleteClonedProjectSocleFromGeneratedProject(Project project, boolean isWindows) throws IOException, InterruptedException;
+
+    public void deleteClonedProjectSocleFromGenerator(boolean isWindows) throws IOException, InterruptedException;
 }

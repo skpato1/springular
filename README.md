@@ -27,9 +27,9 @@ Il faut modifier le fichier application.properties :
 NB: Si vous avez utiliser YARN pour installer JHipster il faut lancer la commande **export PATH="$PATH:`yarn global bin`:$HOME/.config/yarn/global/node_modules/.bin"** sur un terminal. 
 
 
-## Build image
+## run springular with docker 
 
-* Il faut ajouter cette prortion de code dans le fichier pom.xml :
+* [Build image with jib plugin] Il faut ajouter cette prortion de code dans le fichier pom.xml :
 
 	>           
                 <plugin>

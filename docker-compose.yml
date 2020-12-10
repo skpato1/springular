@@ -1,0 +1,18 @@
+version: '2.2'
+services:
+  db:
+    container_name: mysqldb
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: sifast
+      MYSQL_DATABASE: buisness_logic
+      ports: 3306:3306
+      expose: 3306
+  web:
+    container_name: ng-app-springular-buisness-logic-container
+    image: springular-buisness-logic:latest
+    restart: on-failure
+    build: .
+    ports:
+      - 9099:9090

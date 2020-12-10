@@ -26,3 +26,28 @@ Il faut modifier le fichier application.properties :
 
 NB: Si vous avez utiliser YARN pour installer JHipster il faut lancer la commande **export PATH="$PATH:`yarn global bin`:$HOME/.config/yarn/global/node_modules/.bin"** sur un terminal. 
 
+
+## Build image
+
+* Il faut ajouter cette prortion de code dans le fichier pom.xml :
+
+	>    <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>2.4.0</version>
+                <configuration>
+                    <to>
+                        <image>springular-buisness-logic</image>
+                    </to>
+                </configuration>
+  </plugin>
+
+
+* Il faut lancer la commande suivante dans le terminal  :
+	> ./mvnw clean compile jib:dockerBuild
+
+* lancer docker-compose  :
+ 	> docker-compose up
+
+* pour vérifier tu peux consulter le lien suivant  :
+    http://localhost:9099/swagger-ui.html

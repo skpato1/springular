@@ -1,0 +1,13 @@
+# Free ressources
+- hosts: kubernetes
+  tasks:
+    # check mounted volume
+    - name: check mounted volume
+      command : /bin/sh -c "df | awk '{print $1}' | grep -w sifast-kubernetes/mnt/nfs-vol-springular-back$"
+      register: mountVar 
+      ignore_errors: yes 
+    
+    #umounting volume
+    - name: umount
+      command: sudo umount 'storage-nfs.sifast.com:/local_nfs/springular-back'
+      when: not mountVar.stdout == ""      

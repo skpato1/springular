@@ -1,0 +1,84 @@
+# Copy k8s configuration
+- hosts: kubernetes
+  tasks:
+    - name: Copy k8s files
+      copy:
+        src: ../kubernetes
+        dest: /home/k8s-deployer/{{projectName}}
+        owner: k8s-deployer
+        group: k8s-deployer
+        mode: '0644'
+
+#Deploy application
+# Deploy K8S objet
+
+    # clear helm deployement
+    # check if exist failed deployment
+    - name: get failed deployment
+      command: /bin/sh -c "helm ls --failed | awk '{print $1 }' |grep -w {{projectName}}-{{env}}$"
+      register: failedDeployment
+      ignore_errors: yes
+
+    # delete failed deployment
+    - name:  print msg
+      shell: echo -e "HEKETI:\n Le deploiement {{projectName}} est en erreur \n Supression du deploiement {{projectName}}-{{env}}"
+      when: not failedDeployment.stdout == ""
+    - name:  delete failed deployment
+      command: /bin/sh -c "helm delete {{projectName}}-{{env}}"
+      when: not failedDeployment.stdout == ""
+
+    # check namespace existance
+    - name: check namespace existance
+      command: /bin/sh -c "kubectl get namespace | grep -w  ^{{projectName}}$"
+      register: namespace
+      ignore_errors: yes
+
+    # create namespace if not exist
+    - name: create namespace if not exist
+      command: /bin/sh -c "kubectl create namespace {{projectName}}"
+      when:  namespace.stdout == ""
+      ignore_errors: yes
+
+    # define cleanNamespace 'to get params from config_service_ports.yml'
+    - name: get clean_namespace variable
+      command: /bin/sh -c "echo {{projectName}} | sed "s/-/_/g" "
+      register: cleanNamespace
+      ignore_errors: yes
+
+    # check deployment existance
+    - name: check deployment existance
+      command: /bin/sh -c "helm ls | awk '{print $1 }' |grep -w ^{{projectName}}-{{env}}$"
+      register: deployment
+      ignore_errors: yes
+
+   # create deployment
+    - name:  print deployment initialisation msg
+      shell: echo -e "HELM:\n Initialisation de l'environnment {{projectName}} "
+      when: deployment.stdout == "" and not {{app}} == ""
+    # deploy application in k8s cluster
+    - name:  deploy application in k8s cluster
+      command: /bin/sh -c " cd /home/k8s-deployer/{{projectName}}/kubernetes/ && helm install {{projectName}}-{{env}} springular-back --set app_NAME={{projectName}}-{{env}} --set space_NAME={{projectName}}   --set app_PORT={{app}} --set app_env={{env}} "
+      when:  deployment.stdout == "" and not {{app}} == ""
+
+    # check k8s-secret existance
+    - name: check k8s-secret existance
+      command: /bin/sh -c "kubectl get secrets -n {{projectName}} | grep -w docker-credentials-{{projectName}}-{{env}}"
+      register: secret
+      ignore_errors: yes
+
+    # add secret to pull container image from nexus
+    - name:  print secret creation
+      shell: echo -e " create secret "
+      when:  deployment.stdout == "" and not {{app}} == "" and secret.stdout == ""
+    - name:  add secret to pull container image from nexus
+      command: /bin/sh -c "
+        kubectl create secret docker-registry 'docker-credentials-'{{projectName}}'-'{{env}} --docker-server=nexus.sifast.com:8087
+        --docker-username=docker --docker-password=sifast2017 -n {{projectName}}"
+      when:  deployment.stdout == "" and not {{app}} == "" and secret.stdout == ""
+
+# CLear K8S deployment files
+
+    - name: delete K8s files
+      file:
+        path: /home/k8s-deployer/{{projectName}}
+        state: absent

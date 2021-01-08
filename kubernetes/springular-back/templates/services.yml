@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{.Values.space_NAME}}
+  name: {{.Values.app_NAME}}
+  labels:
+    app : {{.Values.app_NAME}}
+spec:
+  ports:
+    - port: 9090
+      protocol: TCP
+      targetPort: 9090
+      nodePort: {{.Values.app_PORT}}
+  selector:
+    app: {{.Values.app_NAME}}
+  type: LoadBalancer

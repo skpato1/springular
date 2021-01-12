@@ -1,0 +1,42 @@
+- hosts: kubernetes
+  vars:
+    env: "{{ env }}"
+  tasks:
+
+    #clear application volume
+    - name: clear application volume
+      file:
+        path: ~/sifast-kubernetes/mnt/nfs-vol-{{projectName}}/{{projectName}}-{{env}}/jar/
+        state: absent
+
+    # copy archived files zip to remote host
+    - name: copy archived files
+      copy:
+        src:  ~/workspace/workspace/{{projectJenkinsName}}/target/springular.jar
+        dest: ~/sifast-kubernetes/mnt/nfs-vol-springular-back/springular-back-{{env}}/jar/
+        owner: k8s-deployer
+        group: k8s-deployer
+        mode: '0755'
+      when: env is match("itg")
+
+
+    # copy archived files zip to remote host
+    - name: copy archived files
+      copy:
+        src:  ~/workspace/workspace/{{projectJenkinsName}}/springular.jar
+        dest: ~/sifast-kubernetes/mnt/nfs-vol-springular-back/springular-back-{{env}}/jar/
+        owner: k8s-deployer
+        group: k8s-deployer
+        mode: '0755'
+      when: env is match("rec")
+
+
+    # copy application files zip to remote host
+    - name: copy application files
+      copy:
+        src:  ~/workspace/workspace/{{projectJenkinsName}}/src/main/resources/application-itg.properties
+        dest: ~/sifast-kubernetes/mnt/nfs-vol-springular-back/springular-back-{{env}}/jar/
+        owner: k8s-deployer
+        group: k8s-deployer
+        mode: '0755'
+      when: env is match("itg")

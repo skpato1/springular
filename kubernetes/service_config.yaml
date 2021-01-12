@@ -1,0 +1,6 @@
+namespace:
+  name: springular-back
+springular_back:
+  service_port:
+    itg:
+      app: 31546

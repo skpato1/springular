@@ -1,0 +1,46 @@
+# Prepare application volume
+- hosts: kubernetes
+  tasks:
+
+    #check volume to mount
+    - name: check volume to mount
+      command : /bin/sh -c "df | grep nfs-vol-{{projectName}}$"
+      register: mountVar
+      ignore_errors: yes
+
+   # check mount path
+    - name: check mount path
+      command : /bin/sh -c " ls ~/sifast-kubernetes/mnt |grep -w nfs-vol-{{projectName}}$"
+      register: pathVar
+      ignore_errors: yes
+ # create mount path if not exist
+    #preparing volumes
+    - name: create mount path if not exist
+      command: /bin/sh -c " mkdir -p ~/sifast-kubernetes/mnt/nfs-vol-{{projectName}}"
+      when: pathVar is failed
+
+   # Recheck pathVar
+    - name: recheck path var
+      command : /bin/sh -c " ls ~/sifast-kubernetes/mnt |grep -w ^nfs-vol-{{projectName}}$"
+      register: pathVar
+
+    #mounting
+    - name: mounting
+      command: sudo mount -t nfs -overs=4.1,sec=sys 'storage-nfs.sifast.com:/local_nfs/'{{projectName}} /home/k8s-deployer/sifast-kubernetes/mnt/'nfs-vol-'{{projectName}}
+      when: mountVar.stdout == "" and pathVar is succeeded
+
+#Initialize projet env directory
+    # check env directory
+    - name: check env directory
+      command : /bin/sh -c " ls ~/sifast-kubernetes/mnt/nfs-vol-{{projectName}} |grep -w ^{{projectName}}-{{env}}$"
+      register: pathProject
+      ignore_errors: yes
+    # create env directory if not exist
+    - name: create env directory if not exist
+      command: /bin/sh -c "mkdir -p ~/sifast-kubernetes/mnt/nfs-vol-{{projectName}}/{{projectName}}-{{env}}"
+      when: pathProject.stdout == ""
+    # create application volume
+    - name: create application volume
+      command: mkdir -p ~/sifast-kubernetes/mnt/nfs-vol-{{projectName}}/{{projectName}}-{{env}}/jar
+      when: pathProject.stdout == ""
+

@@ -1,0 +1,25 @@
+# Stop running container if exist
+- hosts: kubernetes
+  tasks:
+
+    #variable app
+    - name: check if application container is runing
+      command: /bin/sh -c "helm ls | awk '{print $1 }' |grep -w  {{projectName}}-{{env}}$"
+      register: runningPod
+      ignore_errors: yes
+
+    # stop app
+    - name: stop project
+      command: /bin/sh -c "helm delete {{projectName}}-{{env}}"
+      when: runningPod.stdout != ""
+      register: isStopped
+
+
+    #variable terminated pod
+    - name: check if pod  is stopped
+      command : /bin/sh -c " kubectl get pods -n {{projectName}} | grep -w {{env}} | awk '{print $1}'"
+      when: runningPod is succeeded
+      register: podStillRunning
+      until: podStillRunning.stdout == ""
+      retries: 20
+      delay: 10

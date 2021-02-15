@@ -1,18 +1,44 @@
-version: '2.2'
+version: '3.3'
 services:
   db:
     container_name: mysqldb
     image: mysql:5.7
-    restart: always
+    restart: on-failure
     environment:
-      MYSQL_ROOT_PASSWORD: sifast
-      MYSQL_DATABASE: buisness_logic
-      ports: 3306:3306
-      expose: 3306
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=sifast
+    ports: 
+      - "3306:3306"
+    networks:
+      app_net:
+        ipv4_address: 10.0.70.2
+
+  
   web:
     container_name: ng-app-springular-buisness-logic-container
     image: springular-buisness-logic:latest
-    restart: on-failure
+    restart: always
     build: .
-    ports:
-      - 9099:9090
+    ports: 
+      - "9099:9090"
+    environment:
+        SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/buisness_logic?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1
+        SPRING_DATASOURCE_USERNAME: root
+        SPRING_DATASOURCE_PASSWORD: sifast
+    networks:
+      app_net:
+        ipv4_address: 10.0.70.3
+    depends_on:
+      - db
+    links:
+      - db
+      
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.70.0/24
+          gateway: 10.0.70.1  
+
